@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>PamilyaHelper - Your Household Help Hub</title>
+    <!-- add icon link -->
+    <link rel = "icon" href = "img/PamilyaHelperLogo.png" type = "image/x-icon">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/post-job-forms.css">
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+                <h1 class="m-0 text-primary">PamilyaHelper</h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="about.html" class="nav-item nav-link">About</a>
+                    <a href="job-list.html" class="nav-item nav-link">Job List</a>
+                    <a href="helpers.html" class="nav-item nav-link active">Helpers</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="SignInSignUp.html" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Login/SignUp</a>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+
+        <!-- Header End -->
+        <div class="container-xxl py-5 bg-dark page-header mb-5">
+            <div class="container my-5 pt-5 pb-4">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Job List</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb text-uppercase">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item"><a href="#">Job List</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Post Helping Services</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- Header End -->
+
+
+        <!-- Jobs Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Post Helping Services</h1>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <section id = "about-sc" class = "resumeform">
+                        <div class = "container">
+                            <div class = "about-cnt">
+                                <form action="" class="cv-form" id = "cv-form">
+                                    <div class = "cv-form-blk">
+                                        <div class = "cv-form-row-title">
+                                            <h3>about the helper</h3>
+                                        </div>
+                                        <div class = "cv-form-row cv-form-row-about" id="achievements">
+                                            <div class = "cols-3">
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label ">Full Name</label>
+                                                    <input name = "firstname" type = "text" class = "form-control firstname" id = "" onkeyup="generateCV()" placeholder="e.g. Juan dela Cruz">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Email</label>
+                                                    <input name = "email" type = "text" class = "form-control email" id = "" onkeyup="generateCV()" placeholder="e.g. juandelacruz@gmail.com">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Contact Number:</label>
+                                                    <input name = "phoneno" type = "text" class = "form-control phoneno" id = "" onkeyup="generateCV()" placeholder="e.g. 0912 345 6789">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class = "cols-3">
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label ">Job Title</label>
+                                                    <input name = "firstname" type = "text" class = "form-control firstname" id = "" onkeyup="generateCV()" placeholder="e.g. Babysitter">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Address</label>
+                                                    <input name = "email" type = "text" class = "form-control email" id = "" onkeyup="generateCV()" placeholder="e.g. Tagbilaran City, Bohol">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Birthdate:</label>
+                                                    <input name = "exp_start_month" type = "month" class = "form-control exp_start_month" id = "" onkeyup="generateCV()">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                            </div>
+            
+                                            <div class="cols-3">
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Your Profile Picture</label>
+                                                    <input name = "image" type = "file" class = "form-control image" id = "" accept = "image/*" onchange="previewImage()">
+                                                </div>
+                                                <div class = "form-elem">
+                                                    <label for = "" class = "form-label">Helper Detail</label>
+                                                    <input name = "summary" type = "text" class = "form-control summary" id = "" onkeyup="generateCV()" placeholder="Short Description">
+                                                    <span class="form-text"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+            
+                                    <div class="cv-form-blk" id="experience">
+                                        <div class = "cv-form-row-title">
+                                            <h3>What I can Offer</h3>
+                                        </div>
+            
+                                        <div class = "row-separator repeater">
+                                            <div class = "repeater" data-repeater-list = "group-a">
+                                                <div data-repeater-item>
+                                                    <div class = "cv-form-row cv-form-row-achievement">
+                                                        <div class = "form-elem">
+                                                            <label for = "" class = "form-label">Skills</label>
+                                                            <input name = "achieve_title" type = "text" class = "form-control achieve_title" id = "" onkeyup="generateCV()" placeholder="e.g. Gutter cleaning and maintenance services to prevent clogs and damage">
+                                                            <span class="form-text"></span>
+                                                        </div>
+                                                        <button data-repeater-delete type = "button" class = "repeater-remove-btn">-</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type = "button" data-repeater-create value = "Add" class = "repeater-add-btn">+</button>
+                                        </div>
+                                    </div>
+            
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <a class="btn btn-primary py-3 px-5" href="post-job-opening.html">Submit Helping Services</a>
+        </div>
+        <!-- Jobs End -->
+        
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">PamilyaHelper</a>, All Rights Reserved. 
+							
+							<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+							Designed and <a class="border-bottom" href="">Coded By PamilyaHelper Dev Team</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- jquery cdn -->
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+    <!-- jquery repeater cdn -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.js" integrity="sha512-bZAXvpVfp1+9AUHQzekEZaXclsgSlAeEnMJ6LfFAvjqYUVZfcuVXeQoN5LhD7Uw0Jy4NCY9q3kbdEXbwhZUmUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- custom js -->
+    <script src = "js/post-job-forms.js"></script>
+</body>
+
+</html>

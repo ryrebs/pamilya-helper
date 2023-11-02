@@ -8,8 +8,61 @@
     <!-- add icon link -->
     <link rel = "icon" href = "img/PamilyaHelperLogo.png" type = "image/x-icon">
     <link rel="stylesheet" href="css/SignInSignUp.css" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- box icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- ===== Link Swiper's CSS ===== -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+
+    <!-- ===== Fontawesome CDN Link ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
   </head>
   <body>
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+      <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+          <h1 class="m-0 text-primary">PamilyaHelper</h1>
+      </a>
+      <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav ms-auto p-4 p-lg-0">
+              <a href="index.html" class="nav-item nav-link active">Home</a>
+              <a href="about.html" class="nav-item nav-link">About</a>
+              <a href="job-list.html" class="nav-item nav-link">Job List</a>
+              <a href="helpers.html" class="nav-item nav-link">Helpers</a>
+              <a href="contact.html" class="nav-item nav-link">Contact</a>
+          </div>
+          <a href="SignInSignUp.html" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Login/SignUp</a>
+      </div>
+  </nav>
+  <!-- Navbar End -->
 
     <main>
       <div class="box">
@@ -52,9 +105,6 @@
 
                 <input type="submit" value="Log In" class="sign-btn" />
 
-                <p class="text">
-                  <a href="#">Forgot your password?</a>
-                </p>
               </div>
             </form>
 
@@ -105,11 +155,6 @@
 
                 <input type="submit" value="Sign Up" class="sign-btn" />
 
-                <p class="text">
-                  By signing up, I agree to the
-                  <a href="#">Terms of Services</a> and
-                  <a href="#">Privacy Policy</a>
-                </p>
               </div>
             </form>
           </div>
