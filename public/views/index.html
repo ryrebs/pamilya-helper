@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>PamilyaHelper - Your Household Help Hub</title>
+    <!-- add icon link -->
+    <link rel = "icon" href = "img/PamilyaHelperLogo.png" type = "image/x-icon">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- box icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Libraries Stylesheet -->
+    <link href="static/lib/animate/animate.min.css" rel="stylesheet">
+    <link href="static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="static/css/style.css" rel="stylesheet">
+
+    <!-- ===== Link Swiper's CSS ===== -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+
+    <!-- ===== Fontawesome CDN Link ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+                <h1 class="m-0 text-primary">PamilyaHelper</h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="index.html" class="nav-item nav-link active">Home</a>
+                    <a href="about.html" class="nav-item nav-link">About</a>
+                    <a href="job-list.html" class="nav-item nav-link">Job List</a>
+                    <a href="helpers.html" class="nav-item nav-link">Helpers</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="SignInSignUp.html" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Login/SignUp</a>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+
+        <!-- Carousel Start -->
+        <div class="container-fluid p-0">
+            <div class="owl-carousel header-carousel position-relative">
+                <div class="owl-carousel-item position-relative">
+                    <img class="img-fluid" src="static/img/carousel2.jpg" alt="">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, .5);">
+                        <div class="container">
+                            <div class="row justify-content-start">
+                                <div class="col-10 col-lg-8">
+                                    <h1 class="display-3 text-white animated slideInDown mb-4">Chores Made Simple</h1>
+                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">Connecting Filipino households with reliable help for everyday chores. Welcome to PamilyaHelper, your go-to platform for all your household help needs.</p>
+                                    <a href="job-list.html" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Search A Job</a>
+                                    <a href="helpers.html" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find A Helper</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="owl-carousel-item position-relative">
+                    <img class="img-fluid" src="static/img/carousel1.jpg" alt="">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, .5);">
+                        <div class="container">
+                            <div class="row justify-content-start">
+                                <div class="col-10 col-lg-8">
+                                    <h1 class="display-3 text-white animated slideInDown mb-4">Your Chores, Our Help.</h1>
+                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">Find reliable household helpers and job opportunities near you! PamilyaHelper is your one-stop solution for finding reliable household help and job opportunities.</p>
+                                    <a href="post-job-opening.html" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a Job Opening</a>
+                                    <a href="post-helping-services.html" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Post Helping Services</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel End -->
+
+
+        <!-- Category Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Categories</h1>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bxs-home text-primary mb-4"></i>
+                            <h6 class="mb-3">House Cleaning</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bx-cut text-primary mb-4"></i>
+                            <h6 class="mb-3">Lawn Care and Gardening</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bx-scatter-chart text-primary mb-4"></i>
+                            <h6 class="mb-3">Laundry and Ironing</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bxs-baby-carriage text-primary mb-4"></i>
+                            <h6 class="mb-3">Babysitting and Childcare</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bxs-brush text-primary mb-4"></i>
+                            <h6 class="mb-3">Gutter Cleaning and Maintenance</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bx-handicap text-primary mb-4"></i>
+                            <h6 class="mb-3">Elderly Care</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bxs-cabinet text-primary mb-4"></i>
+                            <h6 class="mb-3">Organizing and Decluttering</h6>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                        <a class="cat-item rounded p-4">
+                            <i class="fa fa-3x bx bxs-paint-roll text-primary mb-4"></i>
+                            <h6 class="mb-3">Home Repairs and Renovation</h6>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Category End -->
+
+
+        <!-- About Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="row g-0 about-bg rounded overflow-hidden">
+                            <div class="col-6 text-start">
+                                <img class="img-fluid w-100" src="static/img/about1.jpg">
+                            </div>
+                            <div class="col-6 text-start">
+                                <img class="img-fluid" src="static/img/about2.jpeg" style="width: 85%; margin-top: 15%;">
+                            </div>
+                            <div class="col-6 text-end">
+                                <img class="img-fluid" src="static/img/about3.jpg" style="width: 85%;">
+                            </div>
+                            <div class="col-6 text-end">
+                                <img class="img-fluid w-100" src="static/img/about4.jpg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                        <h1 class="mb-4">Connecting Filipino Homes with Reliable Helpers</h1>
+                        <p class="mb-4">Whether you're a family looking for trusted helpers or a skilled individual seeking job opportunities, PamilyaHelper is here to bridge the gap. Join our community today and experience the convenience of hassle-free home services.</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Secure Transactions</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Effortless Job Posting</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Verified Workers</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Affordable Assistance</p>                
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+
+        <!-- Jobs Start -->
+        <div class="container-xxl py-5" id="jobs">
+            <div class="container">
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Available Jobs</h1>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill" href="#tab-1">
+                                <h6 class="mt-n1 mb-0">Featured</h6>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane fade show p-0 active">
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person1.png" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2">Weekly House Cleaning Needed</h5>
+                                            <p>Seeking a diligent house cleaner for a three-bedroom home. Weekly commitment required.</p>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Quezon City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P20,000 - P25,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <a class="btn btn-primary" href="#modalbox1">Apply Now</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: Sept 28, 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person2.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2">Part-Time Babysitter for Toddler</h5>
+                                            <p>Looking for a caring babysitter to watch our 2-year-old during weekdays.</p>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Taguig City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P15,000 - P18,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <a class="btn btn-primary" href="#modalbox2">Apply Now</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: Sept 30, 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person3.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2">Lawn Mowing and Maintenance</h5>
+                                            <p>Need someone to mow the lawn and trim hedges twice a month.</p>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Antipolo</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P10,000 - P14,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <a class="btn btn-primary" href="#modalbox3">Apply Now</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: Oct 11, 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person4.png" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2">Laundry Helper Needed</h5>
+                                            <p>Looking for someone who can assist with regular laundry tasks on a weekly basis.</p>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Tagbilaran City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P7,000 - P9,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <a class="btn btn-primary" href="#modalbox4">Apply Now</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: Oct 15, 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person5.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2">Companion for Senior Citizen</h5>
+                                            <p>Seeking a compassionate caregiver to spend time with our elderly family member on weekends.</p>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Bacolod</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P25,000 - P30,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            <a class="btn btn-primary" href="#modalbox5">Apply Now</a>
+                                        </div>
+                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: Oct 19, 2023</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="btn btn-primary py-3 px-5" href="job-list.html">Browse More Jobs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Jobs End -->
+
+
+        <!-- Job Details Start -->
+        <div id="modalbox1" class="modal">
+            <div class="modalcontent">
+                <div class="Job-1">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person1.png" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Weekly House Cleaning Needed</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Quezon City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P20,000 - P25,000</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">Job description</h4>
+                                        <p>We are in search of a dedicated and reliable individual to provide weekly house cleaning services for our three-bedroom home. This position requires a consistent weekly commitment to maintain a clean and organized living environment. As the house cleaner, you will play a crucial role in ensuring the comfort and tidiness of our home.</p>
+                                        <h4 class="mb-3">Responsibility</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Perform regular cleaning tasks such as dusting, vacuuming, sweeping, and mopping floors.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Clean and sanitize kitchen and bathroom surfaces, including sinks, countertops, and appliances.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Make beds and change linens.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Empty trash bins and replace liners.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Organize and tidy up living spaces, including picking up toys and clutter.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Notify the homeowner of any cleaning supplies that need replenishing.</li>
+                                    </ul>
+                                        <h4 class="mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Previous experience in house cleaning preferred but not mandatory.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Attention to detail and thoroughness in cleaning practices.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ability to maintain confidentiality and respect for the homeowner's privacy.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Strong communication skills and the ability to follow instructions.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable transportation to and from the job location.</li>
+                                        </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Full Name: Juanito Cruz</p>
+                                        <p class="m-0">Email: juanitocruz@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09172528651</p>
+                                    </div>
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Employer Detail</h4>
+                                        <p class="m-0">I am a busy professional with two children. My demanding work schedule and family commitments leave me with limited time for household chores. I am seeking a dependable house cleaner to help maintain a clean and organized home environment, allowing me to focus on my career and spending quality time with my kids. Your assistance will be greatly appreciated in ensuring a comfortable and welcoming living space for my family.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#jobs" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalbox2" class="modal">
+            <div class="modalcontent">
+                <div class="Job-2">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person2.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Part-Time Babysitter for Toddler</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Taguig City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part-Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P15,000 - P18,000</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">Job description</h4>
+                                        <p>We are currently seeking a caring and responsible babysitter to provide attentive care for our energetic 2-year-old during weekdays. As a part-time babysitter, your primary focus will be to ensure the safety and well-being of our child while engaging in fun and educational activities.</p>
+                                        <h4 class="mb-3">Responsibility</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Supervise and care for the toddler, ensuring their safety at all times.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Plan and engage in age-appropriate activities, such as playtime, reading, and crafts.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Prepare and serve meals and snacks for the child.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Follow the child's daily routine, including naps and mealtimes.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Maintain a clean and organized play area.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Communicate with the parents regarding the child's daily activities and any concerns.</li>
+                                    </ul>
+                                        <h4 class="mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Previous experience in babysitting or child care is preferred.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>A genuine love for children and a nurturing personality.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Basic knowledge of child development and safety.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>First aid and CPR certification is a plus.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Excellent communication skills and the ability to connect with young children.</li>
+                                        </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Full Name: Maria Santos</p>
+                                        <p class="m-0">Email: mariasantos@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09215453276</p>
+                                    </div>
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Employer Detail</h4>
+                                        <p class="m-0">We are a family with a busy schedule, and we need a dependable and caring babysitter to ensure our child is in good hands while we're at work. We value a safe and stimulating environment for our toddler's growth and development, and we're looking for someone who can provide that while we're away. Your assistance will be greatly appreciated in ensuring a positive and loving atmosphere for our child during our absence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#jobs" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalbox3" class="modal">
+            <div class="modalcontent">
+                <div class="Job-3">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person3.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Lawn Mowing and Maintenance</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Antipolo</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P10,000 - P14,000</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">Job description</h4>
+                                        <p>We are seeking a dependable and skilled worker to perform lawn mowing and hedge maintenance duties at our property in Antipolo. This role involves regular lawn mowing to keep the grass neatly trimmed and maintaining hedges for a well-manicured appearance. The position requires attention to detail and a commitment to ensuring the outdoor areas of our property look their best.</p>
+                                        <h4 class="mb-3">Responsibility</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Perform lawn mowing using a lawnmower or similar equipment.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Trim hedges and shrubs to maintain a neat and tidy appearance.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Keep the outdoor area free from debris and clutter.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ensure proper disposal of lawn clippings and trimmings.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Maintain gardening tools and equipment.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Notify the homeowner of any equipment or supplies that need replenishing.</li>
+                                    </ul>
+                                        <h4 class="mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Previous experience in lawn mowing and hedge trimming is preferred.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ability to operate lawn mowing equipment and gardening tools.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Attention to detail and a commitment to maintaining a well-kept outdoor space.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Strong communication skills and the ability to follow instructions.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable transportation to and from the job location.</li>
+                                        </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Full Name: Luningning Reyes</p>
+                                        <p class="m-0">Email: luningningreyes@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09183829456</p>
+                                    </div>
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Employer Detail</h4>
+                                        <p class="m-0">I am a homeowner in Antipolo with a busy schedule, and I am looking for a reliable individual to help maintain the appearance of my outdoor areas. Your assistance in keeping the lawn well-mowed and hedges neatly trimmed will greatly enhance the overall look and feel of my property. Your dedication to this role is appreciated in ensuring a visually pleasing and inviting outdoor environment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#jobs" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalbox4" class="modal">
+            <div class="modalcontent">
+                <div class="Job-4">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person4.png" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Laundry Helper Needed</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Tagbilaran City</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P7,000 - P9,000</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">Job description</h4>
+                                        <p>We are currently seeking a Laundry Helper to provide assistance with regular laundry tasks on a weekly basis. The ideal candidate will be responsible for ensuring that our laundry is well-maintained and organized. This part-time position is located in Tagbilaran City.</p>
+                                        <h4 class="mb-3">Responsibility</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Sort, wash, dry, fold, and iron clothing and linens following care instructions.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Operate washing machines, dryers, and other laundry equipment.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Inspect clothing for stains or damage and make necessary repairs or recommendations.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Maintain a clean and organized laundry area.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Keep track of inventory and report any shortages of laundry supplies.</li>
+                                    </ul>
+                                        <h4 class="mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Attention to detail in handling clothing and linens.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ability to follow care instructions and ensure proper garment care.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Attention to detail and a passion for keeping clothes clean and organized.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ability to work on a consistent weekly schedule.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable transportation to and from the job location.</li>
+                                        </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Full Name: Francisco Villanueva</p>
+                                        <p class="m-0">Email: franciscovillanueva@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09173177469</p>
+                                    </div>
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Employer Detail</h4>
+                                        <p class="m-0">I am a working professional with a busy schedule and a family to take care of. To maintain a clean and organized household, I am looking for a Laundry Helper who can help me with the weekly laundry tasks. Your assistance will be greatly appreciated in ensuring that our clothes are clean, well-organized, and ready to wear. This role will allow me to focus on my work and spend quality time with my family. If you're up for the task, please get in touch.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#jobs" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalbox5" class="modal">
+            <div class="modalcontent">
+                <div class="Job-1">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/person5.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Companion for Senior Citizen</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Bacolod</span>
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P25,000 - P30,000</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">Job description</h4>
+                                        <p>We are in search of a compassionate and caring individual to be a companion for our senior family member on weekends. The ideal candidate should be patient, empathetic, and dedicated to providing companionship and support to our beloved elderly family member.</p>
+                                        <h4 class="mb-3">Responsibility</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Engage in conversations and provide companionship to our senior family member.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Accompany the senior on short walks or outings to promote their well-being.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Assist with basic daily activities, such as meal preparation and medication reminders.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Offer emotional support and a caring presence to ensure the senior's comfort.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Report any changes in the senior's condition or needs to the family.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Maintain a warm and friendly atmosphere during your time with the senior.</li>
+                                    </ul>
+                                        <h4 class="mb-3">Qualifications</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Compassionate and patient personality.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Prior experience in caregiving or companionship is a plus.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Excellent communication skills and the ability to provide emotional support.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Empathy and understanding of the needs of senior citizens.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable and punctual, with a commitment to providing companionship and care.</li>
+                                        </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Full Name: Benito Rodriguez</p>
+                                        <p class="m-0">Email: benitorodriguez@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09215471326</p>
+                                    </div>
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Employer Detail</h4>
+                                        <p class="m-0">I am a concerned family member who wants the best care and companionship for our beloved senior citizen. We understand the importance of providing them with dedicated and compassionate support, especially on weekends when family members may be busy with other responsibilities. Your role as a companion will be greatly valued, and your efforts in enhancing the senior's quality of life will be highly appreciated.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#jobs" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <!-- Job Details End -->
+
+        <!-- Helpers Section Start -->
+        <h1 class="text-center mb-5" id="helpers">Available Helpers</h1>  
+        <section> 
+            <div class="swiper mySwiper container">
+              <div class="swiper-wrapper content">
+        
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                     <img src="static/img/helper1.jpeg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Isabel Santos</span>
+                      <span class="profession">House Cleaner</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper1">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                      <img src="static/img/helper2.jpg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Juanito Reyes</span>
+                      <span class="profession">Gardener</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper2">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                   <img src="static/img/helper3.jpeg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Andrea Cruz</span>
+                      <span class="profession">Laundry Attendant</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper3">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                    <img src="static/img/helper4.jpeg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Manuel dela Rosa</span>
+                      <span class="profession">Gutter Maintenance Specialist</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper4">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                      <img src="static/img/helper5.jpg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Luningning Garcia</span>
+                      <span class="profession">Babysitter</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper5">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                    <img src="static/img/helper6.jpg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Rodrigo Mendoza</span>
+                      <span class="profession">Elderly Caregiver</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper6">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                     <img src="static/img/helper7.jpg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Luzviminda Fernandez</span>
+                      <span class="profession">Professional Organizer</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper7">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                   <img src="static/img/helper8.jpeg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Isidro Ramirez</span>
+                      <span class="profession">Home Repair Specialist</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper8">About Me</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide card">
+                  <div class="card-content">
+                    <div class="image">
+                    <img src="static/img/helper9.jpeg" alt=""> 
+                    </div>
+        
+                    <div class="name-profession">
+                      <span class="name">Soliman Torres</span>
+                      <span class="profession">Home Renovation Expert</span>
+                    </div>
+        
+                    <div class="button">
+                        <a class="btn btn-primary" href="#modalboxhelper9">About Me</a>
+                    </div>
+                  </div>
+                </div>
+        
+              </div>
+            </div>
+              
+        </section>
+
+        <div class="button-container">
+            <a class="btn btn-primary py-3 px-5" href="helpers.html">Browse More Helpers</a>
+        </div>
+        <!-- Helpers Section End -->
+
+        <!-- Helpers Details Start -->
+        <div id="modalboxhelper1" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-1">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper1.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Isabel Santos</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>House Cleaner</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Cebu City, Cebu</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>May 15, 1985</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Isabel Santos is a dedicated and reliable house cleaner with a warm and friendly personality. She takes pride in her work and is committed to providing the best service to her clients. With years of experience in the field, she understands the importance of a clean and organized home and is passionate about helping others achieve it.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable and dedicated house cleaner with 5 years of experience.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Meticulous in cleaning and organizing homes for a comfortable living environment.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Skilled in using eco-friendly cleaning products for a safe and healthy atmosphere.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Punctual and trustworthy, always respecting the privacy and belongings of clients.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Excellent communication skills, able to understand and fulfill specific cleaning needs.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Can assist with laundry, dishwashing, and other household chores.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Flexible with working hours and available for both one-time and recurring cleaning services.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Affordable rates for quality cleaning services.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: isabelcleaning85@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09123456789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper2" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-2">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper2.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Juanito Reyes</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Gardener</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Davao City, Davao del Sur</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>July 15, 1985</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Juanito Reyes is a dedicated and experienced gardener hailing from the beautiful city of Davao in the Philippines. With a passion for nurturing green spaces and creating lush gardens, Juanito takes pride in his work and is known for his green thumb and expertise.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Expertise in garden design and landscaping</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Lawn care and maintenance</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Planting and maintenance of various flowers, shrubs, and trees</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Lawn care, including mowing, fertilizing, and pest control</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Irrigation system installation and management</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Expertise in organic gardening practices</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Creative hardscaping with pathways, patios, and garden structures</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Seasonal garden cleanup and rejuvenation</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Consultation on plant selection and garden aesthetics</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Pest control and disease management for plants</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: juanitogreens@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09171234567</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper3" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-3">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper3.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Andrea Cruz</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Laundry Attendant</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Cebu City, Cebu, Philippines</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>February 15, 1990</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Andrea Cruz is a dedicated Laundry Attendant with a passion for ensuring that every garment is treated with the utmost care. With a warm and friendly personality, Andrea goes the extra mile to provide exceptional laundry services to her clients. She takes pride in her work and aims to make life easier for those seeking laundry assistance.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Expert laundry services, from washing to folding and ironing.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Stain removal expertise for even the toughest stains.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Careful handling of delicate fabrics.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Quick and efficient turnaround time.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Competitive pricing and package deals.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Environmentally friendly laundry practices.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Exceptional customer service and a friendly demeanor.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Availability for both regular laundry and one-time special requests.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: andrea.cruz.laundry@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09153286789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper4" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-4">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper4.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Manuel dela Rosa</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Gutter Maintenance Specialist</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Dumaguete City, Negros Oriental, Philippines</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>October 15, 1985</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Manuel dela Rosa is a dedicated Gutter Maintenance Specialist with a passion for keeping homes in Dumaguete City and its surroundings in top-notch condition. With years of experience and a commitment to quality service, Manuel is your go-to professional for all your gutter maintenance needs.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Gutter cleaning and maintenance services to prevent clogs and damage.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Inspection and repair of damaged gutters, downspouts, and drainage systems.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Installation of gutter guards to prevent debris buildup.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Expertise in identifying and resolving gutter-related issues promptly.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Reliable and efficient service with attention to detail.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Cost-effective solutions to extend the lifespan of your gutters.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Recommendations for gutter improvements and upgrades.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Friendly and customer-focused approach to ensure your satisfaction.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: manuel.delarosa@gmail.com</p>
+                                        <p class="m-0">Contact Number: 0917523876</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper5" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-5">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper5.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Luningning Garcia</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Babysitter</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Muntinlupa</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>July 31, 1976</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Luningning Garcia is a dedicated and experienced babysitter based in Davao City, Philippines. She is known for her caring and responsible nature, making her an excellent choice for parents looking for reliable childcare support.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Experienced in caring for children of various age groups, from infants to toddlers.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Skilled in creating a safe and nurturing environment for kids.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Ability to engage children in educational and fun activities.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Proficient in preparing and serving nutritious meals.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Strong communication skills to keep parents informed about their child's well-being.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Willingness to help with light housekeeping tasks related to the children.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Flexible scheduling to accommodate parents' needs.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>A warm and friendly personality that helps children feel comfortable and secure.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: luningning.garcia@gmail.com</p>
+                                        <p class="m-0">Contact Number: 0909523876</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper6" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-6">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper6.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Rodrigo Mendoza</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Elderly Caregiver</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Dumaguete City, Negros Oriental</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>September 12, 1975</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Rodrigo is a dedicated and compassionate elderly caregiver with over 10 years of experience in providing care and support to senior citizens. He is known for his patience, empathy, and strong sense of responsibility. Rodrigo is committed to improving the quality of life for the elderly individuals he works with.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Personalized care tailored to the unique needs and preferences of each senior.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Assistance with daily activities such as bathing, dressing, and grooming.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Medication management and regular health monitoring.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Companionship and engaging in meaningful conversations.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Meal planning, preparation, and feeding assistance.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Mobility support and exercises to maintain strength and flexibility.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Light housekeeping and maintaining a clean, organized living space.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Transportation for medical appointments or outings.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: rodrigo.caregiver@gmail.com</p>
+                                        <p class="m-0">Contact Number: 0915523876</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper7" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-7">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper7.jpg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Luzviminda Fernandez</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Professional Organizer</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Cagayan de Oro City, Misamis Oriental</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>August 25, 1970</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Luzviminda Fernandez is a highly organized and dedicated professional organizer based in Cagayan de Oro City, Misamis Oriental. With a passion for decluttering and creating efficient spaces, she helps individuals and businesses regain control over their surroundings and simplify their lives.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Tailored solutions to declutter and organize every room in your home.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Utilizing space-saving techniques to make the most of your living areas. </li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Creating a well-organized and visually pleasing wardrobe.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Sorting and filing important documents for easy access.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Helping you downsize and organize when moving to a smaller space.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Tips and techniques to improve your time management skills.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Organizing digital files and documents on your devices.</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Guiding you through the process of letting go of items that no longer serve you.</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: luzviminda.fernandez@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09123456789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper8" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-8">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper8.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Isidro Ramirez</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Home Repair Specialist</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Bacolod City, Negros Occidental</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>January 18, 1963</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Isidro Ramirez is a highly skilled Home Repair Specialist based in Bacolod City, Negros Occidental, Philippines. With over 10 years of experience, he is dedicated to providing top-notch home repair services to his clients. Isidro is known for his attention to detail, punctuality, and commitment to ensuring that homes are safe, functional, and beautiful.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>General home repairs and maintenance</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Plumbing repairs and installations </li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Electrical work and installations</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Carpentry and woodworking</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Painting and wall covering</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Tile and flooring installations</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Roofing and gutter repairs</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Appliance repair and installation</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Outdoor and indoor lighting solutions</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Custom furniture and fixture construction</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Drywall repair and installation</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Door and window repairs and replacements</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Kitchen and bathroom remodeling</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Attic and basement finishing</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Deck and patio construction and repair</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Fence installation and repair</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: isidro.repairman@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09123456789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <div id="modalboxhelper9" class="modal">
+            <div class="modalcontent">
+                <div class="Helper-9">
+                    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="container">
+                            <div class="row gy-5 gx-4">
+                                <div class="col-lg-8">
+                                    <div class="d-flex align-items-center mb-5">
+                                        <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper9.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h3 class="mb-3">Soliman Torres</h3>
+                                            <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>Home Renovation Expert</span>
+                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Davao City, Davao del Sur</span>
+                                            <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>November 13, 1957</span>
+                                        </div>
+                                    </div>
+            
+                                    <div class="mb-5">
+                                        <h4 class="mb-3">About the Helper</h4>
+                                        <p>Soliman Torres is a seasoned Home Renovation Expert with over 15 years of experience in the construction and renovation industry. He is known for his meticulous attention to detail, creative design ideas, and a strong commitment to delivering high-quality work. Soliman takes pride in transforming houses into beautiful and functional living spaces, ensuring customer satisfaction.</p>
+                                        <h4 class="mb-3">What I can offer</h4>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Comprehensive home renovation services</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Expertise in kitchen and bathroom remodeling</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Customized interior design solutions</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>High-quality flooring and tiling installations</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Creative storage and space optimization</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Energy-efficient and eco-friendly renovation options</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Budget-friendly remodeling solutions</li>
+                                            <li><i class="fa fa-angle-right text-primary me-2"></i>Timely project completion with minimal disruption</li>
+                                    </ul>
+                                    </div>
+                    
+                                </div>
+                    
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                                        <h4 class="mb-4">Contact Information</h4>
+                                        <p class="m-0">Email: soliman.torres@gmail.com</p>
+                                        <p class="m-0">Contact Number: 09094346789</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#helpers" class="modalclose">&times;</a>
+            </div>
+        </div>
+
+        <!-- Helpers Details End -->
+
+        <!-- Testimonial Start -->
+        <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container">
+                <h1 class="text-center mb-5">Client Testimonies</h1>
+                <div class="owl-carousel testimonial-carousel">
+                    <div class="testimonial-item bg-light rounded p-4">
+                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p>PamilyaHelper has been a lifesaver for me. As a busy mom, finding a reliable babysitter and house cleaner has never been easier. I'm grateful for this platform!</p>
+                        <div class="d-flex align-items-center">
+                            <img class="img-fluid flex-shrink-0 rounded" src="static/img/testimonial1.webp" style="width: 50px; height: 50px;">
+                            <div class="ps-3">
+                                <h5 class="mb-1">Maria Santos</h5>
+                                <small>Single Parent</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item bg-light rounded p-4">
+                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p>I started earning extra income through PamilyaHelper by offering my gardening services. It's a great way to connect with people in my community and make a difference.</p>
+                        <div class="d-flex align-items-center">
+                            <img class="img-fluid flex-shrink-0 rounded" src="static/img/testimonial2.jpeg" style="width: 50px; height: 50px;">
+                            <div class="ps-3">
+                                <h5 class="mb-1">Juan Dela Cruz</h5>
+                                <small>Gardener</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item bg-light rounded p-4">
+                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p>I was skeptical at first, but PamilyaHelper helped me find a part-time caregiver for my elderly mother. The process was smooth, and I found someone truly caring and dependable.</p>
+                        <div class="d-flex align-items-center">
+                            <img class="img-fluid flex-shrink-0 rounded" src="static/img/testimonial3.jpg" style="width: 50px; height: 50px;">
+                            <div class="ps-3">
+                                <h5 class="mb-1">Lorna Reyes</h5>
+                                <small>Teacher</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item bg-light rounded p-4">
+                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p>I recently started offering handyman services through PamilyaHelper, and the response has been overwhelming. The platform is easy to use, and I've been able to connect with clients looking for my skills.</p>
+                        <div class="d-flex align-items-center">
+                            <img class="img-fluid flex-shrink-0 rounded" src="static/img/testimonial4.webp" style="width: 50px; height: 50px;">
+                            <div class="ps-3">
+                                <h5 class="mb-1">Eric Cruz</h5>
+                                <small>Carpenter</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Testimonial End -->
+        
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">PamilyaHelper</a>, All Rights Reserved. 
+							Designed and <a class="border-bottom" >Coded By PamilyaHelper Dev Team</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/lib/wow/wow.min.js"></script>
+    <script src="static/lib/easing/easing.min.js"></script>
+    <script src="static/lib/waypoints/waypoints.min.js"></script>
+    <script src="static/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+
+    <!-- Template Javascript -->
+    <script src="static/js/main.js"></script>
+</body>
+
+</html>
