@@ -21,7 +21,7 @@ func main() {
 	e := echo.New()
 	e.Static("static", "public/static")
 	e.Renderer = &Template{
-		templates: template.Must(template.ParseGlob("public/views/*.html")),
+		templates: template.Must(template.ParseGlob("public/templates/*.html")),
 	}
 	e.GET("/", routes.Index)
 
