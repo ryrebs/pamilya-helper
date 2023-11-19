@@ -3,9 +3,10 @@ package main
 import (
 	"html/template"
 	"io"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
+
+	"pamilyahelper/webapp/routes"
 )
 
 type Template struct {
@@ -16,16 +17,16 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-func Index(c echo.Context) error {
-	return c.Render(http.StatusOK, "index.html", nil)
-}
-
 func main() {
 	e := echo.New()
 	e.Static("static", "public/static")
 	e.Renderer = &Template{
 		templates: template.Must(template.ParseGlob("public/views/*.html")),
 	}
-	e.GET("/", Index)
+	e.GET("/", routes.Index)
+
+	users := e.Group("users")
+	users.Add("GET", "/signin", routes.SignIn)
+
 	e.Logger.Fatal(e.Start("127.0.0.1:5000"))
 }
