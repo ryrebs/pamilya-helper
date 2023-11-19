@@ -1,0 +1,11 @@
+{
+  "engines": {
+    "node": "v20.9.0"
+  },
+  "dependencies": {
+    "cypress": "^13.5.1"
+  },
+  "scripts": {
+    "cypress:open": "cypress open"
+  }
+}
