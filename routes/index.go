@@ -9,3 +9,7 @@ import (
 func Index(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", nil)
 }
+
+func About(c echo.Context) error {
+	return c.Render(http.StatusOK, "about.html", nil)
+}

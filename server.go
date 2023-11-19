@@ -24,6 +24,7 @@ func main() {
 		templates: template.Must(template.ParseGlob("public/templates/*.html")),
 	}
 	e.GET("/", routes.Index)
+	e.GET("/about", routes.About)
 
 	users := e.Group("users")
 	users.Add("GET", "/signin", routes.SignIn)
