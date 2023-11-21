@@ -2,7 +2,10 @@ module pamilyahelper/webapp
 
 go 1.21.4
 
-require github.com/labstack/echo/v4 v4.11.3
+require (
+	github.com/labstack/echo/v4 v4.11.3
+	github.com/mattn/go-sqlite3 v1.14.18
+)
 
 require (
 	github.com/labstack/gommon v0.4.0 // indirect
@@ -15,3 +18,5 @@ require (
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 )
+
+replace pamilyahelper/webapp/server => ./server
