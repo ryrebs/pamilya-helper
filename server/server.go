@@ -11,6 +11,9 @@ import (
 
 	"pamilyahelper/webapp/server/db"
 	"pamilyahelper/webapp/server/routes"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 )
 
 type Template struct {
@@ -38,6 +41,7 @@ func Serve() {
 
 		// Init echo app
 		e := echo.New()
+		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
 		// Setup static files and templates
 		e.Static("static", "public/static")

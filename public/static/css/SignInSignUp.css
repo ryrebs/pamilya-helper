@@ -330,6 +330,17 @@ main.sign-up-mode .carousel {
   border-radius: 1rem;
 }
 
+.sign-in__msg--center {
+  text-align: center;
+  width: 100%;
+}
+
+.sign-in__msg--center span{
+  font-size: small;
+  color: red;
+
+}
+
 @media (max-width: 850px) {
   .box {
     height: auto;

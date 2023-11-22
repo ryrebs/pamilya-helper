@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const initSqlStmt = `
@@ -14,10 +15,14 @@ CREATE TABLE IF NOT EXISTS account (
 	id INTEGER NOT NULL PRIMARY KEY,
 	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 	name TEXT,
-	email TEXT,
-	password TEXT
+	email TEXT UNIQUE,
+	password TEXT,
+	birthdate DATE,
+	address TEXT,
+	id_type TEXT,
+	is_verified INTEGER,
 	is_admin INTEGER
-)
+);
 `
 
 const DefaultPamilyaHelperDBName = "pamilyahelper.db"
@@ -60,13 +65,55 @@ func InitDB() *sql.DB {
 		if err != nil {
 			log.Printf("%q: %s\n", err, initSqlStmt)
 			return nil
+		} else {
+			log.Printf("Successfully initialized database with queries:\n%s", initSqlStmt)
 		}
 	}
 
 	return db
 }
 
+func CreateUserPassword(password string) string {
+	pwd := []byte(password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(hashedPassword)
+}
+
+func IsPWDvalid(password, hashedStr string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedStr), []byte(password)); err == nil {
+		return true
+	}
+	return false
+}
+
+func createAdmin(db *sql.DB) {
+	fixtureAdminStmt := `
+	INSERT INTO account(name, email, password, birthdate, is_verified, is_admin)
+	 	VALUES('admin', 'admin@pamilyahelper.com', ?, '1992-01-01', 1, 1)
+	`
+
+	if db != nil {
+		stmt, err := db.Prepare(fixtureAdminStmt)
+		if err == nil {
+			_, err = stmt.Exec(CreateUserPassword("admin"))
+			if err == nil {
+				log.Println("Created 'admin' user with 'admin' as password...")
+				return
+			}
+			log.Printf("%q: %s\n", err, fixtureAdminStmt)
+		}
+		log.Printf("%q: %s\n", err, fixtureAdminStmt)
+	}
+}
+
 func LoadFixtures() {
+	db := GetDBConn(DefaultPamilyaHelperDBName)
+	createAdmin(db)
 
 }
 
