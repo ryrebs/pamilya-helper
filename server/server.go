@@ -55,9 +55,12 @@ func Serve() {
 		// Routes
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
+		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectIfSigned)
 
+		// Routes - authenticated users
 		users := e.Group("users")
-		users.Match([]string{"GET", "POST"}, "/signin", routes.SignIn)
+		users.GET("/profile", routes.Profile)
+		users.POST("/signout", routes.SignOut)
 
 		e.Logger.Fatal(e.Start("127.0.0.1:5000"))
 	} else {
