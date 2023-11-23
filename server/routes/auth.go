@@ -13,11 +13,23 @@ import (
 
 var validate *validator.Validate
 
-func RedirectIfSigned(next echo.HandlerFunc) echo.HandlerFunc {
+// Redirects the user to profile if user is signed in.
+func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
 		if sess != nil && sess.Values["user"] != nil {
 			c.Redirect(http.StatusSeeOther, "/users/profile")
+		}
+		return next(c)
+	}
+}
+
+// Redirects the user to signin if user is not signin in.
+func RedirectToSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sess, _ := session.Get("auth-pamilyahelper-session", c)
+		if sess != nil && sess.Values["user"] == nil {
+			c.Redirect(http.StatusSeeOther, "/signin")
 		}
 		return next(c)
 	}
@@ -115,4 +127,11 @@ func SignUp(c echo.Context) error {
 
 	// Redirect Index
 	return c.Redirect(http.StatusSeeOther, "/")
+}
+
+func AccountVerification(c echo.Context) error {
+	// address
+	// birthday
+	// upload id image
+	return nil
 }

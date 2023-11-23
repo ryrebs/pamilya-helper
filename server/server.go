@@ -55,11 +55,11 @@ func Serve() {
 		// Routes
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
-		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectIfSigned)
-		e.POST("/signup", routes.SignUp, routes.RedirectIfSigned)
+		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
+		e.POST("/signup", routes.SignUp)
 
 		// Routes - authenticated users
-		users := e.Group("users")
+		users := e.Group("users", routes.RedirectToSignInMiddleware)
 		users.GET("/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 
