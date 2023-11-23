@@ -38,8 +38,6 @@ func main() {
 		db.InitDB()
 	case "loadfixtures":
 		db.LoadFixtures()
-	case "createadmin":
-		db.CreateDefaultAdmin()
 	case "serve":
 		server.Serve()
 	case "help":

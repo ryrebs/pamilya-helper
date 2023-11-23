@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"os"
 
@@ -91,32 +92,40 @@ func IsPWDvalid(password, hashedStr string) bool {
 	return false
 }
 
-func createAdmin(db *sql.DB) {
+func InsertUser(name, email, password string, is_verified, is_admin bool, db *sql.DB) error {
 	fixtureAdminStmt := `
-	INSERT INTO account(name, email, password, birthdate, is_verified, is_admin)
-	 	VALUES('admin', 'admin@pamilyahelper.com', ?, '1992-01-01', 1, 1)
+		INSERT INTO account(name, email, password, is_verified, is_admin)
+		VALUES(?, ?, ?, ?, ?)
 	`
-
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
 		if err == nil {
-			_, err = stmt.Exec(CreateUserPassword("admin"))
+			_, err = stmt.Exec(name, email, CreateUserPassword(password), is_verified, is_admin)
 			if err == nil {
-				log.Println("Created 'admin' user with 'admin' as password...")
-				return
+				return nil
 			}
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
 		}
 		log.Printf("%q: %s\n", err, fixtureAdminStmt)
+		return err
 	}
+	return errors.New("no database connection found")
+}
+
+func createAdmin(db *sql.DB) error {
+	err := InsertUser("admin", "admin@admin.com", "admin1234", true, true, db)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
 
 func LoadFixtures() {
 	db := GetDBConn(DefaultPamilyaHelperDBName)
-	createAdmin(db)
-
-}
-
-func CreateDefaultAdmin() {
+	err := createAdmin(db)
+	if err == nil {
+		log.Println("Created initial 'admin' user with 'admin1234' as password...")
+	}
 
 }

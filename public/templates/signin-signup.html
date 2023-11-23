@@ -102,7 +102,12 @@
       <div class="box">
         <div class="inner-box">
           <div class="forms-wrap">
-            <form method="post" action="/signin" autocomplete="off" class="sign-in-form">
+            <form
+              method="post"
+              action="/signin"
+              autocomplete="off"
+              class="sign-in-form"
+            >
               <div class="logo">
                 <img src="/static/img/PamilyaHelperLogo.png" alt="easyclass" />
                 <h4>PamilyaHelper</h4>
@@ -111,7 +116,7 @@
               <div class="heading">
                 <h2>Welcome Back</h2>
                 <h6>Don't have an account?</h6>
-                <a href="#" class="toggle">Sign up</a>
+                <a class="toggle">Sign up</a>
               </div>
 
               <div class="actual-form">
@@ -121,7 +126,7 @@
                     type="email"
                     minlength="4"
                     class="input-field"
-                    autocomplete="off"
+                    autocomplete="email"
                     required
                   />
                   <label>Email</label>
@@ -131,9 +136,9 @@
                   <input
                     name="password"
                     type="password"
-                    minlength="4"
+                    minlength="8"
                     class="input-field"
-                    autocomplete="off"
+                    autocomplete="current-password"
                     required
                   />
                   <label>Password</label>
@@ -145,7 +150,12 @@
               </div>
             </form>
 
-            <form method="post" action="/users/signup" autocomplete="off" class="sign-up-form">
+            <form
+              method="post"
+              action="/signup"
+              autocomplete="off"
+              class="sign-up-form"
+            >
               <div class="logo">
                 <img src="/static/img/PamilyaHelperLogo.png" alt="easyclass" />
                 <h4>PamilyaHelper</h4>
@@ -163,17 +173,19 @@
                     type="text"
                     minlength="4"
                     class="input-field"
-                    autocomplete="off"
                     required
+                    name="name"
+                    autocomplete="name"
                   />
                   <label>Name</label>
                 </div>
 
                 <div class="input-wrap">
                   <input
+                    name="email"
                     type="email"
                     class="input-field"
-                    autocomplete="off"
+                    autocomplete="email"
                     required
                   />
                   <label>Email</label>
@@ -182,14 +194,14 @@
                 <div class="input-wrap">
                   <input
                     type="password"
-                    minlength="4"
+                    minlength="8"
                     class="input-field"
-                    autocomplete="off"
                     required
+                    autocomplete="new-password"
+                    name="password"
                   />
                   <label>Password</label>
                 </div>
-
                 <input type="submit" value="Sign Up" class="sign-btn" />
               </div>
             </form>
