@@ -18,7 +18,7 @@ func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
 		if sess != nil && sess.Values["user"] != nil {
-			c.Redirect(http.StatusSeeOther, "/users/profile")
+			return c.Redirect(http.StatusSeeOther, "/users/profile")
 		}
 		return next(c)
 	}
@@ -29,7 +29,7 @@ func RedirectToSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
 		if sess != nil && sess.Values["user"] == nil {
-			c.Redirect(http.StatusSeeOther, "/signin")
+			return c.Redirect(http.StatusSeeOther, "/signin")
 		}
 		return next(c)
 	}

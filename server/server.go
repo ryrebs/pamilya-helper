@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"pamilyahelper/webapp/server/db"
 	"pamilyahelper/webapp/server/routes"
@@ -41,6 +42,8 @@ func Serve() {
 
 		// Init echo app
 		e := echo.New()
+		e.Use(middleware.Logger())
+		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
 		// Setup static files and templates
@@ -60,7 +63,7 @@ func Serve() {
 
 		// Routes - authenticated users
 		users := e.Group("users", routes.RedirectToSignInMiddleware)
-		users.GET("/profile", routes.Profile)
+		users.Match([]string{"GET", "PATCH"}, "/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 
 		e.Logger.Fatal(e.Start("127.0.0.1:5000"))

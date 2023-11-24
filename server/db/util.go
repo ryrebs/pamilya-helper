@@ -20,9 +20,15 @@ CREATE TABLE IF NOT EXISTS account (
 	password TEXT,
 	birthdate DATE,
 	address TEXT,
-	id_type TEXT,
-	is_verified INTEGER,
-	is_admin INTEGER
+	is_verified INTEGER DEFAULT 0,
+	is_verification_pending INTEGER DEFAULT 0,
+	is_admin INTEGER DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS upload (
+	id INTEGER NOT NULL PRIMARY KEY,
+	image TEXT,
+	account_id INTEGER
+	detail TEXT
 );
 `
 
