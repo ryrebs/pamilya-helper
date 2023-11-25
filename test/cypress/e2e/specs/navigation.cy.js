@@ -29,6 +29,21 @@ context("Navigation", () => {
     cy.location("pathname").should("include", "about");
   });
 
+  it("Login/Signup should go to login/signup page.", () => {
+    cy.get("#navbarCollapse > a.btn-primary").contains("Login/SignUp").click();
+    cy.location("pathname").should("include", "signin");
+
+    cy.get("form[method='post'][action='/signin']").should("exist")
+    cy.get("form[method='post'][action='/signin'] input[name='email'] + label").should(
+      "have.text",
+      "Email"
+    );
+    cy.get("form[method='post'][action='/signin'] input[name='password'] + label").should(
+      "have.text",
+      "Password"
+    );
+  });
+
   it("cy.reload() - reload the page", () => {
     cy.reload();
     cy.reload(true); // reload the page without using the cache
