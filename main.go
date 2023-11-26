@@ -11,7 +11,7 @@ import (
 const helpMsg = `
 PamilyaHelper db tool.
 
-Example: manage initdb
+Example: webapp initdb
 
 Command arguments:
 
@@ -43,7 +43,7 @@ func main() {
 	case "help":
 		log.Print(helpMsg)
 	default:
-		log.Println("Command not found. See help with: `manage help`")
+		log.Println("Command not found. See help with: `webapp help`")
 	}
 
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -71,7 +72,11 @@ func Serve() {
 		unprotected := e.Group("unprotected")
 		unprotected.DELETE("/user", routes.RemoveUser)
 
-		e.Logger.Fatal(e.Start("127.0.0.1:5000"))
+		var default_port = "5000"
+		if port, exist := os.LookupEnv("PORT"); exist {
+			default_port = port
+		}
+		e.Logger.Fatal(e.Start(fmt.Sprintf("127.0.0.1:%s", default_port)))
 	} else {
 		log.Println("Unable to start server. Make sure database is initialized.")
 	}
