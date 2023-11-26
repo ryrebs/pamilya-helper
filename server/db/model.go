@@ -41,28 +41,20 @@ func CreateUser(user NewUser, db *sql.DB) error {
 	)
 }
 
-func validateUser(password_text string, user User) UserDetail {
-	if IsPWDvalid(password_text, user.Password) {
-		return UserDetail{
-			Name:        user.Name,
-			Email:       user.Email,
-			Birthdate:   user.Birthdate,
-			Address:     user.Address,
-			Is_verified: user.Is_verified,
-			Is_admin:    user.Is_admin,
-		}
-
-	}
-	return UserDetail{}
+// Returns true is user is valid else false
+func ValidateUser(password_text, user_password string) bool {
+	return IsPWDvalid(password_text, user_password)
 }
 
-func FindUser(email, password string, db *sql.DB) UserDetail {
+// Returns the user if found
+func FindUser(email string, db *sql.DB) User {
 	stmt, err := db.Prepare(`SELECT name, email,
 								password, birthdate,
 								address, is_verified, is_admin
 							FROM account WHERE email=?`)
 	if err != nil {
 		log.Fatal(err)
+		return User{}
 	}
 	defer stmt.Close()
 	var user User
@@ -77,7 +69,7 @@ func FindUser(email, password string, db *sql.DB) UserDetail {
 
 	if err != nil {
 		log.Println(err)
-		return UserDetail{}
+		return User{}
 	}
-	return validateUser(password, user)
+	return user
 }

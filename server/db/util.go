@@ -135,3 +135,23 @@ func LoadFixtures() {
 	}
 
 }
+
+func RemoveUser(email string, db *sql.DB) error {
+	removeUserStmt := `
+		DELETE FROM account WHERE email = ?
+	`
+	if db != nil {
+		stmt, err := db.Prepare(removeUserStmt)
+		if err == nil {
+			_, err = stmt.Exec(email)
+			if err == nil {
+				return nil
+			}
+			log.Printf("%q: %s\n", err, removeUserStmt)
+		}
+		log.Printf("%q: %s\n", err, removeUserStmt)
+		return err
+	}
+	return errors.New("no database connection found")
+
+}

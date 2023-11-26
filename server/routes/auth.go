@@ -56,14 +56,21 @@ func SignIn(c echo.Context) error {
 	if r.Method == "POST" {
 		email := cc.FormValue("email")
 		password := cc.FormValue("password")
+		user := db.FindUser(email, cc.Db())
 
-		user := db.FindUser(email, password, cc.Db())
-
-		if (db.UserDetail{}) == user {
+		// No user found
+		if (db.User{}) == user {
 			return cc.Render(http.StatusOK, "signin-signup.html", map[string]interface{}{
 				"msg": "Invalid Email or Password.",
 			})
 
+		}
+
+		// User found;validate
+		if !db.ValidateUser(password, user.Password) {
+			return cc.Render(http.StatusOK, "signin-signup.html", map[string]interface{}{
+				"msg": "Invalid Email or Password.",
+			})
 		}
 
 		// User found. Set session cookies
@@ -112,21 +119,30 @@ func SignUp(c echo.Context) error {
 		log.Println(err.Error())
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	// Create User
-	if err := db.CreateUser(*user, cc.Db()); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest)
+
+	// Create User if user not exists.
+	existing_user := db.FindUser(user.Email, cc.Db())
+	if (existing_user == db.User{}) {
+		if err := db.CreateUser(*user, cc.Db()); err != nil {
+			return c.Render(http.StatusBadRequest, "signin-signup.html", map[string]interface{}{
+				"msg_signup": "Invalid user mail. Please try again later.",
+			})
+		}
+		// Set session
+		err := createSession(user.Email, cc)
+		if err != nil {
+			log.Println(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		// Redirect Index
+		return c.Redirect(http.StatusSeeOther, "/")
 	}
 
-	// Set session
-	err := createSession(user.Email, cc)
-	if err != nil {
-		log.Println(err)
-		return echo.NewHTTPError(http.StatusInternalServerError)
+	return c.Render(http.StatusBadRequest, "signin-signup.html", map[string]interface{}{
+		"msg_signup": "Invalid user e-mail. Please try again later.",
+	})
 
-	}
-
-	// Redirect Index
-	return c.Redirect(http.StatusSeeOther, "/")
 }
 
 func AccountVerification(c echo.Context) error {
@@ -134,4 +150,34 @@ func AccountVerification(c echo.Context) error {
 	// birthday
 	// upload id image
 	return nil
+}
+
+// Remove user from db. Use only
+// for testing purposes
+func RemoveUser(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	validate = validator.New()
+
+	log.Println(cc.FormValue("email"))
+	user := new(struct {
+		Email string `json:"email" validate:"required,email"`
+	})
+
+	if err := cc.Bind(user); err != nil {
+		log.Println(err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest)
+
+	}
+	if err := validate.Struct(user); err != nil {
+		log.Println(err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	err := db.RemoveUser(user.Email, cc.Db())
+	if err != nil {
+		log.Println(err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+
+	}
+	return cc.NoContent(http.StatusNoContent)
 }

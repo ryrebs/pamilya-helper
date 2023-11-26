@@ -66,6 +66,11 @@ func Serve() {
 		users.Match([]string{"GET", "PATCH"}, "/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 
+		// Util routes - for dev and priviledged users
+		// NOTE: Don't expose or serve on prod.
+		unprotected := e.Group("unprotected")
+		unprotected.DELETE("/user", routes.RemoveUser)
+
 		e.Logger.Fatal(e.Start("127.0.0.1:5000"))
 	} else {
 		log.Println("Unable to start server. Make sure database is initialized.")

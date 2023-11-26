@@ -330,7 +330,7 @@ main.sign-up-mode .carousel {
   border-radius: 1rem;
 }
 
-.sign-in__msg--center {
+.sign-in__msg--center, .sign-up__msg--center{
   text-align: center;
   width: 100%;
 }
