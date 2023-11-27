@@ -2,7 +2,9 @@
 
 ### A. Getting Started
 
-1. Build the app: `CGO_ENABLED=1 GOOS=linux go build`
+0. Make sure _golang version 1.21.4_ is installed in your system.
+
+1. Build the app: `go build`
 
 2. Install the app with: `go install`
 
