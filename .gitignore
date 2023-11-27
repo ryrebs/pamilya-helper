@@ -9,3 +9,7 @@ movetorepo.sh
 *.db
 
 webapp
+
+dist
+
+temp

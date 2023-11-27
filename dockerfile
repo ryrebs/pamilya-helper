@@ -2,36 +2,16 @@ FROM golang:1.21.4-alpine
 
 ENV PORT=5000
 
-ENV CGO_ENABLED=1
+ENV EXPOSE_IP=0.0.0.0
 
 WORKDIR /pamilyahelper
 
-RUN apk update
-
-RUN apk add gcc 
-
-RUN apk add libc-dev 
-
 COPY public /pamilyahelper/public
 
-COPY server /pamilyahelper/server
+COPY dist/webapp /pamilyahelper/
 
-COPY main.go /pamilyahelper/
+RUN ./webapp initdb
 
-COPY go.mod /pamilyahelper/
+RUN ./webapp loadfixtures
 
-RUN go mod tidy
-
-RUN go build
-
-# COPY webapp /pamilyahelper/
-
-# RUN /pamilyahelper/webapp initdb
-
-# RUN /pamilyahelper/webapp loadfixture
-
-# ENTRYPOINT [ "/pamilyahelper/webapp", "serve"]
-
-EXPOSE ${PORT}
-
-ENTRYPOINT [ "/bin/sh"]
+ENTRYPOINT [ "./webapp", "serve"]

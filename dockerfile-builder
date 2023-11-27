@@ -1,0 +1,17 @@
+FROM golang:1.21.4-alpine
+
+EXPOSE ${PORT}
+
+ENV PORT=5000
+
+ENV CGO_ENABLED=1
+
+WORKDIR /pamilyahelper
+
+RUN apk update
+
+RUN apk add gcc 
+
+RUN apk add libc-dev 
+
+ENTRYPOINT ["/bin/sh", "build.sh"]
