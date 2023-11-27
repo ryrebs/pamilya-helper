@@ -72,11 +72,16 @@ func Serve() {
 		unprotected := e.Group("unprotected")
 		unprotected.DELETE("/user", routes.RemoveUser)
 
-		var default_port = "5000"
+		default_port := "5000"
 		if port, exist := os.LookupEnv("PORT"); exist {
 			default_port = port
 		}
-		e.Logger.Fatal(e.Start(fmt.Sprintf("127.0.0.1:%s", default_port)))
+		default_local_ip := "127.0.0.1"
+		if local_ip, exist := os.LookupEnv("EXPOSE_IP"); exist {
+			default_local_ip = local_ip
+		}
+
+		e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", default_local_ip, default_port)))
 	} else {
 		log.Println("Unable to start server. Make sure database is initialized.")
 	}
