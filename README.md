@@ -12,11 +12,11 @@
 
 ### Build app in Docker container
 
-1. Build the container:
-        
+1.  Build the container:
+
         docker build -t pamilyahelper-builder:latest -t pamilyahelper-builder:v0.0.1
 
-2. Run the container to build the app:
+2.  Run the container to build the app:
 
         docker run \
                 --volume=<absolute-path-to>/dist:/pamilyahelper/dist \
@@ -28,21 +28,24 @@
                 -it \
                 pamilyahelper-builder
 
-
 ### Run the app in Docker container
 
 1. Build the container: `docker build -t pamilyahelper:latest -t pamilyahelper:v0.0.1 .`
 
 2. Run the app: `docker run --rm -it -p 127.0.0.1:5000:5000 pamilyahelper`
 
-Optionally, attached a database named: `pamilyahelper.db`
+3. View `localhost:5000` in browser.
 
+Optionally, attached a database named: `pamilyahelper.db`
 
         docker run --rm \
                 --volume /run/media/amniuz/data/Rps/temp/pamilya-helper/pamilyahelper.db:/pamilyahelper/pamilyahelper.db \
                 -it -p 127.0.0.1:5000:5000 pamilyahelper
 
-
 ### Fixtures loaded:
 
 - Default admin:pass: `admin@admin.com:admin1234`
+
+### Running tests
+
+- See [test](test) folder
