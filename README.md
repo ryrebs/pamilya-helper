@@ -1,6 +1,6 @@
 ## PamilyaHelper web app.
 
-### Getting Started
+### A. Getting Started
 
 1. Build the app: `CGO_ENABLED=1 GOOS=linux go build`
 
@@ -10,7 +10,7 @@
 
 4. Or without installation, run the built binary with: `./webapp <arg>`
 
-### Build app in Docker container
+### B. Build app in Docker container
 
 1.  Build the container:
 
@@ -28,7 +28,7 @@
                 -it \
                 pamilyahelper-builder
 
-### Run the app in Docker container
+### C. Run the app in Docker container
 
 1. Build the container: `docker build -t pamilyahelper:latest -t pamilyahelper:v0.0.1 .`
 
