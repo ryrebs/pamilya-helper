@@ -17,8 +17,12 @@ var validate *validator.Validate
 func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
+		cc := c.(*db.CustomDBContext)
+
 		if sess != nil && sess.Values["user"] != nil {
-			return c.Redirect(http.StatusSeeOther, "/users/profile")
+			if user := db.FindUser(sess.Values["user"].(string), cc.Db()); user != (db.User{}) {
+				return c.Redirect(http.StatusSeeOther, "/users/profile")
+			}
 		}
 		return next(c)
 	}
@@ -28,8 +32,17 @@ func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 func RedirectToSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
-		if sess != nil && sess.Values["user"] == nil {
+		cc := c.(*db.CustomDBContext)
+
+		// Session not found
+		if sess != nil && sess.Values["user"] == nil && db.FindUser(sess.Values["user"].(string), cc.Db()) == (db.User{}) {
 			return c.Redirect(http.StatusSeeOther, "/signin")
+		}
+
+		// Sessoin found but email not found
+		if sess.Values["user"] != nil && db.FindUser(sess.Values["user"].(string), cc.Db()) == (db.User{}) {
+			return c.Redirect(http.StatusSeeOther, "/signin")
+
 		}
 		return next(c)
 	}
@@ -74,7 +87,7 @@ func SignIn(c echo.Context) error {
 		}
 
 		// User found. Set session cookies
-		err := createSession(user.Name, cc)
+		err := createSession(user.Email, cc)
 		if err != nil {
 			log.Println(err)
 			return cc.Render(http.StatusOK, "signin-signup.html", map[string]interface{}{
