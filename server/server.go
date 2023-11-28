@@ -67,7 +67,7 @@ func Serve() {
 		users.Match([]string{"GET", "PATCH"}, "/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 
-		// Util routes - for dev and priviledged users
+		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
 		unprotected := e.Group("unprotected")
 		unprotected.DELETE("/user", routes.RemoveUser)

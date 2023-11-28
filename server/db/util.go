@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS account (
 	name TEXT,
 	email TEXT UNIQUE,
 	password TEXT,
-	birthdate DATE,
+	birthdate TEXT,
 	address TEXT,
 	is_verified INTEGER DEFAULT 0,
 	is_verification_pending INTEGER DEFAULT 0,
@@ -131,9 +131,12 @@ func LoadFixtures() {
 	db := GetDBConn(DefaultPamilyaHelperDBName)
 	err := createAdmin(db)
 	if err == nil {
-		log.Println("Created initial 'admin' user with 'admin1234' as password...")
+		log.Println("Created initial administrator: 'admin' with 'admin1234' as password...")
 	}
-
+	err = InsertUser("aubrey", "aubrey@pmh.com", "aubrey1234", false, false, db)
+	if err == nil {
+		log.Println("Created initial user: 'aubrey' with 'aubrey1234' as password...")
+	}
 }
 
 func RemoveUser(email string, db *sql.DB) error {

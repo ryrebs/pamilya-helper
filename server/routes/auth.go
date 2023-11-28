@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"pamilyahelper/webapp/server/db"
@@ -12,6 +13,21 @@ import (
 )
 
 var validate *validator.Validate
+
+// Given a session exists for the user,
+// this function should extract the user details from db.
+func GetUserFromSession(c echo.Context) (*db.UserDetail, error) {
+	sess, _ := session.Get("auth-pamilyahelper-session", c)
+	cc := c.(*db.CustomDBContext)
+
+	// Session not found
+	if sess != nil && sess.Values["user"] != nil {
+		if user := db.FindUserDetail(sess.Values["user"].(string), cc.Db()); user != nil {
+			return user, nil
+		}
+	}
+	return nil, errors.New("no user found for this session")
+}
 
 // Redirects the user to profile if user is signed in.
 func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -166,7 +182,7 @@ func AccountVerification(c echo.Context) error {
 }
 
 // Remove user from db. Use only
-// for testing purposes
+// for testing purposes or privileged access
 func RemoveUser(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
 	validate = validator.New()

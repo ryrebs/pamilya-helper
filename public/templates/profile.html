@@ -122,6 +122,22 @@
       </nav>
       <!-- Navbar End -->
 
+      <!-- Profile details  -->
+      <div>
+        <div>
+          <span>Email: {{ .data.email }}</span>
+        </div>
+        <div><span>Birthdate: {{ .data.birthdate }}</span></div>
+        <div><span>Address: {{ .data.address }}</span></div>
+        <div>
+          {{ if.data.is_verified }}
+          <div><span>Valid Government Id: {{ .data.gov_id }}</span></div>
+          {{ else }}
+          <div><button>Account Verification</button></div>
+          {{ end }}
+        </div>
+      </div>
+
       <!-- Body -->
       <form method="POST" , action="/users/signout">
         <button type="submit">

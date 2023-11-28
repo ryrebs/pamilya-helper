@@ -31,6 +31,10 @@ func About(c echo.Context) error {
 
 func Profile(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
+	data := map[string]interface{}{
+		"is_log_in": true,
+	}
+
 	if cc.Request().Method == "PATCH" {
 		name := cc.FormValue("name")
 		birtdate := cc.FormValue("birthdate")
@@ -55,10 +59,8 @@ func Profile(c echo.Context) error {
 					errorMsgs = errorMsgs + "Invalid Address\n"
 				}
 			}
-			return renderWithAuthContext("profile.html", cc, map[string]interface{}{
-				"is_log_in": true,
-				"msgs":      errorMsgs,
-			})
+			data["msgs"] = errorMsgs
+			return renderWithAuthContext("profile.html", cc, data)
 		}
 
 		file, err := c.FormFile("file")
@@ -74,8 +76,21 @@ func Profile(c echo.Context) error {
 		// Detail column is added on upload for additional meta data.
 	}
 
+	user, error := GetUserFromSession(c)
+
 	// Return account details on GET request
-	return renderWithAuthContext("profile.html", c, map[string]interface{}{
-		"is_log_in": true,
-	})
+	if user != nil {
+
+		data["data"] = map[string]interface{}{
+			"email":       user.Email,
+			"birthdate":   user.Birthdate.String,
+			"address":     user.Address.String,
+			"is_admin":    user.Is_admin,
+			"is_verified": user.Is_verified,
+		}
+		return renderWithAuthContext("profile.html", c, data)
+	}
+
+	log.Println(error)
+	return echo.NewHTTPError(http.StatusInternalServerError)
 }

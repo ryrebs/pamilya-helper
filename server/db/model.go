@@ -46,6 +46,13 @@ func ValidateUser(password_text, user_password string) bool {
 	return IsPWDvalid(password_text, user_password)
 }
 
+func FindUserDetail(email string, db *sql.DB) *UserDetail {
+	if user := FindUser(email, db); user != (User{}) {
+		return &user.UserDetail
+	}
+	return nil
+}
+
 // Returns the user if found
 func FindUser(email string, db *sql.DB) User {
 	stmt, err := db.Prepare(`SELECT name, email,
