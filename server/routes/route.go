@@ -37,6 +37,14 @@ func Profile(c echo.Context) error {
 	user, error := GetUserFromSession(c, cc.Db())
 	if user != nil {
 		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
+
+		// Get accounts with pending verifications
+		var accounts []db.UserVerification
+		if user.IsAdmin {
+			accounts_, _ := db.GetAccountsForVerification("3", "0", cc.Db())
+			accounts = accounts_
+		}
+
 		data["data"] = map[string]interface{}{
 			"name":        cases.Title(language.English, cases.Compact).String(user.Name),
 			"email":       user.Email,
@@ -45,6 +53,7 @@ func Profile(c echo.Context) error {
 			"is_admin":    user.IsAdmin,
 			"is_verified": user.IsVerified,
 			"gov_id":      govIdFile,
+			"accounts":    accounts,
 		}
 		return renderWithAuthContext("profile.html", c, data)
 	}

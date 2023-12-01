@@ -26,6 +26,14 @@ type User struct {
 	Password string
 }
 
+type UserVerification struct {
+	Name      string
+	Email     string
+	Birthdate sql.NullString
+	Address   sql.NullString
+	GovId     string
+}
+
 type NewUser struct {
 	Name     string `form:"name" validate:"required,min=4"`
 	Email    string `form:"email" validate:"required,email"`
@@ -62,37 +70,10 @@ func FindUserDetail(email string, db *sql.DB) *UserDetail {
 
 // Returns the user if found
 func FindUser(email string, db *sql.DB) User {
-	stmt, err := db.Prepare(`SELECT
-								name, email,
-								password, birthdate,
-								address, is_verified,
-								is_admin, id,
-								is_verification_pending
-							FROM account WHERE email=?`)
-	if err != nil {
-		log.Println(err)
-		return User{}
-	}
-	defer stmt.Close()
-	var user User
-	err = stmt.QueryRow(email).Scan(
-		&user.Name,
-		&user.Email,
-		&user.Password,
-		&user.Birthdate,
-		&user.Address,
-		&user.IsVerified,
-		&user.IsAdmin,
-		&user.AccountId,
-		&user.IsVerificationPending)
-
-	if err != nil {
-		log.Println(err)
-		return User{}
-	}
-	return user
+	return FindUserFromDb(email, db)
 }
 
+// Update user details
 func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipart.FileHeader, db *sql.DB) error {
 	rmFFn := func(fname string) error {
 		if _, err := os.Stat(fname); err != nil {
@@ -106,7 +87,9 @@ func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipa
 		}
 		return nil
 	}
-	pathFname := fmt.Sprintf(UploadDst + "/" + fmt.Sprint(user.AccountId) + "_" + file.Filename)
+
+	newFileName := fmt.Sprint(user.AccountId) + "_" + file.Filename
+	pathFname := fmt.Sprintf(UploadDst + "/" + newFileName)
 	err := CreateFile(file, pathFname, user.AccountId)
 
 	if err != nil {
@@ -121,11 +104,15 @@ func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipa
 		return err
 	}
 
-	err = InsertGovID(user.AccountId, file.Filename, db)
+	err = InsertGovID(user.AccountId, newFileName, db)
 	if err != nil {
 		rmFFn(pathFname)
 		return err
 	}
 
 	return nil
+}
+
+func GetAccountsForVerification(limit, offset string, db *sql.DB) ([]UserVerification, error) {
+	return GetAccountsForVerificationFromDb(limit, offset, db)
 }

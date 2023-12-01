@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -102,8 +103,8 @@ func IsPWDvalid(password, hashedStr string) bool {
 
 func InsertUser(name, email, password string, is_verified, is_admin bool, db *sql.DB) error {
 	fixtureAdminStmt := `
-		INSERT INTO account(name, email, password, is_verified, is_admin)
-		VALUES(?, ?, ?, ?, ?)
+		INSERT INTO account(name, email, password, is_verified, is_admin, is_verification_pending)
+		VALUES(?, ?, ?, ?, ?, 1)
 	`
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
@@ -140,6 +141,10 @@ func LoadFixtures() {
 	err = InsertUser("aubrey", "aubrey@pmh.com", "aubrey1234", false, false, db)
 	if err == nil {
 		log.Println("Created initial user: 'aubrey' with 'aubrey1234' as password...")
+	}
+	err = InsertUser("darren", "darren@pmh.com", "darren", false, false, db)
+	if err == nil {
+		log.Println("Created initial user: 'darren' with 'darren' as password...")
 	}
 }
 
@@ -262,4 +267,76 @@ func CreateFile(file *multipart.FileHeader, filename string, accountId int) erro
 		return err
 	}
 	return nil
+}
+
+func FindUserFromDb(email string, db *sql.DB) User {
+	stmt, err := db.Prepare(`SELECT
+								name, email,
+								password, birthdate,
+								address, is_verified,
+								is_admin, id,
+								is_verification_pending
+							FROM account WHERE email=?`)
+	if err != nil {
+		log.Println(err)
+		return User{}
+	}
+	defer stmt.Close()
+	var user User
+	err = stmt.QueryRow(email).Scan(
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.Birthdate,
+		&user.Address,
+		&user.IsVerified,
+		&user.IsAdmin,
+		&user.AccountId,
+		&user.IsVerificationPending)
+
+	if err != nil {
+		log.Println(err)
+		return User{}
+	}
+	return user
+}
+
+func GetAccountsForVerificationFromDb(limit, offset string, db *sql.DB) ([]UserVerification, error) {
+	query := `
+		SELECT email, name, birthdate,
+			address, image
+		FROM account AS ac LEFT JOIN upload AS t ON t.account_id = ac.id
+		WHERE t.detail = 'gov_id' AND ac.is_verification_pending = 1
+		LIMIT ? OFFSET ?`
+
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(limit, offset)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []UserVerification
+	for rows.Next() {
+		var user UserVerification
+		err = rows.Scan(&user.Email, &user.Name, &user.Birthdate, &user.Address, &user.GovId)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(user)
+		users = append(users, user)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return users, nil
 }
