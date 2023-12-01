@@ -67,7 +67,7 @@ context("Signup", () => {
       url: "/unprotected/user",
       method: "DELETE",
       body: {
-        email: "aubrey@pmh.com",
+        email: "tester@pmh.com",
       },
     }).should((response) => {
       expect(response.status).to.eq(204);
@@ -79,14 +79,14 @@ context("Signup", () => {
     cy.get("a.toggle").contains("Sign up").click();
     cy.get("form[method='post'][action='/signup']").should("exist");
     cy.get("form[method='post'][action='/signup'] input[name='name']")
-      .type("aubrey", { delay: 50 })
-      .should("have.value", "aubrey");
+      .type("tester", { delay: 50 })
+      .should("have.value", "tester");
     cy.get("form[method='post'][action='/signup'] input[name='email']")
-      .type("aubrey@pmh.com", { delay: 50 })
-      .should("have.value", "aubrey@pmh.com");
+      .type("tester@pmh.com", { delay: 50 })
+      .should("have.value", "tester@pmh.com");
     cy.get("form[method='post'][action='/signup'] input[name='password']")
-      .type("aubrey1234", { delay: 50 })
-      .should("have.value", "aubrey1234");
+      .type("tester1234", { delay: 50 })
+      .should("have.value", "tester1234");
     cy.get("form[method='post'][action='/signup']").submit();
 
     // Succesful signup navigates to / and can navigate to profile
@@ -100,14 +100,14 @@ context("Signup", () => {
     cy.get("a.toggle").contains("Sign up").click();
     cy.get("form[method='post'][action='/signup']").should("exist");
     cy.get("form[method='post'][action='/signup'] input[name='name']")
-      .type("aubrey", { delay: 50 })
-      .should("have.value", "aubrey");
+      .type("tester", { delay: 50 })
+      .should("have.value", "tester");
     cy.get("form[method='post'][action='/signup'] input[name='email']")
-      .type("aubrey@pmh.com", { delay: 50 })
-      .should("have.value", "aubrey@pmh.com");
+      .type("tester@pmh.com", { delay: 50 })
+      .should("have.value", "tester@pmh.com");
     cy.get("form[method='post'][action='/signup'] input[name='password']")
-      .type("aubrey1234", { delay: 50 })
-      .should("have.value", "aubrey1234");
+      .type("tester1234", { delay: 50 })
+      .should("have.value", "tester1234");
     cy.get("form[method='post'][action='/signup']").submit();
     cy.get("div.sign-up__msg--center > span").should(
       "contain.text",
