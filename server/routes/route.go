@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 	"pamilyahelper/webapp/server/db"
-	"strings"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func renderWithAuthContext(templateName string, c echo.Context, data interface{}) error {
@@ -34,59 +34,17 @@ func Profile(c echo.Context) error {
 	data := map[string]interface{}{
 		"is_log_in": true,
 	}
-
-	if cc.Request().Method == "PATCH" {
-		name := cc.FormValue("name")
-		birtdate := cc.FormValue("birthdate")
-		address := cc.FormValue("address")
-		errorMsgs := ""
-		validate = validator.New()
-
-		if err := validate.Struct(db.EditableUserFields{
-			Name:      name,
-			Birthdate: birtdate,
-			Address:   address,
-		}); err != nil {
-			m := strings.Split(err.Error(), "\n")
-			for _, v := range m {
-				if strings.Contains(v, "EditableUserFields.Name") {
-					errorMsgs = errorMsgs + "Invalid Name\n"
-				}
-				if strings.Contains(v, "EditableUserFields.Birthdate") {
-					errorMsgs = errorMsgs + "Invalid Birthdate\n"
-				}
-				if strings.Contains(v, "EditableUserFields.Address") {
-					errorMsgs = errorMsgs + "Invalid Address\n"
-				}
-			}
-			data["msgs"] = errorMsgs
-			return renderWithAuthContext("profile.html", cc, data)
-		}
-
-		file, err := c.FormFile("file")
-		if err != nil {
-			return nil
-		}
-		log.Println(file.Filename)
-
-		// Handle save file and update account details
-		// If File exists remove file and save new file for Gov ID
-		// Save file first before adding/delete/updating entry on db
-		// Duplicate file for non GOV ID should be appended by timestamp for uniqueness
-		// Detail column is added on upload for additional meta data.
-	}
-
-	user, error := GetUserFromSession(c)
-
-	// Return account details on GET request
+	user, error := GetUserFromSession(c, cc.Db())
 	if user != nil {
-
+		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 		data["data"] = map[string]interface{}{
+			"name":        cases.Title(language.English, cases.Compact).String(user.Name),
 			"email":       user.Email,
 			"birthdate":   user.Birthdate.String,
 			"address":     user.Address.String,
-			"is_admin":    user.Is_admin,
-			"is_verified": user.Is_verified,
+			"is_admin":    user.IsAdmin,
+			"is_verified": user.IsVerified,
+			"gov_id":      govIdFile,
 		}
 		return renderWithAuthContext("profile.html", c, data)
 	}

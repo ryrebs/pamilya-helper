@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"database/sql"
 	"errors"
 	"log"
 	"net/http"
 	"pamilyahelper/webapp/server/db"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/sessions"
@@ -16,13 +18,12 @@ var validate *validator.Validate
 
 // Given a session exists for the user,
 // this function should extract the user details from db.
-func GetUserFromSession(c echo.Context) (*db.UserDetail, error) {
+func GetUserFromSession(c echo.Context, db_ *sql.DB) (*db.UserDetail, error) {
 	sess, _ := session.Get("auth-pamilyahelper-session", c)
-	cc := c.(*db.CustomDBContext)
 
 	// Session not found
 	if sess != nil && sess.Values["user"] != nil {
-		if user := db.FindUserDetail(sess.Values["user"].(string), cc.Db()); user != nil {
+		if user := db.FindUserDetail(sess.Values["user"].(string), db_); user != nil {
 			return user, nil
 		}
 	}
@@ -44,21 +45,27 @@ func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func CheckSessionExist(c echo.Context, sess *sessions.Session, conn *sql.DB) error {
+	// Session not found
+	if sess != nil && sess.Values["user"] == nil {
+		return errors.New("no session found")
+	}
+	// Session found but email not found
+	if sess.Values["user"] != nil && db.FindUser(sess.Values["user"].(string), conn) == (db.User{}) {
+		return errors.New("no user found")
+	}
+	return nil
+}
+
 // Redirects the user to signin if user is not signin in.
-func RedirectToSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func RequireSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := session.Get("auth-pamilyahelper-session", c)
 		cc := c.(*db.CustomDBContext)
 
-		// Session not found
-		if sess != nil && sess.Values["user"] == nil && db.FindUser(sess.Values["user"].(string), cc.Db()) == (db.User{}) {
+		err := CheckSessionExist(c, sess, cc.Db())
+		if err != nil {
 			return c.Redirect(http.StatusSeeOther, "/signin")
-		}
-
-		// Sessoin found but email not found
-		if sess.Values["user"] != nil && db.FindUser(sess.Values["user"].(string), cc.Db()) == (db.User{}) {
-			return c.Redirect(http.StatusSeeOther, "/signin")
-
 		}
 		return next(c)
 	}
@@ -174,11 +181,89 @@ func SignUp(c echo.Context) error {
 
 }
 
-func AccountVerification(c echo.Context) error {
-	// address
-	// birthday
-	// upload id image
-	return nil
+func VerifyAccount(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+
+	data := map[string]interface{}{
+		"is_log_in": true,
+	}
+	user, err := GetUserFromSession(cc, cc.Db())
+	if user != nil {
+		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
+		data["data"] = map[string]interface{}{
+			"name":                    user.Name,
+			"email":                   user.Email,
+			"birthdate":               user.Birthdate.String,
+			"address":                 user.Address.String,
+			"is_admin":                user.IsAdmin,
+			"is_verified":             user.IsVerified,
+			"is_verification_pending": user.IsVerificationPending,
+			"gov_id":                  govIdFile,
+		}
+	}
+	if err != nil {
+		log.Println(err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+
+	// Handle Get requests
+	if c.Request().Method == "GET" {
+		return renderWithAuthContext("verify-profile.html", c, data)
+	}
+
+	errorMsgs := ""
+	editableUser := db.EditableUserFields{}
+	validate = validator.New()
+
+	if err := cc.Bind(&editableUser); err != nil {
+		log.Println(err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest)
+
+	}
+	if err := validate.Struct(editableUser); err != nil {
+		log.Println(err.Error())
+		m := strings.Split(err.Error(), "\n")
+		for _, v := range m {
+			if strings.Contains(v, "EditableUserFields.Name") {
+				errorMsgs = errorMsgs + "Invalid Name\n"
+			}
+			if strings.Contains(v, "EditableUserFields.Birthdate") {
+				errorMsgs = errorMsgs + "Invalid Birthdate\n"
+			}
+			if strings.Contains(v, "EditableUserFields.Address") {
+				errorMsgs = errorMsgs + "Invalid Address\n"
+			}
+		}
+		data["msgs"] = errorMsgs
+		return renderWithAuthContext("verify-profile.html", cc, data)
+	}
+	file, err := cc.FormFile("file")
+	if err != nil {
+		log.Println(err.Error())
+		errorMsgs = errorMsgs + "Invalid File\n"
+		data["msgs"] = errorMsgs
+		return renderWithAuthContext("verify-profile.html", cc, data)
+	}
+
+	// Update user details
+	err = db.UpdateUserDetail(*user, editableUser, file, cc.Db())
+	if err != nil {
+		log.Println(err.Error())
+		data["msgs"] = "Something went wrong. Please try again later."
+		return renderWithAuthContext("verify-profile.html", cc, data)
+	}
+	data["success_msg"] = "Success. Waiting for approval."
+	data["data"] = map[string]interface{}{
+		"name":                    editableUser.Name,
+		"email":                   user.Email,
+		"birthdate":               editableUser.Birthdate,
+		"address":                 editableUser.Address,
+		"is_admin":                user.IsAdmin,
+		"is_verified":             user.IsVerified,
+		"is_verification_pending": user.IsVerificationPending,
+		"gov_id":                  file.Filename,
+	}
+	return renderWithAuthContext("verify-profile.html", cc, data)
 }
 
 // Remove user from db. Use only

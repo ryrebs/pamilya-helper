@@ -3,7 +3,9 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"io"
 	"log"
+	"mime/multipart"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -27,7 +29,7 @@ CREATE TABLE IF NOT EXISTS account (
 CREATE TABLE IF NOT EXISTS upload (
 	id INTEGER NOT NULL PRIMARY KEY,
 	image TEXT,
-	account_id INTEGER
+	account_id INTEGER,
 	detail TEXT
 );
 `
@@ -105,6 +107,7 @@ func InsertUser(name, email, password string, is_verified, is_admin bool, db *sq
 	`
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
+
 		if err == nil {
 			_, err = stmt.Exec(name, email, CreateUserPassword(password), is_verified, is_admin)
 			if err == nil {
@@ -112,6 +115,7 @@ func InsertUser(name, email, password string, is_verified, is_admin bool, db *sq
 			}
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
 		}
+		defer stmt.Close()
 		log.Printf("%q: %s\n", err, fixtureAdminStmt)
 		return err
 	}
@@ -152,9 +156,110 @@ func RemoveUser(email string, db *sql.DB) error {
 			}
 			log.Printf("%q: %s\n", err, removeUserStmt)
 		}
+		defer stmt.Close()
 		log.Printf("%q: %s\n", err, removeUserStmt)
 		return err
 	}
 	return errors.New("no database connection found")
 
+}
+
+// Update user details
+func UpdateUser(email string, details EditableUserFields, db *sql.DB) error {
+	if db != nil {
+		stmt, err := db.Prepare(`UPDATE account SET name=?,birthdate=?,
+									address=?,
+									is_verification_pending=1
+								 WHERE email=?`)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		_, err = stmt.Exec(details.Name, details.Birthdate, details.Address, email)
+		defer stmt.Close()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
+}
+
+// Update or insert government id.
+func InsertGovID(accountId int, fileName string, db *sql.DB) error {
+	if db != nil {
+		// Check for existing gov_id
+		stmt, err := db.Prepare(`SELECT account_id from upload where account_id=? and detail='gov_id' LIMIT 1`)
+		var exists = 0
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = stmt.QueryRow(accountId).Scan(&exists)
+		if err != nil {
+			// No record found.
+			log.Println(err)
+		}
+		defer stmt.Close()
+
+		insertStmt := `INSERT INTO upload(image, account_id, detail) VALUES(?, ?, 'gov_id')`
+		updatestmt := `UPDATE upload SET image=? WHERE account_id=? AND detail='gov_id'`
+		mainStmt := ``
+
+		// Account has existing gov id.
+		if exists > 0 {
+			mainStmt = updatestmt
+		} else {
+			mainStmt = insertStmt
+		}
+		stmt, err = db.Prepare(mainStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		_, err = stmt.Exec(fileName, accountId)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+
+	}
+	return errors.New("no db found")
+}
+
+// Get user's government id
+func GetUserGovId(accountId int, db *sql.DB) string {
+	stmt, err := db.Prepare(`SELECT image from upload where account_id=?`)
+	fileName := ""
+	if err != nil {
+		log.Println(err)
+	}
+	err = stmt.QueryRow(accountId).Scan(&fileName)
+	if err != nil {
+		// No record found.
+		log.Println(err)
+	}
+	defer stmt.Close()
+	return fileName
+}
+
+// Create file uploads
+func CreateFile(file *multipart.FileHeader, filename string, accountId int) error {
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	dst, err := os.Create(filename)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer dst.Close()
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+	return nil
 }

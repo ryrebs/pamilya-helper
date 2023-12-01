@@ -124,36 +124,55 @@
 
       <!-- Profile details  -->
       <div>
-        <div>
-          <span style="font-weight: bold">{{ .data.name }}</span>
+        <form
+          method="post"
+          action="/users/profile/verify"
+          enctype="multipart/form-data"
+        >
           <div>
-            {{ if.data.is_verified }}
-            <span>Verified</span>
-            {{ else }}
-            <span>Unverified</span>
-            {{ end }}
+            <div><span>Fullname:</span></div>
+            <input name="name" type="text" value="{{ .data.name }}" />
           </div>
-        </div>
-        <div>
-          <span>Email: {{ .data.email }}</span>
-        </div>
-        <div><span>Birthdate: {{ .data.birthdate }}</span></div>
-        <div><span>Address: {{ .data.address }}</span></div>
-        <div>
-          {{ if.data.is_verified }}
-          <div><span>Valid Government Id: {{ .data.gov_id }}</span></div>
-          {{ else }}
           <div>
-            <button>
-              <a href="/users/profile/verify"> Account Verification </a>
-            </button>
+            <div><span>Date of Birth:</span></div>
+            <input
+              name="birthdate"
+              required
+              type="date"
+              value="{{ .data.birthdate }}"
+            />
           </div>
-          {{ end }}
-        </div>
+          <div>
+            <div><span>Address:</span></div>
+            <input
+              name="address"
+              required
+              type="text"
+              value="{{ .data.address }}"
+            />
+          </div>
+          <div>
+            <div>
+              <span>Your valid government ID: {{ .data.gov_id }}</span>
+              {{ if or (not .data.is_verified) .data.is_verification_pending }}
+              <div>
+                <input name="file" required type="file" />
+              </div>
+              {{ end }}
+            </div>
+          </div>
+          <div>
+            <span style="color: red">{{ .msgs }}</span>
+            <span style="color: green">{{ .success_msg }}</span>
+          </div>
+          <button type="submit">
+            <span id="user-logout-link">Submit</span>
+          </button>
+        </form>
       </div>
 
       <!-- Body -->
-      <form method="POST" , action="/users/signout">
+      <form method="post" action="/users/signout">
         <button type="submit">
           <span id="user-logout-link">Logout</span>
         </button>

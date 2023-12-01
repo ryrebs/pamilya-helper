@@ -2,16 +2,23 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"mime/multipart"
+	"os"
 )
 
+const UploadDst = "public/uploads"
+
 type UserDetail struct {
-	Name        string
-	Email       string
-	Birthdate   sql.NullString
-	Address     sql.NullString
-	Is_verified bool
-	Is_admin    bool
+	Name                  string
+	Email                 string
+	Birthdate             sql.NullString
+	Address               sql.NullString
+	IsVerified            bool
+	IsAdmin               bool
+	IsVerificationPending bool
+	AccountId             int
 }
 
 type User struct {
@@ -27,8 +34,8 @@ type NewUser struct {
 
 type EditableUserFields struct {
 	Name      string `form:"name" validate:"required,min=4"`
-	Address   string `form:"email" validate:"required"`
-	Birthdate string `form:"email" validate:"required"`
+	Address   string `form:"address" validate:"required"`
+	Birthdate string `form:"birthdate" validate:"required"`
 }
 
 func CreateUser(user NewUser, db *sql.DB) error {
@@ -55,12 +62,15 @@ func FindUserDetail(email string, db *sql.DB) *UserDetail {
 
 // Returns the user if found
 func FindUser(email string, db *sql.DB) User {
-	stmt, err := db.Prepare(`SELECT name, email,
+	stmt, err := db.Prepare(`SELECT
+								name, email,
 								password, birthdate,
-								address, is_verified, is_admin
+								address, is_verified,
+								is_admin, id,
+								is_verification_pending
 							FROM account WHERE email=?`)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return User{}
 	}
 	defer stmt.Close()
@@ -71,12 +81,51 @@ func FindUser(email string, db *sql.DB) User {
 		&user.Password,
 		&user.Birthdate,
 		&user.Address,
-		&user.Is_verified,
-		&user.Is_admin)
+		&user.IsVerified,
+		&user.IsAdmin,
+		&user.AccountId,
+		&user.IsVerificationPending)
 
 	if err != nil {
 		log.Println(err)
 		return User{}
 	}
 	return user
+}
+
+func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipart.FileHeader, db *sql.DB) error {
+	rmFFn := func(fname string) error {
+		if _, err := os.Stat(fname); err != nil {
+			log.Println(err)
+			return err
+		}
+		err := os.Remove(fname)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	pathFname := fmt.Sprintf(UploadDst + "/" + fmt.Sprint(user.AccountId) + "_" + file.Filename)
+	err := CreateFile(file, pathFname, user.AccountId)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Remove created file if any error occurs.
+	err = UpdateUser(user.Email, details, db)
+	if err != nil {
+		rmFFn(pathFname)
+		return err
+	}
+
+	err = InsertGovID(user.AccountId, file.Filename, db)
+	if err != nil {
+		rmFFn(pathFname)
+		return err
+	}
+
+	return nil
 }

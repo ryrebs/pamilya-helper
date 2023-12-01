@@ -6,7 +6,9 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -34,9 +36,26 @@ func initDBiFNotExists() *sql.DB {
 	return db.GetDBConn(db.DefaultPamilyaHelperDBName)
 }
 
+func createUploadFolder() error {
+	uploadDir := "uploads"
+	if _, err := os.Stat(uploadDir); err != nil {
+		log.Printf("Creating uploads folder...")
+		err := os.Mkdir(uploadDir, 0755)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		return err
+	}
+	return nil
+}
+
 func Serve() {
+	// Initialize necessary components.
+	err := createUploadFolder()
 	dbConn := initDBiFNotExists()
-	if dbConn != nil {
+
+	// Start the server
+	if dbConn != nil && err == nil {
 		log.Println("Starting server...")
 
 		defer dbConn.Close()
@@ -49,12 +68,30 @@ func Serve() {
 
 		// Setup static files and templates
 		e.Static("static", "public/static")
+		e.Static("uploads", "public/uploads")
 		e.Renderer = &Template{
 			templates: template.Must(template.ParseGlob("public/templates/*.html")),
 		}
 
 		// Custom Middlewares
 		e.Use(db.AddDBContextMiddleware(dbConn))
+
+		// Check session before accessing uploads/
+		e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+			return func(c echo.Context) error {
+				targetURI := c.Request().RequestURI
+				log.Println(strings.Contains(targetURI, "/uploads"))
+				if strings.Contains(targetURI, "/uploads") {
+					sess, _ := session.Get("auth-pamilyahelper-session", c)
+					cc := c.(*db.CustomDBContext)
+					err := routes.CheckSessionExist(c, sess, cc.Db())
+					if err != nil {
+						return c.Redirect(http.StatusSeeOther, "/signin")
+					}
+				}
+				return next(c)
+			}
+		})
 
 		// Routes
 		e.GET("/", routes.Index)
@@ -63,9 +100,10 @@ func Serve() {
 		e.POST("/signup", routes.SignUp)
 
 		// Routes - authenticated users
-		users := e.Group("users", routes.RedirectToSignInMiddleware)
-		users.Match([]string{"GET", "PATCH"}, "/profile", routes.Profile)
+		users := e.Group("users", routes.RequireSignInMiddleware)
+		users.GET("/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
+		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccount)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
