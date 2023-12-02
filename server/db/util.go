@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -142,9 +141,9 @@ func LoadFixtures() {
 	if err == nil {
 		log.Println("Created initial user: 'aubrey' with 'aubrey1234' as password...")
 	}
-	err = InsertUser("darren", "darren@pmh.com", "darren", false, false, db)
+	err = InsertUser("darren", "darren@pmh.com", "darren1234", false, false, db)
 	if err == nil {
-		log.Println("Created initial user: 'darren' with 'darren' as password...")
+		log.Println("Created initial user: 'darren' with 'darren1234' as password...")
 	}
 }
 
@@ -330,7 +329,6 @@ func GetAccountsForVerificationFromDb(limit, offset string, db *sql.DB) ([]UserV
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(user)
 		users = append(users, user)
 	}
 	err = rows.Err()
@@ -339,4 +337,35 @@ func GetAccountsForVerificationFromDb(limit, offset string, db *sql.DB) ([]UserV
 	}
 
 	return users, nil
+}
+
+func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
+	if conn != nil {
+		updateStmt := `UPDATE account 
+						SET is_verified=?,is_verification_pending=0
+				   WHERE email=?`
+		tx, err := conn.Begin()
+		if err != nil {
+			log.Fatal(err)
+		}
+		stmt, err := tx.Prepare(updateStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		defer stmt.Close()
+		_, err = stmt.Exec(verify, email) // Execute update
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		return nil
+	}
+	return errors.New("no db found")
 }

@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"pamilyahelper/webapp/server/db"
-	"strings"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -25,21 +24,6 @@ func GetUserFromSession(c echo.Context, db_ *sql.DB) (*db.UserDetail, error) {
 		}
 	}
 	return nil, errors.New("no user found for this session")
-}
-
-// Redirects the user to profile if user is signed in.
-func RedirectToProfileMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sess, _ := session.Get("auth-pamilyahelper-session", c)
-		cc := c.(*db.CustomDBContext)
-
-		if sess != nil && sess.Values["user"] != nil {
-			if user := db.FindUser(sess.Values["user"].(string), cc.Db()); user != (db.User{}) {
-				return c.Redirect(http.StatusSeeOther, "/users/profile")
-			}
-		}
-		return next(c)
-	}
 }
 
 func CheckSessionExist(c echo.Context, sess *sessions.Session, conn *sql.DB) error {
@@ -73,33 +57,6 @@ func CheckSessionIsAdmin(c echo.Context, sess *sessions.Session, conn *sql.DB) e
 	}
 
 	return nil
-}
-
-// Redirects the user to signin if user is not signin in.
-func RequireSignInMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sess, _ := session.Get("auth-pamilyahelper-session", c)
-		cc := c.(*db.CustomDBContext)
-
-		err := CheckSessionExist(c, sess, cc.Db())
-		if err != nil {
-			return c.Redirect(http.StatusSeeOther, "/signin")
-		}
-		return next(c)
-	}
-}
-
-func RequireAdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sess, _ := session.Get("auth-pamilyahelper-session", c)
-		cc := c.(*db.CustomDBContext)
-
-		err := CheckSessionIsAdmin(c, sess, cc.Db())
-		if err != nil {
-			return c.Redirect(http.StatusSeeOther, "/signin")
-		}
-		return next(c)
-	}
 }
 
 func createSession(userEmail string, c *db.CustomDBContext) error {
@@ -211,91 +168,6 @@ func SignUp(c echo.Context) error {
 
 }
 
-// Verify account view
-func VerifyAccountView(c echo.Context) error {
-	cc := c.(*db.CustomDBContext)
-
-	data := map[string]interface{}{
-		"is_log_in": true,
-	}
-	user, err := GetUserFromSession(cc, cc.Db())
-	if user != nil {
-		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
-		data["data"] = map[string]interface{}{
-			"name":                    user.Name,
-			"email":                   user.Email,
-			"birthdate":               user.Birthdate.String,
-			"address":                 user.Address.String,
-			"is_admin":                user.IsAdmin,
-			"is_verified":             user.IsVerified,
-			"is_verification_pending": user.IsVerificationPending,
-			"gov_id":                  govIdFile,
-		}
-	}
-	if err != nil {
-		log.Println(err.Error())
-		return echo.NewHTTPError(http.StatusInternalServerError)
-	}
-
-	// Handle Get requests
-	if c.Request().Method == "GET" {
-		return renderWithAuthContext("verify-profile.html", c, data)
-	}
-
-	errorMsgs := make([]string, 0, 4)
-	editableUser := db.EditableUserFields{}
-
-	if err := cc.Bind(&editableUser); err != nil {
-		log.Println(err.Error())
-		return echo.NewHTTPError(http.StatusBadRequest)
-
-	}
-	if err := cc.Validate(editableUser); err != nil {
-		log.Println(err.Error())
-		m := strings.Split(err.Error(), "\n")
-		for _, v := range m {
-			if strings.Contains(v, "EditableUserFields.Name") {
-				errorMsgs = append(errorMsgs, "Invalid Name")
-			}
-			if strings.Contains(v, "EditableUserFields.Birthdate") {
-				errorMsgs = append(errorMsgs, "Invalid Birthdate")
-			}
-			if strings.Contains(v, "EditableUserFields.Address") {
-				errorMsgs = append(errorMsgs, "Invalid Address")
-			}
-		}
-		data["msgs"] = errorMsgs
-		return renderWithAuthContext("verify-profile.html", cc, data)
-	}
-	file, err := cc.FormFile("file")
-	if err != nil {
-		log.Println(err.Error())
-		errorMsgs = append(errorMsgs, "Invalid File")
-		data["msgs"] = errorMsgs
-		return renderWithAuthContext("verify-profile.html", cc, data)
-	}
-
-	// Update user details
-	err = db.UpdateUserDetail(*user, editableUser, file, cc.Db())
-	if err != nil {
-		log.Println(err.Error())
-		data["msgs"] = "Something went wrong. Please try again later."
-		return renderWithAuthContext("verify-profile.html", cc, data)
-	}
-	data["success_msg"] = "Success. Waiting for approval."
-	data["data"] = map[string]interface{}{
-		"name":                    editableUser.Name,
-		"email":                   user.Email,
-		"birthdate":               editableUser.Birthdate,
-		"address":                 editableUser.Address,
-		"is_admin":                user.IsAdmin,
-		"is_verified":             user.IsVerified,
-		"is_verification_pending": user.IsVerificationPending,
-		"gov_id":                  file.Filename,
-	}
-	return renderWithAuthContext("verify-profile.html", cc, data)
-}
-
 // Remove user from db. Use only
 // for testing purposes or privileged access
 func RemoveUser(c echo.Context) error {
@@ -321,13 +193,4 @@ func RemoveUser(c echo.Context) error {
 
 	}
 	return cc.NoContent(http.StatusNoContent)
-}
-
-func VerifyUser(c echo.Context) error {
-	user := struct {
-		action string `form:"name" validate="required"`
-		email  string `form:"email" validated="required,oneof=accept reject"`
-	}{}
-	log.Println(user)
-	return nil
 }

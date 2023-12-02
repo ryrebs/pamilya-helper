@@ -35,6 +35,7 @@ func Profile(c echo.Context) error {
 		"is_log_in": true,
 	}
 	user, error := GetUserFromSession(c, cc.Db())
+	govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 	if user != nil {
 		// Get accounts with pending verifications
 		var accounts []db.UserVerification
@@ -50,6 +51,7 @@ func Profile(c echo.Context) error {
 			"address":     user.Address.String,
 			"is_admin":    user.IsAdmin,
 			"is_verified": user.IsVerified,
+			"gov_id":      govIdFile,
 			"accounts":    accounts,
 		}
 		return renderWithAuthContext("profile.html", c, data)

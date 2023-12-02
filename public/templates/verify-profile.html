@@ -154,11 +154,9 @@
           <div>
             <div>
               <span>Your valid government ID: {{ .data.gov_id }}</span>
-              {{ if or (not .data.is_verified) .data.is_verification_pending }}
               <div>
                 <input name="file" required type="file" />
               </div>
-              {{ end }}
             </div>
           </div>
           <div>
