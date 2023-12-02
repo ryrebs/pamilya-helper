@@ -1,8 +1,14 @@
 ## PamilyaHelper web app.
 
-### A. Getting Started
+Dependencies:
 
-0. Make sure _golang version 1.21.4_ is installed in your system.
+1. Node v20.9.0
+
+2. Golang 1.21.4
+
+3. Docker
+
+### A. Getting Started
 
 1. Build the app: `go build`
 
@@ -12,13 +18,15 @@
 
 4. Or without installation, run the built binary with: `./webapp <arg>`
 
-### B. Build app in Docker container
+### Running the app in Docker.
+
+A. Build the image that compiles the app.
 
 1.  Build the container:
 
         docker build -t pamilyahelper-builder:latest -t pamilyahelper-builder:v0.0.1
 
-2.  Run the container to build the app:
+2.  Run the container to compile the app:
 
         docker run \
                 --volume=<absolute-path-to>/dist:/pamilyahelper/dist \
@@ -30,7 +38,7 @@
                 -it \
                 pamilyahelper-builder
 
-### C. Run the app in Docker container
+B. Running the compiled app.
 
 1. Build the container: `docker build -t pamilyahelper:latest -t pamilyahelper:v0.0.1 .`
 
@@ -46,7 +54,13 @@ Optionally, attached a database named: `pamilyahelper.db`
 
 ### Fixtures loaded:
 
-- Default admin:pass: `admin@admin.com:admin1234`
+Default users:pass:
+
+- `admin@admin.com:admin1234`
+
+- `aubrey@pmh.com:aubrey1234`
+
+- `darren@pmh.com:darren1234`
 
 ### Running tests
 
