@@ -14,4 +14,6 @@ RUN apk add gcc
 
 RUN apk add libc-dev 
 
-ENTRYPOINT ["/bin/sh", "build.sh"]
+RUN chmod +x build.sh
+
+ENTRYPOINT ["build.sh"]

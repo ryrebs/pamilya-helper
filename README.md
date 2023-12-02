@@ -40,7 +40,7 @@ A. Build the image that compiles the app.
 
 B. Running the compiled app.
 
-1. Build the container: `docker build -t pamilyahelper:latest -t pamilyahelper:v0.0.1 .`
+1. Build the container: `docker build -t pamilyahelper:latest -t pamilyahelper:v0.0.1 .` (Update build version accordingly)
 
 2. Run the app: `docker run --rm -it -p 127.0.0.1:5000:5000 pamilyahelper`
 
