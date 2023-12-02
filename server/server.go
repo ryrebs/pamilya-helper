@@ -72,7 +72,7 @@ func Serve() {
 		// Init echo app
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
-		// e.Use(middleware.Logger())
+		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
