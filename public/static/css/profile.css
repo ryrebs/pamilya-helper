@@ -1,0 +1,29 @@
+.user-box-container {
+  display: flex;
+  column-gap: 1em;
+  justify-content: center;
+}
+
+.user-box {
+  display: flex;
+}
+
+.user-box__detail input {
+  border: 0px !important;
+  background-color: white;
+}
+
+.user-box__detail a {
+  font-size: 1em;
+  font-weight: normal;
+  color: #2B3940;
+}
+
+.user-box__detail input {
+  border: 0px !important;
+  background-color: white;
+}
+
+.user-box__btns {
+  text-align: center;
+}

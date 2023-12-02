@@ -8,7 +8,9 @@ import (
 	"os"
 )
 
-const UploadDst = "public/uploads"
+const (
+	UploadDst = "public/uploads" // Upload destination
+)
 
 type UserDetail struct {
 	Name                  string

@@ -234,7 +234,7 @@ func InsertGovID(accountId int, fileName string, db *sql.DB) error {
 	return errors.New("no db found")
 }
 
-// Get user's government id
+// Get user's government id file name
 func GetUserGovId(accountId int, db *sql.DB) string {
 	stmt, err := db.Prepare(`SELECT image from upload where account_id=?`)
 	fileName := ""

@@ -131,7 +131,7 @@
         >
           <div>
             <div><span>Fullname:</span></div>
-            <input name="name" type="text" value="{{ .data.name }}" />
+            <input required name="name" type="text" value="{{ .data.name }}" />
           </div>
           <div>
             <div><span>Date of Birth:</span></div>
@@ -162,7 +162,9 @@
             </div>
           </div>
           <div>
-            <span style="color: red">{{ .msgs }}</span>
+            {{ range .msgs }}
+            <span style="color: red">{{ . }}</span><br />
+            {{ end }}
             <span style="color: green">{{ .success_msg }}</span>
           </div>
           <button type="submit">

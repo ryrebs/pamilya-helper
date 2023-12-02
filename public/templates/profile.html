@@ -48,6 +48,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/static/css/style.css" rel="stylesheet" />
+    <link href="/static/css/profile.css" rel="stylesheet" />
 
     <!-- ===== Link Swiper's CSS ===== -->
     <link
@@ -123,6 +124,7 @@
       <!-- Navbar End -->
 
       <!-- Profile details  -->
+      {{ if not .data.is_admin }}
       <div>
         <div>
           <span style="font-weight: bold">{{ .data.name }}</span>
@@ -151,16 +153,47 @@
           {{ end }}
         </div>
       </div>
+      {{ end }}
 
       <!-- Account verificatin view for admins -->
       {{ if .data.is_admin }}
       <div>
-        <div>
+        <div style="text-align: center">
           <span>Admin Manual Verification</span>
         </div>
-        <div>
+        <div class="user-box-container">
           {{ range .data.accounts }}
-          <span>{{ .Name }}</span>
+          <div class="user-box">
+            <form action="/admin/verify/user/" method="post">
+              <div class="user-box__detail">{{ .Name }}</div>
+              <div class="user-box__detail">
+                <span>Email: </span>
+                <input type="text" value="{{ .Email }}" name="email" disabled />
+              </div>
+              <div class="user-box__detail">
+                <span>Birthday: </span>{{ .Birthdate.String }}
+              </div>
+              <div class="user-box__detail">
+                <span>Address: </span>{{ .Address.String }}
+              </div>
+              <div class="user-box__detail">
+                <span
+                  >Government ID:
+                  <a href="/uploads/{{ .GovId }}" class="gov_id"
+                    >{{ .GovId }}</a
+                  ></span
+                >
+              </div>
+              <div class="user-box__btns">
+                <button type="submit" name="action" value="accept">
+                  Accept
+                </button>
+                <button type="submit" name="action" value="reject">
+                  Reject
+                </button>
+              </div>
+            </form>
+          </div>
           {{ end }}
         </div>
       </div>

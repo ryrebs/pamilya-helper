@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -49,6 +50,14 @@ func createUploadFolder() error {
 	return nil
 }
 
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
+
 func Serve() {
 	// Initialize necessary components.
 	err := createUploadFolder()
@@ -62,13 +71,14 @@ func Serve() {
 
 		// Init echo app
 		e := echo.New()
+		e.Validator = &CustomValidator{validator: validator.New()}
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
 		// Setup static files and templates
-		e.Static("static", "public/static")
-		e.Static("uploads", "public/uploads")
+		e.Static("static", "public/static")   // html, js, css
+		e.Static("uploads", "public/uploads") // serve uploaded files
 		e.Renderer = &Template{
 			templates: template.Must(template.ParseGlob("public/templates/*.html")),
 		}
@@ -80,7 +90,6 @@ func Serve() {
 		e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
 				targetURI := c.Request().RequestURI
-				log.Println(strings.Contains(targetURI, "/uploads"))
 				if strings.Contains(targetURI, "/uploads") {
 					sess, _ := session.Get("auth-pamilyahelper-session", c)
 					cc := c.(*db.CustomDBContext)
@@ -99,11 +108,15 @@ func Serve() {
 		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
 		e.POST("/signup", routes.SignUp)
 
+		// Routes - for authenticated admin
+		admin := e.Group("admin", routes.RequireSignInMiddleware, routes.RequireAdminMiddleware)
+		admin.POST("/verify/user", routes.VerifyUser)
+
 		// Routes - authenticated users
 		users := e.Group("users", routes.RequireSignInMiddleware)
 		users.GET("/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
-		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccount)
+		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
