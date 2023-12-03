@@ -26,39 +26,6 @@ func GetUserFromSession(c echo.Context, db_ *sql.DB) (*db.UserDetail, error) {
 	return nil, errors.New("no user found for this session")
 }
 
-func CheckSessionExist(c echo.Context, sess *sessions.Session, conn *sql.DB) error {
-	// Session not found
-	if sess != nil && sess.Values["user"] == nil {
-		return errors.New("no session found")
-	}
-	// Session found but email not found
-	if sess.Values["user"] != nil && db.FindUser(sess.Values["user"].(string), conn) == (db.User{}) {
-		return errors.New("no user found")
-	}
-	return nil
-}
-
-func CheckSessionIsAdmin(c echo.Context, sess *sessions.Session, conn *sql.DB) error {
-	// Session not found
-	if sess != nil && sess.Values["user"] == nil {
-		return errors.New("no session found")
-	}
-
-	user := db.FindUser(sess.Values["user"].(string), conn)
-
-	// Session found but email not found
-	if sess.Values["user"] != nil && user == (db.User{}) {
-		return errors.New("no user found")
-	}
-
-	// Check admin
-	if !user.IsAdmin {
-		return errors.New("admin not found")
-	}
-
-	return nil
-}
-
 func createSession(userEmail string, c *db.CustomDBContext) error {
 	sess, _ := session.Get("auth-pamilyahelper-session", c)
 	sess.Options = &sessions.Options{

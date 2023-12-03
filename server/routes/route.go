@@ -35,9 +35,9 @@ func Profile(c echo.Context) error {
 		"is_log_in": true,
 	}
 	user, error := GetUserFromSession(c, cc.Db())
-	govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 	if user != nil {
 		// Get accounts with pending verifications
+		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 		var accounts []db.UserVerification
 		if user.IsAdmin {
 			accounts_, _ := db.GetAccountsForVerification("3", "0", cc.Db())
