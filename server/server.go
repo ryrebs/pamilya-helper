@@ -66,8 +66,10 @@ func Serve() {
 	// Start the server
 	if dbConn != nil && err == nil {
 		log.Println("Starting server...")
-
 		defer dbConn.Close()
+
+		// Load fixtures
+		db.LoadFixtures()
 
 		// Init echo app
 		e := echo.New()

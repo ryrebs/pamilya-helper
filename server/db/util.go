@@ -108,16 +108,18 @@ func InsertUser(name, email, password string, is_verified, is_admin bool, db *sq
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
 
-		if err == nil {
-			_, err = stmt.Exec(name, email, CreateUserPassword(password), is_verified, is_admin)
-			if err == nil {
-				return nil
-			}
+		if err != nil {
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
+			return err
 		}
 		defer stmt.Close()
-		log.Printf("%q: %s\n", err, fixtureAdminStmt)
-		return err
+
+		_, err = stmt.Exec(name, email, CreateUserPassword(password), is_verified, is_admin)
+		if err != nil {
+			log.Printf("%q: %s\n", err, fixtureAdminStmt)
+			return err
+		}
+		return nil
 	}
 	return errors.New("no database connection found")
 }
