@@ -107,6 +107,7 @@ func Serve() {
 		// Routes
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
+		e.GET("/job-list", routes.JobList)
 		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
 		e.POST("/signup", routes.SignUp)
 

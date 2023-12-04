@@ -60,3 +60,7 @@ func Profile(c echo.Context) error {
 	log.Println(error)
 	return echo.NewHTTPError(http.StatusInternalServerError)
 }
+
+func JobList(c echo.Context) error {
+	return c.Render(http.StatusOK, "job-list.html", nil)
+}
