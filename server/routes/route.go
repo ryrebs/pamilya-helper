@@ -106,14 +106,7 @@ func JobDetail(c echo.Context) error {
 		)
 	}
 
-	user, err := GetUserFromSession(c, cc.Db())
-	if err != nil {
-		return renderWithAuthContext(
-			"job-detail.html", c, nil,
-		)
-	}
-
-	job, err := db.GetJob(jDetail.ID, user.AccountId, cc.Db())
+	job, err := db.GetJob(jDetail.ID, cc.Db())
 	if err != nil {
 		return renderWithAuthContext(
 			"job-detail.html", c, nil,

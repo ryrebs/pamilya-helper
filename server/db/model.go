@@ -25,6 +25,10 @@ type Job struct {
 	EmployementType string `json:"employement_type"`
 	EmployerId      int    `json:"employer_id"`
 	DateLine        string `json:"dateline"`
+	EmployerName    string
+	EmployerEmail   string
+	EmployerContact string
+	EmployerDetail  string
 }
 
 type UserDetail struct {
@@ -167,8 +171,8 @@ func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, er
 	return respJobs, nil
 }
 
-func GetJob(jobID, empID int, conn *sql.DB) (interface{}, error) {
-	job, err := GetJobFromDB(jobID, empID, conn)
+func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
+	job, err := GetJobFromDB(jobID, conn)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -188,6 +192,10 @@ func GetJob(jobID, empID int, conn *sql.DB) (interface{}, error) {
 		"price_from":       job.(Job).PriceFrom,
 		"price_to":         job.(Job).PriceTo,
 		"dateline":         job.(Job).DateLine,
+		"employer":         job.(Job).EmployerName,
+		"emp_email":        job.(Job).EmployerEmail,
+		"emp_contact":      job.(Job).EmployerContact,
+		"emp_detail":       job.(Job).EmployerDetail,
 	}
 	return data, nil
 }

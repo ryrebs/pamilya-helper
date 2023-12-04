@@ -75,15 +75,21 @@
                                     <div class="col-lg-4">
                                         <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                                             <h4 class="mb-4">Contact Information</h4>
-                                            <p class="m-0">Full Name: Elena Dela Cruz</p>
-                                            <p class="m-0">Email: elenadelacruz@gmail.com</p>
-                                            <p class="m-0">Contact Number: 09293657429</p>
+                                            <p class="m-0">Full Name: {{ .job.employer }}</p>
+                                            <p class="m-0">Email: {{ .job.emp_email }}</p>
+                                            <p class="m-0">Contact Number: {{ .job.emp_contact }}</p>
                                         </div>
                                         <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                                             <h4 class="mb-4">Employer Detail</h4>
-                                            <p class="m-0">I am a homeowner who takes great pride in my garden's beauty and serenity. With a busy schedule, I am seeking a dedicated gardener to help me maintain the garden's stunning appearance. Your role will be crucial in ensuring that my garden remains a tranquil oasis for relaxation and enjoyment. Your hard work and green thumbs will be highly valued.</p>
+                                            <p class="m-0">{{ .job.emp_detail }}</p>
+                                        </div>
+                                        <div style="margin-top: 1em;text-align: center;">
+                                            <form method="post" action="/users/apply">
+                                                <button type="submit" class="btn btn-primary">Submit an Application</button>
+                                            </form>
                                         </div>
                                     </div>
+                                   
                                 </div>
                             </div>
                         </div>

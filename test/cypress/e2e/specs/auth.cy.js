@@ -7,7 +7,7 @@ context("Authentication", () => {
 
   it("Existing can user can signin and signout", () => {
     // Sign in
-    cy.login("admin@admin.com", "admin1234");
+    cy.login("admin@pmh.com", "admin1234");
     cy.location("pathname").should("equal", "/");
 
     // navigate to profile

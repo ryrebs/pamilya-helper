@@ -525,12 +525,15 @@ func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, er
 	return jobs, nil
 }
 
-func GetJobFromDB(jobID, empID int, conn *sql.DB) (interface{}, error) {
-	query := `SELECT id, employer_id, title, description,
-					 responsibility, skills, location, price_from, price_to,
-					 employment_type, dateline, emp.name, emp.email, emp.contact_no
-				FROM job as jb INNER JOIN account as emp ON jb.employer_id = emp.id
-				WHERE jb.id = ? AND jb.employer_id != ?`
+func GetJobFromDB(jobID int, conn *sql.DB) (interface{}, error) {
+	query := `SELECT jb.id, employer_id,
+					 title, description,
+					responsibility, skills,
+					location, price_from, price_to,
+					employment_type, dateline,
+					emp.name, emp.email, emp.contact, emp.detail
+			FROM job as jb INNER JOIN account as emp ON jb.employer_id = emp.id
+			WHERE jb.id = ?`
 	stmt, err := conn.Prepare(query)
 	if err != nil {
 		log.Println(err)
@@ -539,10 +542,12 @@ func GetJobFromDB(jobID, empID int, conn *sql.DB) (interface{}, error) {
 	defer stmt.Close()
 
 	var job Job
-	err = stmt.QueryRow(jobID, empID).Scan(&job.ID, &job.EmployerId,
+	err = stmt.QueryRow(jobID).Scan(&job.ID, &job.EmployerId,
 		&job.Title, &job.Description, &job.Responsibility,
 		&job.Skills, &job.Location, &job.PriceFrom,
-		&job.PriceTo, &job.EmployementType, &job.DateLine)
+		&job.PriceTo, &job.EmployementType, &job.DateLine,
+		&job.EmployerName, &job.EmployerEmail,
+		&job.EmployerContact, &job.EmployerDetail)
 	if err != nil {
 		log.Println(err)
 		return nil, err
