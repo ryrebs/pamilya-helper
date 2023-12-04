@@ -24,13 +24,13 @@
       <a href="/helpers" class="nav-item nav-link">Helpers</a>
       <a href="/contact" class="nav-item nav-link">Contact</a>
     </div>
-    {{if .is_log_in}}
+    {{ if .is_log_in }}
     <a
       href="/users/profile"
       class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
       >Profile</a
     >
-    {{else}}
+    {{ else }}
     <a
       href="/signin"
       class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"

@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"io"
 	"log"
@@ -20,17 +21,33 @@ CREATE TABLE IF NOT EXISTS account (
 	name TEXT,
 	email TEXT UNIQUE,
 	password TEXT,
-	birthdate TEXT,
-	address TEXT,
+	birthdate TEXT NOT NULL DEFAULT '',
+	address TEXT NOT NULL DEFAULT '',
 	is_verified INTEGER DEFAULT 0,
 	is_verification_pending INTEGER DEFAULT 0,
-	is_admin INTEGER DEFAULT 0
+	is_admin INTEGER DEFAULT 0,
+	detail TEXT NOT NULL DEFAULT '',
+	contact TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS upload (
 	id INTEGER NOT NULL PRIMARY KEY,
 	image TEXT,
 	account_id INTEGER,
 	detail TEXT
+);
+CREATE TABLE IF NOT EXISTS job (
+	id INTEGER NOT NULL PRIMARY KEY,
+	employer_id INTEGER NOT NULL,
+	title TEXT,
+	description TEXT,
+	responsibility TEXT,
+	skills TEXT,
+	location TEXT,
+	price_from TEXT,
+	price_to TEXT,
+	employment_type TEXT,
+	dateLine TEXT,
+	FOREIGN KEY(employer_id) REFERENCES account(id)
 );
 `
 
@@ -100,10 +117,13 @@ func IsPWDvalid(password, hashedStr string) bool {
 	return false
 }
 
-func InsertUser(name, email, password string, is_verified, is_admin bool, db *sql.DB) error {
+func InsertUser(user User, db *sql.DB) error {
 	fixtureAdminStmt := `
-		INSERT INTO account(name, email, password, is_verified, is_admin, is_verification_pending)
-		VALUES(?, ?, ?, ?, ?, 1)
+		INSERT INTO account(
+			name, email, password,
+			is_verified, is_admin, is_verification_pending,
+			detail, contact)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
@@ -114,7 +134,10 @@ func InsertUser(name, email, password string, is_verified, is_admin bool, db *sq
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(name, email, CreateUserPassword(password), is_verified, is_admin)
+		_, err = stmt.Exec(user.Name, user.Email,
+			CreateUserPassword(user.Password), user.IsVerified,
+			user.IsAdmin, user.IsVerificationPending,
+			user.Detail, user.Contact)
 		if err != nil {
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
 			return err
@@ -124,28 +147,117 @@ func InsertUser(name, email, password string, is_verified, is_admin bool, db *sq
 	return errors.New("no database connection found")
 }
 
-func createAdmin(db *sql.DB) error {
-	err := InsertUser("admin", "admin@admin.com", "admin1234", true, true, db)
+func InsertJob(dateline, title, descp, respb, skills, loc, pf, pt, emp_type string, emp_id int, db *sql.DB) error {
+	fixtureJobStmt := `
+		INSERT INTO job(dateline, title, description, responsibility, skills, location, price_from, price_to, employment_type, employer_id)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`
+	if db != nil {
+		stmt, err := db.Prepare(fixtureJobStmt)
+
+		if err != nil {
+			log.Printf("%q: %s\n", err, fixtureJobStmt)
+			return err
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(dateline, title, descp, respb, skills, loc, pf, pt, emp_type, emp_id)
+		if err != nil {
+			log.Printf("%q: %s\n", err, fixtureJobStmt)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no database connection found")
+}
+
+func loadJobFixture(conn *sql.DB) error {
+	var jobs struct {
+		Jobs []Job `json:"jobs"`
+	}
+	jsonFile, err := os.Open("fixtures/job.json")
 	if err != nil {
 		log.Println(err)
 		return err
+	}
+	defer jsonFile.Close()
+	content, err := io.ReadAll(jsonFile)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	err = json.Unmarshal(content, &jobs)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	for _, job := range jobs.Jobs {
+		err := InsertJob(
+			job.DateLine, job.Title,
+			job.Description, job.Responsibility, job.Skills,
+			job.Location, job.PriceFrom, job.PriceTo,
+			job.EmployementType, job.EmployerId, conn)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	return nil
+}
+
+func loadUserFixture(conn *sql.DB) error {
+	var users struct {
+		Users []User `json:"users"`
+	}
+	jsonFile, err := os.Open("fixtures/user.json")
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer jsonFile.Close()
+	content, err := io.ReadAll(jsonFile)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	err = json.Unmarshal(content, &users)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	for _, user := range users.Users {
+		err := InsertUser(
+			User{
+				UserDetail: UserDetail{
+					Name:                  user.Name,
+					Email:                 user.Email,
+					Birthdate:             user.Birthdate,
+					Address:               user.Address,
+					IsVerified:            user.IsVerified,
+					IsAdmin:               user.IsAdmin,
+					IsVerificationPending: user.IsVerificationPending,
+					Detail:                user.Detail,
+					Contact:               user.Contact,
+				},
+				Password: user.Password,
+			},
+
+			conn)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	return nil
 }
 
 func LoadFixtures() {
-	db := GetDBConn(DefaultPamilyaHelperDBName)
-	err := createAdmin(db)
+	conn := GetDBConn(DefaultPamilyaHelperDBName)
+	err := loadUserFixture(conn)
 	if err == nil {
-		log.Println("Created initial administrator: 'admin' with 'admin1234' as password...")
+		log.Println("Created initial users...")
 	}
-	err = InsertUser("aubrey", "aubrey@pmh.com", "aubrey1234", false, false, db)
+	err = loadJobFixture(conn)
 	if err == nil {
-		log.Println("Created initial user: 'aubrey' with 'aubrey1234' as password...")
-	}
-	err = InsertUser("darren", "darren@pmh.com", "darren1234", false, false, db)
-	if err == nil {
-		log.Println("Created initial user: 'darren' with 'darren1234' as password...")
+		log.Println("Created initial jobs...")
 	}
 }
 
@@ -329,13 +441,15 @@ func GetAccountsForVerificationFromDb(limit, offset string, db *sql.DB) ([]UserV
 		var user UserVerification
 		err = rows.Scan(&user.Email, &user.Name, &user.Birthdate, &user.Address, &user.GovId)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return nil, err
 		}
 		users = append(users, user)
 	}
 	err = rows.Err()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return nil, err
 	}
 
 	return users, nil
@@ -370,4 +484,68 @@ func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
 		return nil
 	}
 	return errors.New("no db found")
+}
+
+func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, error) {
+	query := `SELECT * FROM job WHERE employer_id != ? LIMIT ? OFFSET ?`
+
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(accountID, limit, offset)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var jobs []Job
+	for rows.Next() {
+		var job Job
+		err = rows.Scan(&job.ID, &job.EmployerId,
+			&job.Title, &job.Description, &job.Responsibility,
+			&job.Skills, &job.Location, &job.PriceFrom,
+			&job.PriceTo, &job.EmployementType, &job.DateLine)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		jobs = append(jobs, job)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return jobs, nil
+}
+
+func GetJobFromDB(jobID, empID int, conn *sql.DB) (interface{}, error) {
+	query := `SELECT id, employer_id, title, description,
+					 responsibility, skills, location, price_from, price_to,
+					 employment_type, dateline, emp.name, emp.email, emp.contact_no
+				FROM job as jb INNER JOIN account as emp ON jb.employer_id = emp.id
+				WHERE jb.id = ? AND jb.employer_id != ?`
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var job Job
+	err = stmt.QueryRow(jobID, empID).Scan(&job.ID, &job.EmployerId,
+		&job.Title, &job.Description, &job.Responsibility,
+		&job.Skills, &job.Location, &job.PriceFrom,
+		&job.PriceTo, &job.EmployementType, &job.DateLine)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return job, nil
 }

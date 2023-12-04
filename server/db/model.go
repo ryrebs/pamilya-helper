@@ -6,33 +6,50 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
+	"strings"
 )
 
 const (
 	UploadDst = "public/uploads" // Upload destination
 )
 
+type Job struct {
+	ID              string `json:"id"`
+	Title           string `json:"title"`
+	Description     string `json:"description"`
+	Skills          string `json:"skills"`
+	Location        string `json:"location"`
+	PriceFrom       string `json:"price_from"`
+	PriceTo         string `json:"price_to"`
+	Responsibility  string `json:"responsibility"`
+	EmployementType string `json:"employement_type"`
+	EmployerId      int    `json:"employer_id"`
+	DateLine        string `json:"dateline"`
+}
+
 type UserDetail struct {
-	Name                  string
-	Email                 string
-	Birthdate             sql.NullString
-	Address               sql.NullString
-	IsVerified            bool
-	IsAdmin               bool
-	IsVerificationPending bool
+	Name                  string `json:"name"`
+	Email                 string `json:"email"`
+	Birthdate             string `json:"birthdate"`
+	Address               string `json:"address"`
+	IsVerified            bool   `json:"is_verified"`
+	IsAdmin               bool   `json:"is_admin"`
+	IsVerificationPending bool   `json:"is_verification_pending"`
 	AccountId             int
+	Detail                string `json:"detail"`
+	Contact               string `json:"contact"`
 }
 
 type User struct {
 	UserDetail
-	Password string
+	Password string `json:"password"`
 }
 
 type UserVerification struct {
 	Name      string
 	Email     string
-	Birthdate sql.NullString
-	Address   sql.NullString
+	Birthdate string
+	Address   string
 	GovId     string
 }
 
@@ -49,11 +66,15 @@ type EditableUserFields struct {
 }
 
 func CreateUser(user NewUser, db *sql.DB) error {
+	u := User{
+		UserDetail: UserDetail{
+			Name:  user.Name,
+			Email: user.Email,
+		},
+		Password: user.Password,
+	}
 	return InsertUser(
-		user.Name, user.Email,
-		user.Password,
-		false,
-		false,
+		u,
 		db,
 	)
 }
@@ -117,4 +138,56 @@ func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipa
 
 func GetAccountsForVerification(limit, offset string, db *sql.DB) ([]UserVerification, error) {
 	return GetAccountsForVerificationFromDb(limit, offset, db)
+}
+
+func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
+	jobs, err := GetJobsFromDB(limit, offset, accountID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	respJobs := []map[string]interface{}{}
+	for _, job := range jobs {
+		resp := strings.Split(job.Responsibility, "|")
+		skills := strings.Split(job.Skills, "|")
+		respJobs = append(respJobs, map[string]interface{}{
+			"responsibilities": resp,
+			"skills":           skills,
+			"employer_id":      job.EmployerId,
+			"id":               job.ID,
+			"title":            job.Title,
+			"employment_type":  job.EmployementType,
+			"location":         job.Location,
+			"description":      job.Description,
+			"price_from":       job.PriceFrom,
+			"price_to":         job.PriceTo,
+			"dateline":         job.DateLine,
+		})
+	}
+	return respJobs, nil
+}
+
+func GetJob(jobID, empID int, conn *sql.DB) (interface{}, error) {
+	job, err := GetJobFromDB(jobID, empID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	resp := strings.Split(job.(Job).Responsibility, "|")
+	skills := strings.Split(job.(Job).Skills, "|")
+	data := map[string]interface{}{
+		"responsibilities": resp,
+		"skills":           skills,
+		"employer_id":      job.(Job).EmployerId,
+		"id":               job.(Job).ID,
+		"title":            job.(Job).Title,
+		"employment_type":  job.(Job).EmployementType,
+		"location":         job.(Job).Location,
+		"description":      job.(Job).Description,
+		"price_from":       job.(Job).PriceFrom,
+		"price_to":         job.(Job).PriceTo,
+		"dateline":         job.(Job).DateLine,
+	}
+	return data, nil
 }

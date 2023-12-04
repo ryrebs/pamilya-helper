@@ -1,0 +1,28 @@
+{
+  "jobs": [
+    {
+      "employer_id": 1,
+      "title": "Laundry and Ironing",
+      "description": "We are looking for a diligent Laundry Helper to assist a family in Davao",
+      "skills": "Previous experience in laundry and ironing is preferred but not mandatory.|Attention to detail and care when handling delicate fabrics.",
+      "location": "Davao",
+      "price_from": "8,000",
+      "price_to": "9,000",
+      "employement_type": "Full Time",
+      "dateline": "Dec 02, 2023",
+      "responsibility": "Sort and separate laundry items based on color, fabric type, and washing requirements.|Operate washing machines and dryers, ensuring proper settings for different fabrics."
+    },
+    {
+      "employer_id": 1,
+      "title": "Elderly Care",
+      "description": "We are currently looking for a compassionate and experienced caregiver",
+      "skills": "Previous experience in caregiving for the elderly is preferred.|Caring and compassionate nature with a strong sense of empathy.",
+      "location": "Bacolod",
+      "price_from": "25,000",
+      "price_to": "27,000",
+      "employement_type": "Part Time",
+      "dateline": "Dec 23, 2023",
+      "responsibility": "Assist with daily activities, including bathing, dressing, and grooming.|Administer medications and assist with healthcare routines as needed."
+    }
+  ]
+}

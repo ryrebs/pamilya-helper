@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "name": "Van Aubrey",
+      "email": "aubrey@pmh.com",
+      "password": "aubrey1234",
+      "birthdate": "2020-01-01",
+      "address": "Tigbaliran",
+      "is_verified": false,
+      "is_admin": false,
+      "is_verification_pending": false,
+      "detail": "I am a homeowner who takes great pride in my garden's beauty and serenity.",
+      "contact": "123456789011"
+    },
+    {
+      "name": "Mr Admin ",
+      "email": "admin@pmh.com",
+      "password": "admin1234",
+      "birthdate": "2020-01-01",
+      "address": "Tigbaliran",
+      "is_verified": true,
+      "is_admin": true,
+      "is_verification_pending": false,
+      "detail": "I am a homeowner who takes great pride in my garden's beauty and serenity.",
+      "contact": "123456789011"
+    }
+  ]
+}
+

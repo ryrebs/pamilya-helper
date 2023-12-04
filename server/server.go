@@ -68,9 +68,6 @@ func Serve() {
 		log.Println("Starting server...")
 		defer dbConn.Close()
 
-		// Load fixtures
-		db.LoadFixtures()
-
 		// Init echo app
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
@@ -118,6 +115,7 @@ func Serve() {
 		// Routes - authenticated users
 		users := e.Group("users", routes.RequireSignInMiddleware)
 		users.GET("/profile", routes.Profile)
+		users.GET("/job/:id", routes.JobDetail)
 		users.POST("/signout", routes.SignOut)
 		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
 

@@ -29,7 +29,7 @@ func main() {
 	args := os.Args
 
 	if len(args) < 2 {
-		log.Println("See arguments with: `manage help`")
+		log.Println("See arguments with: `webapp help`")
 		return
 	}
 

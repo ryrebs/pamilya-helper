@@ -26,8 +26,8 @@ func VerifyAccountView(c echo.Context) error {
 		data["data"] = map[string]interface{}{
 			"name":        user.Name,
 			"email":       user.Email,
-			"birthdate":   user.Birthdate.String,
-			"address":     user.Address.String,
+			"birthdate":   user.Birthdate,
+			"address":     user.Address,
 			"is_admin":    user.IsAdmin,
 			"is_verified": user.IsVerified,
 			"gov_id":      govIdFile,
