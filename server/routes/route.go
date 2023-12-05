@@ -44,11 +44,10 @@ func Profile(c echo.Context) error {
 	if user != nil {
 		// Get what type of info should be returned
 		infoType := struct {
-			info string `query:"info" validate:"oneof=profile applications"`
+			Info string `query:"info" validate:"oneof=profile applications"`
 		}{
-			info: "profile",
+			Info: "profile",
 		}
-
 		err := cc.Bind(&infoType)
 		if err != nil {
 			log.Println(err)
@@ -62,7 +61,7 @@ func Profile(c echo.Context) error {
 			accounts = accounts_
 		}
 
-		switch infoType.info {
+		switch infoType.Info {
 		case "profile":
 			profile_data = map[string]interface{}{
 				"name":        cases.Title(language.English, cases.Compact).String(user.Name),
@@ -71,16 +70,24 @@ func Profile(c echo.Context) error {
 				"address":     user.Address,
 				"is_admin":    user.IsAdmin,
 				"is_verified": user.IsVerified,
-
-				"gov_id": govIdFile,
+				"gov_id":      govIdFile,
+			}
+		case "applications":
+			{
+				// Get jobs
+				jobs, jErr := db.GetAppliedJobs("10", "0", user.AccountId, cc.Db())
+				if jErr != nil {
+					log.Println(jErr)
+				} else {
+					applications = jobs.([]map[string]interface{})
+				}
 			}
 		}
-
 		data["data"] = map[string]interface{}{
 			"profile":      profile_data,
 			"applications": applications,
 			"accounts":     accounts,
-			"infoType":     infoType,
+			"infoType":     infoType.Info,
 		}
 		return renderWithAuthContext("profile.html", c, data)
 	}

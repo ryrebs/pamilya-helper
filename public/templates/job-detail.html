@@ -83,11 +83,13 @@
                                             <h4 class="mb-4">Employer Detail</h4>
                                             <p class="m-0">{{ .job.emp_detail }}</p>
                                         </div>
+                                        {{ if not .viewOnly }}
                                         <div style="margin-top: 1em;text-align: center;">
                                             <form action="/jobs/{{ .job.id }}" method="post">
                                                 <button type="submit" class="btn btn-primary" href=>Submit an Application</button>    
                                             </form>
                                         </div>
+                                        {{ end }}
                                     </div>
                                    
                                 </div>

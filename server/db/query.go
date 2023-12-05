@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS job_application (
 	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 	employee_id INTEGER NOT NULL,
 	job_id INTEGER NOT NULL,
+	status TEXT DEFAULT 'PENDING',
 	FOREIGN KEY(employee_id) REFERENCES account(id),
-	FOREIGN KEY(job_id) REFERENCES job(id)
+	FOREIGN KEY(job_id) REFERENCES job(id),
+	UNIQUE(employee_id, job_id) ON CONFLICT ROLLBACK
 )
 `

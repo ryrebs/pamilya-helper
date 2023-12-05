@@ -41,7 +41,7 @@
             <a href="#">Manage Received Job Proposals</a>
           </li>
           <li>
-            <a href="#">Manage Sent Helper Applications</a>
+            <a href="/users/profile?info=applications">Manage Sent Helper Applications</a>
           </li>
           <li>
             <a href="#">Manage Received Helper Applications</a>
@@ -56,37 +56,72 @@
         </ul>
       </div>
 
-      <!-- Profile details  -->
+      <!-- Details  -->
       {{ if not .data.is_admin }}
-      <div class="profile-details">
-        <div>
-          <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
+        <!-- Profile data -->
+        {{ if eq .data.infoType "profile" }}
+        <div class="profile-details">
+          <div>
+            <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
+            <div>
+              {{ if.data.profile.is_verified }}
+              <span style="color: green;font-size: smaller;">Verified Account</span>
+              {{ else }}
+              <span>Unverified</span>
+              {{ end }}
+            </div>
+          </div>
+          <div>
+            <span>Email: {{ .data.profile.email }}</span>
+          </div>
+          <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
+          <div><span>Address: {{ .data.profile.address }}</span></div>
           <div>
             {{ if.data.profile.is_verified }}
-            <span style="color: green;font-size: smaller;">Verified Account</span>
+            <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
             {{ else }}
-            <span>Unverified</span>
+            <div>
+              <button>
+                <a href="/users/profile/verify">Account Verification</a>
+              </button>
+            </div>
             {{ end }}
           </div>
         </div>
-        <div>
-          <span>Email: {{ .data.profile.email }}</span>
-        </div>
-        <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
-        <div><span>Address: {{ .data.profile.address }}</span></div>
-        <div>
-          {{ if.data.profile.is_verified }}
-          <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
-          {{ else }}
+        {{ end }}
+
+        <!-- Applications  -->
+        {{ if eq .data.infoType "applications" }}
           <div>
-            <button>
-              <a href="/users/profile/verify"> Account Verification </a>
-            </button>
+            <span>Sent Helper Applications</span>
+            {{ range .data.applications }}
+              <div style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+                <div>
+                  <span>Profile pic</span>
+                </div>
+                <div>
+                  <div>
+                    <span style="display: inline;">{{ .title }}</span>
+                    <button style="display: inline;">{{ .status }} </button>
+                  </div>
+                  <div>
+                    <span style="display: inline;">{{ .location }}</span>
+                    <span style="display: inline;">{{ .employment_type }}</span>
+                    <span style="display: inline;">{{ .price_from }} - {{ .price_to }}</span>
+                  </div>
+                </div>
+                <div>
+                  <button>
+                    <a href="/jobs/{{ .id }}?view=1">View</a>
+                  </button>
+                </div>
+              </div>
+            {{ end }}
           </div>
-          {{ end }}
-        </div>
-      </div>
+        {{ end }}
       {{ end }}
+
+
 
       <!-- Account verification view for admins -->
       {{ if .data.is_admin }}

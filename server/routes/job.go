@@ -51,8 +51,6 @@ func JobList(c echo.Context) error {
 		log.Println(err)
 	} else {
 		for _, v := range sess.Flashes("post_apply") {
-			log.Println(v.(string))
-			// Get the recent flash message.
 			flashMsg = v.(string)
 		}
 	}
@@ -69,7 +67,8 @@ func JobDetail(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
 
 	jDetail := struct {
-		ID int `param:"id"`
+		ID       int  `param:"id"`
+		ViewOnly bool `query:"view"`
 	}{}
 	err := c.Bind(&jDetail)
 
@@ -117,16 +116,8 @@ func JobDetail(c echo.Context) error {
 
 	return renderWithAuthContext(
 		"job-detail.html", c, map[string]interface{}{
-			"job": job,
+			"job":      job,
+			"viewOnly": jDetail.ViewOnly,
 		},
 	)
-}
-
-func JobApply(c echo.Context) error {
-	cc := c.(*db.CustomDBContext)
-
-	if cc.Request().Method == "POST" {
-		return nil
-	}
-	return renderWithAuthContext("job-apply.html", cc, nil)
 }

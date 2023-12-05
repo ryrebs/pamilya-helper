@@ -544,3 +544,48 @@ func InsertJobApplication(jobID, employeeID int, conn *sql.DB) error {
 	return errors.New("no database connection found")
 
 }
+
+func GetAppliedJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Application, error) {
+	query := `SELECT * FROM job jb
+		INNER JOIN job_application ja on jb.id = ja.id
+		WHERE jb.employer_id != ? AND ja.employee_id == ?
+		LIMIT ? OFFSET ?
+	`
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(accountID, accountID, limit, offset)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var jobs []Application
+	for rows.Next() {
+		var job Application
+		err = rows.Scan(&job.ID, &job.EmployerId,
+			&job.Title, &job.Description, &job.Responsibility,
+			&job.Skills, &job.Location, &job.PriceFrom,
+			&job.PriceTo, &job.EmployementType, &job.DateLine,
+			&job.ApplicationId, &job.Timestamp,
+			&job.EmployeeId, &job.JobID, &job.Status)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		jobs = append(jobs, job)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return jobs, nil
+}

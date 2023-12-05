@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -29,6 +30,15 @@ type Job struct {
 	EmployerEmail   string
 	EmployerContact string
 	EmployerDetail  string
+}
+
+type Application struct {
+	Job
+	Status        string
+	ApplicationId int
+	Timestamp     time.Time
+	EmployeeId    int
+	JobID         int
 }
 
 type UserDetail struct {
@@ -166,6 +176,35 @@ func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, er
 			"price_from":       job.PriceFrom,
 			"price_to":         job.PriceTo,
 			"dateline":         job.DateLine,
+		})
+	}
+	return respJobs, nil
+}
+
+func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
+	jobs, err := GetAppliedJobsFromDB(limit, offset, accountID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	respJobs := []map[string]interface{}{}
+	for _, job := range jobs {
+		resp := strings.Split(job.Responsibility, "|")
+		skills := strings.Split(job.Skills, "|")
+		respJobs = append(respJobs, map[string]interface{}{
+			"responsibilities": resp,
+			"skills":           skills,
+			"employer_id":      job.EmployerId,
+			"id":               job.ID,
+			"title":            job.Title,
+			"employment_type":  job.EmployementType,
+			"location":         job.Location,
+			"description":      job.Description,
+			"price_from":       job.PriceFrom,
+			"price_to":         job.PriceTo,
+			"dateline":         job.DateLine,
+			"status":           job.Status,
 		})
 	}
 	return respJobs, nil
