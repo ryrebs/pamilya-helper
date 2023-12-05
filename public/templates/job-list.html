@@ -18,7 +18,6 @@
 
         <!-- Navbar Start -->
         {{ template "navbar" . }}
-        <span>{{ .is_log_in }} </span>
         <!-- Navbar End -->
 
         <!-- Header End -->
@@ -74,7 +73,7 @@
                                                 <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                                     <div class="d-flex mb-3">
                                                         {{ if and $.is_log_in $.is_verified }} 
-                                                            <a class="btn btn-primary" href="/users/job/{{ .id }}">Apply Now</a>
+                                                            <a class="btn btn-primary" href="/jobs/{{ .id }}">Apply Now</a>
                                                         {{ else }}
                                                             <button disabled class="btn btn-primary">Apply Now</button>
                                                         {{ end }}
@@ -168,7 +167,7 @@
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
                                                 {{ if and $.is_log_in $.is_verified }} 
-                                                    <a class="btn btn-primary" href="/users/job/{{ .id }}">Apply Now</a>
+                                                    <a class="btn btn-primary" href="/jobs/{{ .id }}">Apply Now</a>
                                                 {{ else }}
                                                     <button disabled class="btn btn-primary">Apply Now</button>
                                                 {{ end }}
@@ -764,9 +763,16 @@
             </div>
          -->
         <!-- Jobs End -->
-            <div class="button-container">
+        {{ if.job_msg.IsMsgError }}
+        <div style="text-align: center; color: red;font-weight: 500;">
+        {{ else }}
+        <div style="text-align: center; color: green;font-weight: 500;">
+        {{ end }}
+            <span>{{ .job_msg.GetMsg  }}</span>
+        </div>
+        <div class="button-container">             
                 <a class="btn btn-primary py-3 px-5" href="post-job-opening.html">Post a Job Opening</a>
-            </div>
+        </div>
         {{ template "footer" . }}
 </body>
 </html>

@@ -23,6 +23,30 @@
       "employement_type": "Part Time",
       "dateline": "Dec 23, 2023",
       "responsibility": "Assist with daily activities, including bathing, dressing, and grooming.|Administer medications and assist with healthcare routines as needed."
+    },
+    {
+      "employer_id": 2,
+      "title": "House Cleaning",
+      "description": "Experienced House Cleaner Needed in Quezon City",
+      "skills": "Previous experience in caregiving for the elderly is preferred.|Caring and compassionate nature with a strong sense of empathy.",
+      "location": "Quezon",
+      "price_from": "25,000",
+      "price_to": "27,000",
+      "employement_type": "Full Time",
+      "dateline": "Dec 23, 2023",
+      "responsibility": "Assist with daily activities, including bathing, dressing, and grooming.|Administer medications and assist with healthcare routines as needed."
+    },
+    {
+      "employer_id": 2,
+      "title": "Lawn Mower Operator Wanted",
+      "description": "Experienced Lawn Mower Operator Wanted Needed in Quezon City",
+      "skills": "Previous experience in caregiving for the elderly is preferred.|Caring and compassionate nature with a strong sense of empathy.",
+      "location": "Quezon",
+      "price_from": "25,000",
+      "price_to": "27,000",
+      "employement_type": "Part Time",
+      "dateline": "Dec 23, 2023",
+      "responsibility": "Assist with daily activities, including bathing, dressing, and grooming.|Administer medications and assist with healthcare routines as needed."
     }
   ]
 }

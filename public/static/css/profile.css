@@ -16,7 +16,7 @@
 .user-box__detail a {
   font-size: 1em;
   font-weight: normal;
-  color: #2B3940;
+  color: #2b3940;
 }
 
 .user-box__detail input {
@@ -26,4 +26,44 @@
 
 .user-box__btns {
   text-align: center;
+}
+
+.profile-nav {
+  width: 400px;
+  background-color: #faf8f7;
+}
+
+.profile-nav ul {
+  list-style: none;
+  padding: 2.5em;
+}
+
+.profile-nav li {
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+.profile-nav a, span {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: medium;
+  display: block;
+  padding: 0.2em;
+  border-radius: 5px;
+  color: #7a7676;
+}
+
+.profile-container {
+  display: flex;
+  height: 72vh;
+}
+
+
+.profile-nav button {
+  border:0px;
+  background-color: transparent
+}
+
+.profile-details {
+  margin: 1em;
 }

@@ -25,27 +25,58 @@
       {{ template "navbar" . }}
       <!-- Navbar End -->
 
+    <div class="profile-container">
+      <div class="profile-nav">
+        <ul>
+          <li>
+            <a href="/users/profile?info=profile">Personal Info</a>
+          </li>
+          <li>
+            <a href="#">Manage Job Postings</a>
+          </li>
+          <li>
+            <a href="#">Manage Sent Job Proposals</a>
+          </li>
+          <li>
+            <a href="#">Manage Received Job Proposals</a>
+          </li>
+          <li>
+            <a href="#">Manage Sent Helper Applications</a>
+          </li>
+          <li>
+            <a href="#">Manage Received Helper Applications</a>
+          </li>
+          <li>
+            <form method="POST" action="/users/signout">
+              <button type="submit">
+                <span id="user-logout-link">Logout</span>
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+
       <!-- Profile details  -->
       {{ if not .data.is_admin }}
-      <div>
+      <div class="profile-details">
         <div>
-          <span style="font-weight: bold">{{ .data.name }}</span>
+          <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
           <div>
-            {{ if.data.is_verified }}
-            <span>Verified</span>
+            {{ if.data.profile.is_verified }}
+            <span style="color: green;font-size: smaller;">Verified Account</span>
             {{ else }}
             <span>Unverified</span>
             {{ end }}
           </div>
         </div>
         <div>
-          <span>Email: {{ .data.email }}</span>
+          <span>Email: {{ .data.profile.email }}</span>
         </div>
-        <div><span>Birthdate: {{ .data.birthdate }}</span></div>
-        <div><span>Address: {{ .data.address }}</span></div>
+        <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
+        <div><span>Address: {{ .data.profile.address }}</span></div>
         <div>
-          {{ if.data.is_verified }}
-          <div><span>Valid Government Id: {{ .data.gov_id }}</span></div>
+          {{ if.data.profile.is_verified }}
+          <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
           {{ else }}
           <div>
             <button>
@@ -57,9 +88,9 @@
       </div>
       {{ end }}
 
-      <!-- Account verificatin view for admins -->
+      <!-- Account verification view for admins -->
       {{ if .data.is_admin }}
-      <div>
+      <div  class="profile-details">
         <div style="text-align: center">
           <span>Admin Manual Verification</span>
         </div>
@@ -100,13 +131,9 @@
         </div>
       </div>
       {{ end }}
-
-      <!-- Body -->
-      <form method="POST" , action="/users/signout">
-        <button type="submit">
-          <span id="user-logout-link">Logout</span>
-        </button>
-      </form>
+    </div>
+    <div>
       {{ template "footer" . }}
+    </div>
   </body>
 </html>

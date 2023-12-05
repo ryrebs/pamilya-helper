@@ -199,3 +199,7 @@ func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 	}
 	return data, nil
 }
+
+func CreateJob(jobID, employeeID int, conn *sql.DB) error {
+	return InsertJobApplication(jobID, employeeID, conn)
+}

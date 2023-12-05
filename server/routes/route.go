@@ -38,7 +38,22 @@ func Profile(c echo.Context) error {
 		"is_log_in": true,
 	}
 	user, error := GetUserFromSession(c, cc.Db())
+	var profile_data map[string]interface{}
+	var applications []map[string]interface{}
+
 	if user != nil {
+		// Get what type of info should be returned
+		infoType := struct {
+			info string `query:"info" validate:"oneof=profile applications"`
+		}{
+			info: "profile",
+		}
+
+		err := cc.Bind(&infoType)
+		if err != nil {
+			log.Println(err)
+		}
+
 		// Get accounts with pending verifications
 		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 		var accounts []db.UserVerification
@@ -47,75 +62,29 @@ func Profile(c echo.Context) error {
 			accounts = accounts_
 		}
 
+		switch infoType.info {
+		case "profile":
+			profile_data = map[string]interface{}{
+				"name":        cases.Title(language.English, cases.Compact).String(user.Name),
+				"email":       user.Email,
+				"birthdate":   user.Birthdate,
+				"address":     user.Address,
+				"is_admin":    user.IsAdmin,
+				"is_verified": user.IsVerified,
+
+				"gov_id": govIdFile,
+			}
+		}
+
 		data["data"] = map[string]interface{}{
-			"name":        cases.Title(language.English, cases.Compact).String(user.Name),
-			"email":       user.Email,
-			"birthdate":   user.Birthdate,
-			"address":     user.Address,
-			"is_admin":    user.IsAdmin,
-			"is_verified": user.IsVerified,
-			"gov_id":      govIdFile,
-			"accounts":    accounts,
+			"profile":      profile_data,
+			"applications": applications,
+			"accounts":     accounts,
+			"infoType":     infoType,
 		}
 		return renderWithAuthContext("profile.html", c, data)
 	}
 
 	log.Println(error)
 	return echo.NewHTTPError(http.StatusInternalServerError)
-}
-
-func JobList(c echo.Context) error {
-	cc := c.(*db.CustomDBContext)
-	data := map[string]interface{}{
-		"is_verified": false,
-		"jobs":        []db.Job{},
-	}
-	user, uErr := GetUserFromSession(c, cc.Db())
-
-	// Get jobs
-	jobs, jErr := db.GetJobs("10", "0", user.AccountId, cc.Db())
-	if jErr != nil {
-		log.Println(jErr)
-	} else {
-		data["jobs"] = jobs
-	}
-
-	// If no user return data
-	if uErr != nil {
-		return c.Render(http.StatusOK, "job-list.html", data)
-	}
-
-	// Else set additional fields and return data
-	data["is_verified"] = user.IsVerified
-
-	return renderWithAuthContext("job-list.html", c, data)
-}
-
-func JobDetail(c echo.Context) error {
-	cc := c.(*db.CustomDBContext)
-
-	jDetail := struct {
-		ID int `param:"id"`
-	}{}
-	err := c.Bind(&jDetail)
-
-	if err != nil {
-		log.Println(err)
-		return renderWithAuthContext(
-			"job-detail.html", c, nil,
-		)
-	}
-
-	job, err := db.GetJob(jDetail.ID, cc.Db())
-	if err != nil {
-		return renderWithAuthContext(
-			"job-detail.html", c, nil,
-		)
-	}
-
-	return renderWithAuthContext(
-		"job-detail.html", c, map[string]interface{}{
-			"job": job,
-		},
-	)
 }

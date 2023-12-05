@@ -71,13 +71,15 @@ func Serve() {
 		// Init echo app
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
-		e.Use(middleware.Logger())
+		// e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
 		// Setup static files and templates
 		e.Static("static", "public/static")   // html, js, css
 		e.Static("uploads", "public/uploads") // serve uploaded files
+
+		// Parse templates and create custom template functions
 		e.Renderer = &Template{
 			templates: template.Must(template.ParseGlob("public/templates/*.html")),
 		}
@@ -115,9 +117,11 @@ func Serve() {
 		// Routes - authenticated users
 		users := e.Group("users", routes.RequireSignInMiddleware)
 		users.GET("/profile", routes.Profile)
-		users.GET("/job/:id", routes.JobDetail)
 		users.POST("/signout", routes.SignOut)
 		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
+
+		jobs := e.Group("jobs", routes.RequireSignInMiddleware)
+		jobs.Match([]string{"GET", "POST"}, "/:id", routes.JobDetail)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.

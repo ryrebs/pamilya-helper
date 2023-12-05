@@ -12,10 +12,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+const PMHSessionName = "auth-pamilyahelper-session"
+
 // Given a session exists for the user,
 // this function should extract the user details from db.
 func GetUserFromSession(c echo.Context, db_ *sql.DB) (*db.UserDetail, error) {
-	sess, _ := session.Get("auth-pamilyahelper-session", c)
+	sess, _ := session.Get(PMHSessionName, c)
 
 	// Session not found
 	if sess != nil && sess.Values["user"] != nil {
@@ -27,7 +29,7 @@ func GetUserFromSession(c echo.Context, db_ *sql.DB) (*db.UserDetail, error) {
 }
 
 func createSession(userEmail string, c *db.CustomDBContext) error {
-	sess, _ := session.Get("auth-pamilyahelper-session", c)
+	sess, _ := session.Get(PMHSessionName, c)
 	sess.Options = &sessions.Options{
 		MaxAge:   86400 * 7,
 		HttpOnly: true,
@@ -78,7 +80,7 @@ func SignIn(c echo.Context) error {
 }
 
 func SignOut(c echo.Context) error {
-	sess, _ := session.Get("auth-pamilyahelper-session", c)
+	sess, _ := session.Get(PMHSessionName, c)
 	if sess != nil && sess.Values["user"] != nil {
 		sess.Options = &sessions.Options{
 			MaxAge:   -1,

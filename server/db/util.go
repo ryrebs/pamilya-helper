@@ -14,43 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const initSqlStmt = `
-CREATE TABLE IF NOT EXISTS account (
-	id INTEGER NOT NULL PRIMARY KEY,
-	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-	name TEXT,
-	email TEXT UNIQUE,
-	password TEXT,
-	birthdate TEXT NOT NULL DEFAULT '',
-	address TEXT NOT NULL DEFAULT '',
-	is_verified INTEGER DEFAULT 0,
-	is_verification_pending INTEGER DEFAULT 0,
-	is_admin INTEGER DEFAULT 0,
-	detail TEXT NOT NULL DEFAULT '',
-	contact TEXT NOT NULL DEFAULT ''
-);
-CREATE TABLE IF NOT EXISTS upload (
-	id INTEGER NOT NULL PRIMARY KEY,
-	image TEXT,
-	account_id INTEGER,
-	detail TEXT
-);
-CREATE TABLE IF NOT EXISTS job (
-	id INTEGER NOT NULL PRIMARY KEY,
-	employer_id INTEGER NOT NULL,
-	title TEXT,
-	description TEXT,
-	responsibility TEXT,
-	skills TEXT,
-	location TEXT,
-	price_from TEXT,
-	price_to TEXT,
-	employment_type TEXT,
-	dateLine TEXT,
-	FOREIGN KEY(employer_id) REFERENCES account(id)
-);
-`
-
 const DefaultPamilyaHelperDBName = "pamilyahelper.db"
 
 type CustomDBContext struct {
@@ -75,7 +38,7 @@ func GetDBConn(dbName string) *sql.DB {
 	db, err := sql.Open("sqlite3", dbName)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return nil
 	}
 
@@ -122,8 +85,8 @@ func InsertUser(user User, db *sql.DB) error {
 		INSERT INTO account(
 			name, email, password,
 			is_verified, is_admin, is_verification_pending,
-			detail, contact)
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+			detail, contact, birthdate, address)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
@@ -137,7 +100,7 @@ func InsertUser(user User, db *sql.DB) error {
 		_, err = stmt.Exec(user.Name, user.Email,
 			CreateUserPassword(user.Password), user.IsVerified,
 			user.IsAdmin, user.IsVerificationPending,
-			user.Detail, user.Contact)
+			user.Detail, user.Contact, user.Birthdate, user.Address)
 		if err != nil {
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
 			return err
@@ -244,6 +207,7 @@ func loadUserFixture(conn *sql.DB) error {
 			conn)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 	}
 	return nil
@@ -462,7 +426,7 @@ func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
 				   WHERE email=?`
 		tx, err := conn.Begin()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		stmt, err := tx.Prepare(updateStmt)
 		if err != nil {
@@ -472,7 +436,7 @@ func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
 		defer stmt.Close()
 		_, err = stmt.Exec(verify, email) // Execute update
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			return err
 		}
 		err = tx.Commit()
@@ -487,8 +451,11 @@ func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
 }
 
 func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, error) {
-	query := `SELECT * FROM job WHERE employer_id != ? LIMIT ? OFFSET ?`
-
+	query := `
+		SELECT * FROM job WHERE employer_id != ? AND id NOT IN
+			(SELECT job_id FROM job_application WHERE employee_id == ?)
+		LIMIT ? OFFSET ?
+	`
 	stmt, err := conn.Prepare(query)
 	if err != nil {
 		log.Println(err)
@@ -496,7 +463,7 @@ func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, er
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(accountID, limit, offset)
+	rows, err := stmt.Query(accountID, accountID, limit, offset)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -516,6 +483,7 @@ func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, er
 		}
 		jobs = append(jobs, job)
 	}
+
 	err = rows.Err()
 	if err != nil {
 		log.Println(err)
@@ -553,4 +521,26 @@ func GetJobFromDB(jobID int, conn *sql.DB) (interface{}, error) {
 		return nil, err
 	}
 	return job, nil
+}
+
+func InsertJobApplication(jobID, employeeID int, conn *sql.DB) error {
+	fixtureJobAppStmt := `INSERT INTO job_application(job_id, employee_id) VALUES(?, ?)`
+	if conn != nil {
+		stmt, err := conn.Prepare(fixtureJobAppStmt)
+
+		if err != nil {
+			log.Printf("%q: %s\n", err, fixtureJobAppStmt)
+			return err
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(jobID, employeeID)
+		if err != nil {
+			log.Printf("%q: %s\n", err, fixtureJobAppStmt)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no database connection found")
+
 }
