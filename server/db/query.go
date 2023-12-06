@@ -13,13 +13,9 @@ CREATE TABLE IF NOT EXISTS account (
 	is_verification_pending INTEGER DEFAULT 0,
 	is_admin INTEGER DEFAULT 0,
 	detail TEXT NOT NULL DEFAULT '',
-	contact TEXT NOT NULL DEFAULT ''
-);
-CREATE TABLE IF NOT EXISTS upload (
-	id INTEGER NOT NULL PRIMARY KEY,
-	image TEXT,
-	account_id INTEGER,
-	detail TEXT
+	contact TEXT NOT NULL DEFAULT '',
+	profile_image TEXT DEFAULT '',
+	gov_id_image TEXT DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS job (
 	id INTEGER NOT NULL PRIMARY KEY,

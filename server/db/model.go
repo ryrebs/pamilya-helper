@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
-	"os"
+	"pamilyahelper/webapp/server/utils"
 	"strings"
 	"time"
 )
@@ -52,6 +52,8 @@ type UserDetail struct {
 	AccountId             int
 	Detail                string `json:"detail"`
 	Contact               string `json:"contact"`
+	GovIDImage            string
+	ProfileImage          string
 }
 
 type User struct {
@@ -112,41 +114,40 @@ func FindUser(email string, db *sql.DB) User {
 
 // Update user details
 func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipart.FileHeader, db *sql.DB) error {
-	rmFFn := func(fname string) error {
-		if _, err := os.Stat(fname); err != nil {
-			log.Println(err)
-			return err
-		}
-		err := os.Remove(fname)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		return nil
-	}
-
-	newFileName := fmt.Sprint(user.AccountId) + "_" + file.Filename
+	newFileName := fmt.Sprint(user.AccountId) + "_" + "gov_id" + file.Filename
 	pathFname := fmt.Sprintf(UploadDst + "/" + newFileName)
-	err := CreateFile(file, pathFname, user.AccountId)
 
+	err := utils.CreateFile(file, pathFname)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
 	// Remove created file if any error occurs.
-	err = UpdateUser(user.Email, details, db)
+	err = UpdateUser(newFileName, user.Email, details, db)
 	if err != nil {
-		rmFFn(pathFname)
+		utils.RemoveFile(pathFname)
+		return err
+	}
+	return nil
+}
+
+func UpdateUserDetailProfileImage(userID int, file *multipart.FileHeader, db *sql.DB) error {
+	newFileName := fmt.Sprint(userID) + "_" + "profile_" + file.Filename
+	pathFname := fmt.Sprintf(UploadDst + "/" + newFileName)
+
+	err := utils.CreateFile(file, pathFname)
+	if err != nil {
+		log.Println(err)
 		return err
 	}
 
-	err = InsertGovID(user.AccountId, newFileName, db)
+	// Remove created file if any error occurs.
+	err = UpdateProfileImage(userID, newFileName, db)
 	if err != nil {
-		rmFFn(pathFname)
+		utils.RemoveFile(pathFname)
 		return err
 	}
-
 	return nil
 }
 

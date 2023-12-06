@@ -12,25 +12,24 @@ import (
 // Verify account view
 func VerifyAccountView(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
-
 	data := map[string]interface{}{
 		"is_log_in": true,
 	}
 	user, err := GetUserFromSession(cc, cc.Db())
 	if user != nil {
+
 		// Redirect if already verified
 		if user.IsVerified {
 			return c.Redirect(http.StatusSeeOther, "/users/profile")
 		}
-		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 		data["data"] = map[string]interface{}{
-			"name":        user.Name,
-			"email":       user.Email,
-			"birthdate":   user.Birthdate,
-			"address":     user.Address,
-			"is_admin":    user.IsAdmin,
-			"is_verified": user.IsVerified,
-			"gov_id":      govIdFile,
+			"name":         user.Name,
+			"email":        user.Email,
+			"birthdate":    user.Birthdate,
+			"address":      user.Address,
+			"is_admin":     user.IsAdmin,
+			"is_verified":  user.IsVerified,
+			"gov_id_image": user.GovIDImage,
 		}
 	}
 	if err != nil {
@@ -68,7 +67,7 @@ func VerifyAccountView(c echo.Context) error {
 		data["msgs"] = errorMsgs
 		return renderWithAuthContext("verify-profile.html", cc, data)
 	}
-	file, err := cc.FormFile("file")
+	file, err := cc.FormFile("gov_id_image")
 	if err != nil {
 		log.Println(err.Error())
 		errorMsgs = append(errorMsgs, "Invalid File")
@@ -79,19 +78,18 @@ func VerifyAccountView(c echo.Context) error {
 	// Update user details
 	err = db.UpdateUserDetail(*user, editableUser, file, cc.Db())
 	if err != nil {
-		log.Println(err.Error())
-		data["msgs"] = "Something went wrong. Please try again later."
+		data["msgs"] = []string{"Something went wrong. Please try again later."}
 		return renderWithAuthContext("verify-profile.html", cc, data)
 	}
 	data["success_msg"] = "Success. Waiting for approval."
 	data["data"] = map[string]interface{}{
-		"name":        editableUser.Name,
-		"email":       user.Email,
-		"birthdate":   editableUser.Birthdate,
-		"address":     editableUser.Address,
-		"is_admin":    user.IsAdmin,
-		"is_verified": user.IsVerified,
-		"gov_id":      file.Filename,
+		"name":         editableUser.Name,
+		"email":        user.Email,
+		"birthdate":    editableUser.Birthdate,
+		"address":      editableUser.Address,
+		"is_admin":     user.IsAdmin,
+		"is_verified":  user.IsVerified,
+		"gov_id_image": file.Filename,
 	}
 	return renderWithAuthContext("verify-profile.html", cc, data)
 }
@@ -118,5 +116,29 @@ func VerifyUser(c echo.Context) error {
 	}
 	db.UpdateUserVerification(user.Email, is_verify, cc.Db())
 
+	return cc.Redirect(http.StatusSeeOther, "/users/profile")
+}
+
+func UploadProfileImage(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	user, err := GetUserFromSession(cc, cc.Db())
+
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusOK, "/users/profile")
+	}
+
+	file, err := cc.FormFile("profile_image")
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile")
+	}
+
+	// Update user details
+	err = db.UpdateUserDetailProfileImage(user.AccountId, file, cc.Db())
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile")
+	}
 	return cc.Redirect(http.StatusSeeOther, "/users/profile")
 }

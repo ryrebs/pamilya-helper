@@ -24,6 +24,7 @@
     <div class="profile-container">
       <div class="profile-nav">
         <ul>
+          {{ if not .data.profile.is_admin }}
           <li>
             <a href="/users/profile?info=profile">Personal Info</a>
           </li>
@@ -42,6 +43,7 @@
           <li>
             <a href="#">Manage Received Helper Applications</a>
           </li>
+          {{ end }}
           <li>
             <form method="post" action="/users/signout">
               <button type="submit">
@@ -54,11 +56,12 @@
 
       <!-- START Data is not for ADMIN -->
       <!-- Details  -->
-      {{ if not .data.is_admin }}
+      {{ if not .data.profile.is_admin }}
       <!-- Profile data -->
       {{ if eq .data.infoType "profile" }}
       <div class="profile-details">
         <div>
+          <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .data.profile.profile_image }}" alt="Profile Image"/>
           <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
           <div>
             {{ if.data.profile.is_verified }}
@@ -74,13 +77,20 @@
         <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
         <div><span>Address: {{ .data.profile.address }}</span></div>
         <div>
-          {{ if.data.profile.is_verified }}
-          <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
+          <form method="post" action="/upload/profileimage" enctype="multipart/form-data">
+            <label for="formFile" class="form-label">Profile Picture</label>
+            <div class="input-group mb-3" style="display: flex;">
+              <input name="profile_image" class="form-control" type="file" id="formFile">
+              <button type="submit" class="btn btn-primary">Upload</button>
+            </div>
+          </form>
+        </div>
+        <div>
+          {{ if .data.profile.is_verified }}
+          <div><span>Valid Government Id: {{ .data.profile.gov_id_image }}</span></div>
           {{ else }}
           <div>
-            <button>
-              <a href="/users/profile/verify">Account Verification</a>
-            </button>
+              <a href="/users/profile/verify" class="nav-link active">Account Verification</a>
           </div>
           {{ end }}
         </div>
@@ -152,7 +162,7 @@
       {{ end }}
 
       <!-- Account verification view for admins -->
-      {{ if .data.is_admin }}
+      {{ if .data.profile.is_admin }}
       <div class="profile-details">
         <div style="text-align: center">
           <span>Admin Manual Verification</span>

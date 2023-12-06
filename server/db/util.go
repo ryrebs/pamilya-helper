@@ -6,7 +6,6 @@ import (
 	"errors"
 	"io"
 	"log"
-	"mime/multipart"
 	"os"
 	"strings"
 
@@ -163,6 +162,7 @@ func loadJobFixture(conn *sql.DB) error {
 			job.EmployementType, job.EmployerId, conn)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 	}
 	return nil
@@ -248,17 +248,18 @@ func RemoveUser(email string, db *sql.DB) error {
 }
 
 // Update user details
-func UpdateUser(email string, details EditableUserFields, db *sql.DB) error {
+func UpdateUser(govIDFileName, email string, details EditableUserFields, db *sql.DB) error {
 	if db != nil {
 		stmt, err := db.Prepare(`UPDATE account SET name=?,birthdate=?,
 									address=?,
+									gov_id_image=?,
 									is_verification_pending=1
 								 WHERE email=?`)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		_, err = stmt.Exec(details.Name, details.Birthdate, details.Address, email)
+		_, err = stmt.Exec(details.Name, details.Birthdate, details.Address, govIDFileName, email)
 		defer stmt.Close()
 		if err != nil {
 			log.Println(err)
@@ -269,82 +270,23 @@ func UpdateUser(email string, details EditableUserFields, db *sql.DB) error {
 	return errors.New("no db found")
 }
 
-// Update or insert government id.
-func InsertGovID(accountId int, fileName string, db *sql.DB) error {
+// Update user profile image
+func UpdateProfileImage(userID int, fileName string, db *sql.DB) error {
 	if db != nil {
-		// Check for existing gov_id
-		stmt, err := db.Prepare(`SELECT account_id from upload where account_id=? and detail='gov_id' LIMIT 1`)
-		var exists = 0
+		stmt, err := db.Prepare(`UPDATE account SET profile_image = ? WHERE id=?`)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		err = stmt.QueryRow(accountId).Scan(&exists)
-		if err != nil {
-			// No record found.
-			log.Println(err)
-		}
+		_, err = stmt.Exec(fileName, userID)
 		defer stmt.Close()
-
-		insertStmt := `INSERT INTO upload(image, account_id, detail) VALUES(?, ?, 'gov_id')`
-		updatestmt := `UPDATE upload SET image=? WHERE account_id=? AND detail='gov_id'`
-		mainStmt := ``
-
-		// Account has existing gov id.
-		if exists > 0 {
-			mainStmt = updatestmt
-		} else {
-			mainStmt = insertStmt
-		}
-		stmt, err = db.Prepare(mainStmt)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		_, err = stmt.Exec(fileName, accountId)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 		return nil
-
 	}
 	return errors.New("no db found")
-}
-
-// Get user's government id file name
-func GetUserGovId(accountId int, db *sql.DB) string {
-	stmt, err := db.Prepare(`SELECT image from upload where account_id=?`)
-	fileName := ""
-	if err != nil {
-		log.Println(err)
-	}
-	err = stmt.QueryRow(accountId).Scan(&fileName)
-	if err != nil {
-		// No record found.
-		log.Println(err)
-	}
-	defer stmt.Close()
-	return fileName
-}
-
-// Create file uploads
-func CreateFile(file *multipart.FileHeader, filename string, accountId int) error {
-	src, err := file.Open()
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-	dst, err := os.Create(filename)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	defer dst.Close()
-	if _, err = io.Copy(dst, src); err != nil {
-		return err
-	}
-	return nil
 }
 
 func FindUserFromDb(email string, db *sql.DB) User {
@@ -353,7 +295,9 @@ func FindUserFromDb(email string, db *sql.DB) User {
 								password, birthdate,
 								address, is_verified,
 								is_admin, id,
-								is_verification_pending
+								is_verification_pending,
+								gov_id_image,
+								profile_image
 							FROM account WHERE email=?`)
 	if err != nil {
 		log.Println(err)
@@ -370,8 +314,9 @@ func FindUserFromDb(email string, db *sql.DB) User {
 		&user.IsVerified,
 		&user.IsAdmin,
 		&user.AccountId,
-		&user.IsVerificationPending)
-
+		&user.IsVerificationPending,
+		&user.GovIDImage,
+		&user.ProfileImage)
 	if err != nil {
 		log.Println(err)
 		return User{}
@@ -381,10 +326,8 @@ func FindUserFromDb(email string, db *sql.DB) User {
 
 func GetAccountsForVerificationFromDb(limit, offset string, db *sql.DB) ([]UserVerification, error) {
 	query := `
-		SELECT email, name, birthdate,
-			address, image
-		FROM account AS ac LEFT JOIN upload AS t ON t.account_id = ac.id
-		WHERE t.detail = 'gov_id' AND ac.is_verification_pending = 1
+		SELECT email, name, birthdate, address, gov_id_image
+		FROM account WHERE is_verification_pending = 1
 		LIMIT ? OFFSET ?`
 
 	stmt, err := db.Prepare(query)

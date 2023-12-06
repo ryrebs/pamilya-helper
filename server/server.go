@@ -113,6 +113,7 @@ func Serve() {
 		e.GET("/jobs/view/:id", routes.JobDetail)
 		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
 		e.POST("/signup", routes.SignUp)
+		e.POST("/upload/profileimage", routes.UploadProfileImage, routes.RequireSignInMiddleware)
 
 		// Routes - for authenticated admin
 		admin := e.Group("admin", routes.RequireSignInMiddleware, routes.RequireAdminMiddleware)

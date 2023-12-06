@@ -55,7 +55,6 @@ func Profile(c echo.Context) error {
 		}
 
 		// Get accounts with pending verifications
-		govIdFile := db.GetUserGovId(user.AccountId, cc.Db())
 		var accounts []db.UserVerification
 		if user.IsAdmin {
 			accounts_, _ := db.GetAccountsForVerification("3", "0", cc.Db())
@@ -65,13 +64,14 @@ func Profile(c echo.Context) error {
 		switch infoType.Info {
 		case "profile":
 			profile_data = map[string]interface{}{
-				"name":        cases.Title(language.English, cases.Compact).String(user.Name),
-				"email":       user.Email,
-				"birthdate":   user.Birthdate,
-				"address":     user.Address,
-				"is_admin":    user.IsAdmin,
-				"is_verified": user.IsVerified,
-				"gov_id":      govIdFile,
+				"name":          cases.Title(language.English, cases.Compact).String(user.Name),
+				"email":         user.Email,
+				"birthdate":     user.Birthdate,
+				"address":       user.Address,
+				"is_admin":      user.IsAdmin,
+				"is_verified":   user.IsVerified,
+				"gov_id_image":  user.GovIDImage,
+				"profile_image": user.ProfileImage,
 			}
 		case "applications":
 			{

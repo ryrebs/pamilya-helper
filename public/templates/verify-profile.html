@@ -57,15 +57,15 @@
           </div>
           <div>
             <div>
-              <span>Your valid government ID: {{ .data.gov_id }}</span>
+              <span>Your valid government ID: {{ .data.gov_id_image }}</span>
               <div>
-                <input name="file" required type="file" />
+                <input name="gov_id_image" required type="file" />
               </div>
             </div>
           </div>
           <div>
             {{ range .msgs }}
-            <span style="color: red">{{ . }}</span><br />
+            <div style="color: red">{{ . }}</div>
             {{ end }}
             <span style="color: green">{{ .success_msg }}</span>
           </div>

@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"io"
 	"log"
+	"mime/multipart"
+	"os"
 	"strings"
 )
 
@@ -31,4 +34,37 @@ func CreateListString(str []string) string {
 	}
 
 	return resp
+}
+
+// Remove file if exists
+func RemoveFile(fname string) error {
+	if _, err := os.Stat(fname); err != nil {
+		log.Println(err)
+		return err
+	}
+	err := os.Remove(fname)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+// Create file uploads
+func CreateFile(file *multipart.FileHeader, newFilename string) error {
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	dst, err := os.Create(newFilename)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer dst.Close()
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+	return nil
 }
