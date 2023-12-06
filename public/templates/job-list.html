@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 
 <head>
     <title>PamilyaHelper - Your Household Help Hub</title>
@@ -9,7 +9,8 @@
 <body>
     <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -42,12 +43,14 @@
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                         <li class="nav-item">
-                            <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill" href="#tab-2">
+                            <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill"
+                                href="#tab-2">
                                 <h6 class="mt-n1 mb-0">Full Time</h6>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-3">
+                            <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill"
+                                href="#tab-3">
                                 <h6 class="mt-n1 mb-0">Part Time</h6>
                             </a>
                         </li>
@@ -56,37 +59,49 @@
                         <!-- Full Time -->
                         <div id="tab-2" class="tab-pane fade show p-0 active">
                             <!-- Full Time - DATA FROM DATABASE -->
-                                {{ range .jobs }}
-                                    {{ if eq .employment_type "Full Time" }}
-                                        <div class="job-item p-4 mb-4">
-                                            <div class="row g-4">
-                                                <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                                    <img class="flex-shrink-0 img-fluid border rounded" src="/static/img/person6.jpeg" alt="" style="width: 80px; height: 80px;">
-                                                    <div class="text-start ps-4">
-                                                        <h5 class="mb-2">{{ .title }}</h5>
-                                                        <p>{{ .description }}</p>
-                                                        <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>{{ .location }}</span>
-                                                        <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>{{ .employment_type }}</span>
-                                                        <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P{{ .price_from }} - P{{.price_to }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                                    <div class="d-flex mb-3">
-                                                        {{ if and $.is_log_in $.is_verified }} 
-                                                            <a class="btn btn-primary" href="/jobs/{{ .id }}">Apply Now</a>
-                                                        {{ else }}
-                                                            <button disabled class="btn btn-primary">Apply Now</button>
-                                                        {{ end }}
-                                                    </div>
-                                                    <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: {{ .dateline }}</small>
-                                                </div>
-                                            </div>
+                            {{ range .jobs }}
+                            {{ if eq .employment_type "Full Time" }}
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded"
+                                            src="/static/img/person6.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2"><a href="/jobs/view/{{ .id }}" style="color: black;">{{
+                                                    .title }}</a></h5>
+
+                                            <p>{{ .description }}</p>
+                                            <span class="text-truncate me-3"><i
+                                                    class="fa fa-map-marker-alt text-primary me-2"></i>{{ .location
+                                                }}</span>
+                                            <span class="text-truncate me-3"><i
+                                                    class="far fa-clock text-primary me-2"></i>{{ .employment_type
+                                                }}</span>
+                                            <span class="text-truncate me-0"><i
+                                                    class="far fa-money-bill-alt text-primary me-2"></i>P{{ .price_from
+                                                }} - P{{.price_to }}</span>
                                         </div>
-                                    {{ end }}
-                                {{ end }}
+                                    </div>
+                                    <div
+                                        class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            {{ if and $.is_log_in $.is_verified }}
+                                            <a class="btn btn-primary" href="/jobs/view/{{ .id }}">Apply Now</a>
+                                            {{ else }}
+                                            <button disabled class="btn btn-primary">Apply Now</button>
+                                            {{ end }}
+                                        </div>
+                                        <small class="text-truncate"><i
+                                                class="far fa-calendar-alt text-primary me-2"></i>Date Line: {{
+                                            .dateline }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ end }}
+                            {{ end }}
                             <!-- END DATA FROM DATABASE -->
-                                
-                        <!--  Full Time DUMMY DATA
+
+                            <!--  Full Time DUMMY DATA
                             <div class="job-item p-4 mb-4">
                                 <div class="row g-4">
                                     <div class="col-sm-12 col-md-8 d-flex align-items-center">
@@ -148,39 +163,50 @@
                                 </div>
                             </div>
                         </div> DUMMY DATA -->
-                
-                        <!-- Part Time - DATA FROM DATABASE -->
-                         {{ range .jobs }}
+
+                            <!-- Part Time - DATA FROM DATABASE -->
+                            {{ range .jobs }}
                             {{ if eq .employment_type "Part Time" }}
-                                <div class="job-item p-4 mb-4">
-                                    <div class="row g-4">
-                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/static/img/person6.jpeg" alt="" style="width: 80px; height: 80px;">
-                                            <div class="text-start ps-4">
-                                                <h5 class="mb-2">{{ .title }}</h5>
-                                                <p>{{ .description }}</p>
-                                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>{{ .location }}</span>
-                                                <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>{{ .employment_type }}</span>
-                                                <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>P{{ .price_from }} - P{{.price_to }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                            <div class="d-flex mb-3">
-                                                {{ if and $.is_log_in $.is_verified }} 
-                                                    <a class="btn btn-primary" href="/jobs/{{ .id }}">Apply Now</a>
-                                                {{ else }}
-                                                    <button disabled class="btn btn-primary">Apply Now</button>
-                                                {{ end }}
-                                            </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: {{ .dateline }}</small>
+                            <div class="job-item p-4 mb-4">
+                                <div class="row g-4">
+                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid border rounded"
+                                            src="/static/img/person6.jpeg" alt="" style="width: 80px; height: 80px;">
+                                        <div class="text-start ps-4">
+                                            <h5 class="mb-2"><a href="/jobs/view/{{ .id }}" style="color: black;">{{
+                                                    .title }}</a></h5>
+                                            <p>{{ .description }}</p>
+                                            <span class="text-truncate me-3"><i
+                                                    class="fa fa-map-marker-alt text-primary me-2"></i>{{ .location
+                                                }}</span>
+                                            <span class="text-truncate me-3"><i
+                                                    class="far fa-clock text-primary me-2"></i>{{ .employment_type
+                                                }}</span>
+                                            <span class="text-truncate me-0"><i
+                                                    class="far fa-money-bill-alt text-primary me-2"></i>P{{ .price_from
+                                                }} - P{{.price_to }}</span>
                                         </div>
                                     </div>
+                                    <div
+                                        class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                        <div class="d-flex mb-3">
+                                            {{ if and $.is_log_in $.is_verified }}
+                                            <a class="btn btn-primary" href="/jobs/view/{{ .id }}">Apply Now</a>
+                                            {{ else }}
+                                            <button disabled class="btn btn-primary">Apply Now</button>
+                                            {{ end }}
+                                        </div>
+                                        <small class="text-truncate"><i
+                                                class="far fa-calendar-alt text-primary me-2"></i>Date Line: {{
+                                            .dateline }}</small>
+                                    </div>
                                 </div>
+                            </div>
                             {{ end }}
-                        {{ end }}
-                    <!-- END DATA FROM DATABASE -->
-                    
-                    <!-- Part Time DUMMY DATA
+                            {{ end }}
+                            <!-- END DATA FROM DATABASE -->
+
+                            <!-- Part Time DUMMY DATA
                     <div id="tab-3" class="tab-pane fade show p-0">
                         <div class="job-item p-4 mb-4">
                             <div class="row g-4">
@@ -264,11 +290,11 @@
                         </div>
                     </div>
                     -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Jobs Detail DUMMY DATA for MODAL
+            <!-- Jobs Detail DUMMY DATA for MODAL
             <div id="modalboxfull1" class="modal">
                 <div class="modalcontent">
                     <div class="Job-1">
@@ -762,17 +788,18 @@
                 </div>
             </div>
          -->
-        <!-- Jobs End -->
-        {{ if.job_msg.IsMsgError }}
-        <div style="text-align: center; color: red;font-weight: 500;">
-        {{ else }}
-        <div style="text-align: center; color: green;font-weight: 500;">
-        {{ end }}
-            <span>{{ .job_msg.GetMsg  }}</span>
-        </div>
-        <div class="button-container">             
-                <a class="btn btn-primary py-3 px-5" href="/jobs/create">Post a Job Opening</a>
-        </div>
-        {{ template "footer" . }}
+            <!-- Jobs End -->
+            {{ if.job_msg.IsMsgError }}
+            <div style="text-align: center; color: red;font-weight: 500;">
+                {{ else }}
+                <div style="text-align: center; color: green;font-weight: 500;">
+                    {{ end }}
+                    <span>{{ .job_msg.GetMsg }}</span>
+                </div>
+                <div class="button-container">
+                    <a class="btn btn-primary py-3 px-5" href="/jobs/create">Post a Job Opening</a>
+                </div>
+                {{ template "footer" . }}
 </body>
+
 </html>

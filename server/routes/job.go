@@ -84,8 +84,16 @@ func JobDetail(c echo.Context) error {
 		return cc.Redirect(http.StatusSeeOther, "/job-list")
 	}
 
+	user, userErr := GetUserFromSession(cc, cc.Db())
+	is_verified := false
+	if userErr != nil {
+		log.Println(err)
+	} else {
+		is_verified = user.IsVerified
+	}
+
 	if cc.Request().Method == "POST" {
-		// Set flash message
+		// Create session for flash message
 		sess, err := session.Get("post-message", cc)
 		if err != nil {
 			log.Println(err)
@@ -97,32 +105,30 @@ func JobDetail(c echo.Context) error {
 			}
 		}
 
-		user, err := GetUserFromSession(cc, cc.Db())
-		if err != nil {
-			log.Println(err)
-		}
-
 		// Create job application if user is not the owner of the job
-		if owned, err := db.IsJobOwned(jDetail.ID, user.AccountId, cc.Db()); !owned && err == nil {
-			err = db.CreateJobApplication(jDetail.ID, user.AccountId, cc.Db())
-			if err != nil {
+		if user != nil {
+			if owned, err := db.IsJobOwned(jDetail.ID, user.AccountId, cc.Db()); !owned && err == nil {
+				err = db.CreateJobApplication(jDetail.ID, user.AccountId, cc.Db())
+				if err != nil {
+					log.Println(err)
+					sess.AddFlash("Something went wrong please try again.", "post_apply")
+				} else {
+					sess.AddFlash("Application submitted!", "post_apply")
+				}
+			} else {
 				log.Println(err)
 				sess.AddFlash("Something went wrong please try again.", "post_apply")
-			} else {
-				sess.AddFlash("Application submitted!", "post_apply")
 			}
-		} else {
-			sess.AddFlash("Something went wrong please try again.", "post_apply")
+			sess.Save(cc.Request(), cc.Response())
 		}
-
-		sess.Save(cc.Request(), cc.Response())
 		return cc.Redirect(http.StatusSeeOther, "/job-list")
 	}
 
 	return renderWithAuthContext(
 		"job-detail.html", c, map[string]interface{}{
-			"job":      job,
-			"viewOnly": jDetail.ViewOnly,
+			"job":         job,
+			"view_only":   jDetail.ViewOnly,
+			"is_verified": is_verified,
 		},
 	)
 }

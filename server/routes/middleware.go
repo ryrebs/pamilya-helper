@@ -50,3 +50,16 @@ func RequireAdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+// Requires route to be admin accessible only.
+func RequireVerifiedUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sess, _ := session.Get("auth-pamilyahelper-session", c)
+		cc := c.(*db.CustomDBContext)
+
+		if v, _ := CheckUserIsVerified(c, sess, cc.Db()); v {
+			next(c)
+		}
+		return c.Redirect(http.StatusSeeOther, "/signin")
+	}
+}

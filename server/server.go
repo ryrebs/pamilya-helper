@@ -109,7 +109,8 @@ func Serve() {
 		// Routes
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
-		e.GET("/job-list", routes.JobList)
+		e.GET("/jobs", routes.JobList)
+		e.GET("/jobs/view/:id", routes.JobDetail)
 		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
 		e.POST("/signup", routes.SignUp)
 
@@ -123,10 +124,13 @@ func Serve() {
 		users.POST("/signout", routes.SignOut)
 		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
 
-		jobs := e.Group("jobs", middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))), routes.RequireSignInMiddleware)
+		jobs := e.Group("jobs",
+			middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))),
+			routes.RequireSignInMiddleware,
+			routes.RequireVerifiedUserMiddleware)
 		jobs.Match([]string{"GET", "POST"}, "/create", routes.CreateJob)
 		jobs.POST("/delete", routes.DeleteJob)
-		jobs.Match([]string{"GET", "POST"}, "/view/:id", routes.JobDetail)
+		jobs.POST("/view/:id", routes.JobDetail)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
