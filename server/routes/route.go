@@ -30,21 +30,27 @@ func Index(c echo.Context) error {
 
 	// Anon user
 	if err != nil {
-		jobs, _ := db.GetAllJobs("10", "0", cc.Db())
+		jobs, _ := db.GetAllJobs("5", "0", cc.Db())
+		users, _ := db.GetAllAccountAsAnon(3, 0, cc.Db())
 		return renderWithAuthContext("index.html", cc, map[string]interface{}{
-			"jobs": jobs,
+			"jobs":    jobs,
+			"helpers": users,
 		})
 	}
 
 	// Logged user
-	jobs, err := db.GetJobs("10", "0", user.AccountId, cc.Db())
+	jobs, err := db.GetJobs("5", "0", user.AccountId, cc.Db())
 	if err != nil {
 		log.Println(err)
 		return renderWithAuthContext("index.html", cc, nil)
 	}
 
+	users, _ := db.GetAllAccountAsUser(user.AccountId, 3, 0, cc.Db())
+	log.Println(users)
 	return renderWithAuthContext("index.html", cc, map[string]interface{}{
-		"jobs": jobs,
+		"jobs":        jobs,
+		"helpers":     users,
+		"is_verified": user.IsVerified,
 	})
 }
 
@@ -130,4 +136,10 @@ func Profile(c echo.Context) error {
 
 func Contact(c echo.Context) error {
 	return renderWithAuthContext("contact.html", c, nil)
+}
+
+func Helper(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	// user, err := GetUserFromSession(c, cc.Db())
+	return renderWithAuthContext("helpers.html", cc, nil)
 }

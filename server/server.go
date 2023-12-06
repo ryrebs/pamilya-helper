@@ -110,6 +110,7 @@ func Serve() {
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
 		e.GET("/jobs", routes.JobList)
+		e.GET("/helpers", routes.Helper)
 		e.GET("/jobs/view/:id", routes.JobDetail)
 		e.POST("/signup", routes.SignUp)
 		e.GET("/contact", routes.Contact)

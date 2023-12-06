@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	_ "github.com/mattn/go-sqlite3"
@@ -637,4 +638,72 @@ func RemoveJob(jobID, employerID int, db *sql.DB) error {
 		return nil
 	}
 	return errors.New("no database connection found")
+}
+
+// Get users in the database
+func GetAccounts(userID interface{}, limit, offset int, conn *sql.DB) ([]UserDetail, error) {
+	query := `SELECT * FROM account WHERE is_verified = 1 AND is_admin = 0 LIMIT ? OFFSET ?`
+	var userID_ int
+	if val, ok := userID.(int); ok {
+		query = `SELECT * FROM account WHERE id != ? AND is_verified = 1 AND is_admin = 0 LIMIT ? OFFSET ? `
+		userID_ = val
+	}
+
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var rows *sql.Rows
+	if userID_ > 0 {
+		rows, err = stmt.Query(userID_, limit, offset)
+	} else {
+		rows, err = stmt.Query(limit, offset)
+	}
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []UserDetail
+	var t time.Time
+	var p string
+	for rows.Next() {
+		var user UserDetail
+		err = rows.Scan(
+			&user.AccountId,
+			&t,
+			&user.Name,
+			&user.Email,
+			&p,
+			&user.Birthdate,
+			&user.Address,
+			&user.IsVerified,
+			&user.IsVerificationPending,
+			&user.IsAdmin,
+			&user.Detail,
+			&user.Contact,
+			&user.ProfileImage,
+			&user.GovIDImage,
+			&user.Title,
+			&user.Skills,
+		)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return users, nil
 }

@@ -54,6 +54,8 @@ type UserDetail struct {
 	Contact               string `json:"contact"`
 	GovIDImage            string
 	ProfileImage          string
+	Title                 string
+	Skills                string
 }
 
 type User struct {
@@ -100,6 +102,7 @@ func ValidateUser(password_text, user_password string) bool {
 	return IsPWDvalid(password_text, user_password)
 }
 
+// Returns user detail with type UserDetail if found
 func FindUserDetail(email string, db *sql.DB) *UserDetail {
 	if user := FindUser(email, db); user != (User{}) {
 		return &user.UserDetail
@@ -107,7 +110,7 @@ func FindUserDetail(email string, db *sql.DB) *UserDetail {
 	return nil
 }
 
-// Returns the user if found
+// Returns the user with type User if found
 func FindUser(email string, db *sql.DB) User {
 	return FindUserFromDb(email, db)
 }
@@ -274,4 +277,20 @@ func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 
 func CreateJobApplication(jobID, employeeID int, conn *sql.DB) error {
 	return InsertJobApplication(jobID, employeeID, conn)
+}
+
+func GetAllAccountAsAnon(limit, offset int, conn *sql.DB) ([]UserDetail, error) {
+	users, err := GetAccounts(nil, limit, offset, conn)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func GetAllAccountAsUser(userID interface{}, limit, offset int, conn *sql.DB) ([]UserDetail, error) {
+	users, err := GetAccounts(userID, limit, offset, conn)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
