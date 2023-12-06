@@ -612,6 +612,7 @@ func IsJobOwned(jobID, accoundID int, conn *sql.DB) (bool, error) {
 	stmt, err := conn.Prepare(query)
 	if err != nil {
 		log.Println(err)
+		return false, err
 	}
 	defer stmt.Close()
 	var job struct {
@@ -626,4 +627,26 @@ func IsJobOwned(jobID, accoundID int, conn *sql.DB) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func RemoveJob(jobID, employerID int, db *sql.DB) error {
+	query := `
+		DELETE FROM job WHERE id = ? AND employer_id = ?
+		AND id NOT IN (SELECT job_id from job_application where job_id = ?)
+	`
+	if db != nil {
+		stmt, err := db.Prepare(query)
+		if err != nil {
+			return err
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(jobID, employerID, jobID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no database connection found")
 }

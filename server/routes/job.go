@@ -103,7 +103,7 @@ func JobDetail(c echo.Context) error {
 		}
 
 		// Create job application if user is not the owner of the job
-		if owned, _ := db.IsJobOwned(jDetail.ID, user.AccountId, cc.Db()); !owned {
+		if owned, err := db.IsJobOwned(jDetail.ID, user.AccountId, cc.Db()); !owned && err == nil {
 			err = db.CreateJobApplication(jDetail.ID, user.AccountId, cc.Db())
 			if err != nil {
 				log.Println(err)
@@ -184,9 +184,40 @@ func CreateJob(c echo.Context) error {
 	return renderWithAuthContext("create-job.html", c, data)
 }
 
-func CreateService(c echo.Context) error {
-	return c.Render(http.StatusOK, "create-service.html", nil)
-}
-
 // Delete owned jobs or posted where no one has applied
-func DeleteJob() {}
+func DeleteJob(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	user, err := GetUserFromSession(c, cc.Db())
+	var job struct {
+		ID int `form:"job_id" validate:"required"`
+	}
+
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=posted")
+	}
+
+	if err = cc.Bind(&job); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=posted")
+	}
+
+	if err = cc.Validate(job); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=posted")
+	}
+
+	owned, err := db.IsJobOwned(job.ID, user.AccountId, cc.Db())
+	if err != nil {
+		log.Println(err)
+	} else {
+		if owned {
+			err := db.RemoveJob(job.ID, user.AccountId, cc.Db())
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}
+
+	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=posted")
+}

@@ -1,29 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Profile</title>
-    {{ template "header" . }}
-  </head>
-  <body>
-    <div class="container-xxl bg-white p-0">
-      <!-- Spinner Start -->
-      <div
-        id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
-      >
-        <div
-          class="spinner-border text-primary"
-          style="width: 3rem; height: 3rem"
-          role="status"
-        >
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-      <!-- Spinner End -->
 
-      <!-- Navbar Start -->
-      {{ template "navbar" . }}
-      <!-- Navbar End -->
+<head>
+  <title>Profile</title>
+  {{ template "header" . }}
+</head>
+
+<body>
+  <div class="container-xxl bg-white p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    {{ template "navbar" . }}
+    <!-- Navbar End -->
 
     <div class="profile-container">
       <div class="profile-nav">
@@ -59,93 +55,95 @@
       <!-- START Data is not for ADMIN -->
       <!-- Details  -->
       {{ if not .data.is_admin }}
-        <!-- Profile data -->
-        {{ if eq .data.infoType "profile" }}
-        <div class="profile-details">
-          <div>
-            <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
-            <div>
-              {{ if.data.profile.is_verified }}
-              <span style="color: green;font-size: smaller;">Verified Account</span>
-              {{ else }}
-              <span>Unverified</span>
-              {{ end }}
-            </div>
-          </div>
-          <div>
-            <span>Email: {{ .data.profile.email }}</span>
-          </div>
-          <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
-          <div><span>Address: {{ .data.profile.address }}</span></div>
+      <!-- Profile data -->
+      {{ if eq .data.infoType "profile" }}
+      <div class="profile-details">
+        <div>
+          <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
           <div>
             {{ if.data.profile.is_verified }}
-            <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
+            <span style="color: green;font-size: smaller;">Verified Account</span>
             {{ else }}
-            <div>
-              <button>
-                <a href="/users/profile/verify">Account Verification</a>
-              </button>
-            </div>
+            <span>Unverified</span>
             {{ end }}
           </div>
         </div>
-        {{ end }}
-
-        <!-- Applications  -->
-        {{ if eq .data.infoType "applications" }}
+        <div>
+          <span>Email: {{ .data.profile.email }}</span>
+        </div>
+        <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
+        <div><span>Address: {{ .data.profile.address }}</span></div>
+        <div>
+          {{ if.data.profile.is_verified }}
+          <div><span>Valid Government Id: {{ .data.profile.gov_id }}</span></div>
+          {{ else }}
           <div>
-            <span>Sent Helper Applications</span>
-            {{ range .data.applications }}
-              <div style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
-                <div>
-                  <span>Profile pic</span>
-                </div>
-                <div>
-                  <div>
-                    <span style="display: inline;">{{ .title }}</span>
-                    <button style="display: inline;">{{ .status }} </button>
-                  </div>
-                  <div>
-                    <span style="display: inline;">{{ .location }}</span>
-                    <span style="display: inline;">{{ .employment_type }}</span>
-                    <span style="display: inline;">{{ .price_from }} - {{ .price_to }}</span>
-                  </div>
-                </div>
-                <div>
-                  <button>
-                    <a href="/jobs/{{ .id }}?view=1">View</a>
-                  </button>
-                </div>
-              </div>
-            {{ end }}
+            <button>
+              <a href="/users/profile/verify">Account Verification</a>
+            </button>
           </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      <!-- Applications  -->
+      {{ if eq .data.infoType "applications" }}
+      <div>
+        <span>Sent Helper Applications</span>
+        {{ range .data.applications }}
+        <div
+          style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+          <div>
+            <span>Profile pic</span>
+          </div>
+          <div>
+            <div>
+              <span style="display: inline;">{{ .title }}</span>
+              <button style="display: inline;">{{ .status }} </button>
+            </div>
+            <div>
+              <span style="display: inline;">{{ .location }}</span>
+              <span style="display: inline;">{{ .employment_type }}</span>
+              <span style="display: inline;">{{ .price_from }} - {{ .price_to }}</span>
+            </div>
+          </div>
+          <div>
+            <button>
+              <a href="/jobs/{{ .id }}?view=1">View</a>
+            </button>
+          </div>
+        </div>
         {{ end }}
-        
+      </div>
+      {{ end }}
+
       <!-- Posted Job  -->
       {{ if eq .data.infoType "posted" }}
       <div>
         <span>Job Posts</span>
         {{ range .data.postedJobs }}
-          <div style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+        <div
+          style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+          <div>
             <div>
-              <div>
-                <span style="display: inline;">{{ .title }}</span>
-              </div>
-              <div>
-                <span style="display: inline;">{{ .location }}</span>
-                <span style="display: inline;">{{ .employment_type }}</span>
-                <span style="display: inline;">{{ .price_from }} - {{ .price_to }}</span>
-              </div>
+              <span style="display: inline;">{{ .title }}</span>
             </div>
             <div>
-              <button>
-                <a href="/jobs/{{ .id }}?view=1">View</a>
-              </button>
-              <button>
-                <a href="/jobs/{{ .id }}?view=1">Delete</a>
-              </button>
+              <span style="display: inline;">{{ .location }}</span>
+              <span style="display: inline;">{{ .employment_type }}</span>
+              <span style="display: inline;">{{ .price_from }} - {{ .price_to }}</span>
             </div>
           </div>
+          <div>
+            <button>
+              <a href="/jobs/view/{{ .id }}?view=1">View</a>
+            </button>
+            <form action="/jobs/delete" method="post">
+              <button name="job_id" value="{{ .id }}" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
         {{ end }}
       </div>
       {{ end }}
@@ -155,7 +153,7 @@
 
       <!-- Account verification view for admins -->
       {{ if .data.is_admin }}
-      <div  class="profile-details">
+      <div class="profile-details">
         <div style="text-align: center">
           <span>Admin Manual Verification</span>
         </div>
@@ -175,12 +173,8 @@
                 <span>Address: </span>{{ .Address }}
               </div>
               <div class="user-box__detail">
-                <span
-                  >Government ID:
-                  <a href="/uploads/{{ .GovId }}" class="gov_id"
-                    >{{ .GovId }}</a
-                  ></span
-                >
+                <span>Government ID:
+                  <a href="/uploads/{{ .GovId }}" class="gov_id">{{ .GovId }}</a></span>
               </div>
               <div class="user-box__btns">
                 <button type="submit" name="action" value="accept">
@@ -200,5 +194,6 @@
     <div>
       {{ template "footer" . }}
     </div>
-  </body>
+</body>
+
 </html>

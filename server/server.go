@@ -125,7 +125,8 @@ func Serve() {
 
 		jobs := e.Group("jobs", middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))), routes.RequireSignInMiddleware)
 		jobs.Match([]string{"GET", "POST"}, "/create", routes.CreateJob)
-		jobs.Match([]string{"GET", "POST"}, "/:id", routes.JobDetail)
+		jobs.POST("/delete", routes.DeleteJob)
+		jobs.Match([]string{"GET", "POST"}, "/view/:id", routes.JobDetail)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
