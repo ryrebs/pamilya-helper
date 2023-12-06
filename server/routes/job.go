@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"pamilyahelper/webapp/server/db"
 	"pamilyahelper/webapp/server/utils"
+	"strings"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -101,13 +102,17 @@ func JobDetail(c echo.Context) error {
 			log.Println(err)
 		}
 
-		// Create job application
-		err = db.CreateJob(jDetail.ID, user.AccountId, cc.Db())
-		if err != nil {
-			log.Println(err)
-			sess.AddFlash("Something went wrong please try again.", "post_apply")
+		// Create job application if user is not the owner of the job
+		if owned, _ := db.IsJobOwned(jDetail.ID, user.AccountId, cc.Db()); !owned {
+			err = db.CreateJobApplication(jDetail.ID, user.AccountId, cc.Db())
+			if err != nil {
+				log.Println(err)
+				sess.AddFlash("Something went wrong please try again.", "post_apply")
+			} else {
+				sess.AddFlash("Application submitted!", "post_apply")
+			}
 		} else {
-			sess.AddFlash("Application submitted!", "post_apply")
+			sess.AddFlash("Something went wrong please try again.", "post_apply")
 		}
 
 		sess.Save(cc.Request(), cc.Response())
@@ -121,3 +126,67 @@ func JobDetail(c echo.Context) error {
 		},
 	)
 }
+
+func CreateJob(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	user, err := GetUserFromSession(c, cc.Db())
+	newJob := struct {
+		DateLine         string   `form:"dateline" validate:"required"`
+		Title            string   `form:"title" validate:"required"`
+		Skills           []string `form:"skills" validate:"required"`
+		Responsibilities []string `form:"responsibilities" validate:"required"`
+		Description      string   `form:"description" validate:"required"`
+		SalaryRangeFrom  string   `form:"salary_range1" validate:"required"`
+		SalaryRangeTo    string   `form:"salary_range2" validate:"required"`
+		Address          string   `form:"address" validate:"required"`
+		EmployementType  string   `form:"employment_type" validate:"required,oneof='Part Time' 'Full Time'"`
+	}{
+		Skills: make([]string, 0),
+	}
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusForbidden)
+	}
+	data := map[string]interface{}{
+		"name":      user.Name,
+		"email":     user.Email,
+		"contact":   user.Contact,
+		"detail":    user.Detail,
+		"errorMsgs": []string{},
+	}
+
+	if cc.Request().Method == "POST" {
+		err := cc.Bind(&newJob)
+		if err != nil {
+			log.Println(err)
+		}
+		err = cc.Validate(newJob)
+		if err != nil {
+			data["errorMsgs"] = strings.Split(err.Error(), "\n")
+			return renderWithAuthContext("create-job.html", c, data)
+		}
+
+		// Create job
+		resp := utils.CreateListString(newJob.Responsibilities)
+		skills := utils.CreateListString(newJob.Skills)
+
+		err = db.InsertJob(newJob.DateLine, newJob.Title,
+			newJob.Description, resp, skills,
+			newJob.Address, newJob.SalaryRangeFrom,
+			newJob.SalaryRangeTo, newJob.EmployementType, user.AccountId, cc.Db())
+		if err != nil {
+			data["errorMsgs"] = []string{"Something went wrong. Please try again."}
+			return renderWithAuthContext("create-job.html", c, data)
+		}
+		data["msg"] = "Job post created"
+	}
+
+	return renderWithAuthContext("create-job.html", c, data)
+}
+
+func CreateService(c echo.Context) error {
+	return c.Render(http.StatusOK, "create-service.html", nil)
+}
+
+// Delete owned jobs or posted where no one has applied
+func DeleteJob() {}

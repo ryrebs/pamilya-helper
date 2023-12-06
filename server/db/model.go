@@ -154,12 +154,7 @@ func GetAccountsForVerification(limit, offset string, db *sql.DB) ([]UserVerific
 	return GetAccountsForVerificationFromDb(limit, offset, db)
 }
 
-func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
-	jobs, err := GetJobsFromDB(limit, offset, accountID, conn)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
+func createJobData(jobs []Job) []map[string]interface{} {
 	respJobs := []map[string]interface{}{}
 	for _, job := range jobs {
 		resp := strings.Split(job.Responsibility, "|")
@@ -178,6 +173,27 @@ func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, er
 			"dateline":         job.DateLine,
 		})
 	}
+	return respJobs
+}
+
+func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
+	jobs, err := GetJobsFromDB("", limit, offset, accountID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	respJobs := createJobData(jobs)
+	return respJobs, nil
+}
+
+func GetOwnedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
+	query := `SELECT * FROM job WHERE employer_id == ? LIMIT ? OFFSET ?`
+	jobs, err := GetJobsFromDB(query, limit, offset, accountID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	respJobs := createJobData(jobs)
 	return respJobs, nil
 }
 
@@ -239,6 +255,6 @@ func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 	return data, nil
 }
 
-func CreateJob(jobID, employeeID int, conn *sql.DB) error {
+func CreateJobApplication(jobID, employeeID int, conn *sql.DB) error {
 	return InsertJobApplication(jobID, employeeID, conn)
 }

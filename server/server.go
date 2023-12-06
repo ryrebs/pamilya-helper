@@ -13,6 +13,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"golang.org/x/time/rate"
 
 	"pamilyahelper/webapp/server/db"
 	"pamilyahelper/webapp/server/routes"
@@ -20,6 +21,8 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 )
+
+var RequestLimit = 100
 
 type Template struct {
 	templates *template.Template
@@ -115,12 +118,13 @@ func Serve() {
 		admin.POST("/verify/user", routes.VerifyUser)
 
 		// Routes - authenticated users
-		users := e.Group("users", routes.RequireSignInMiddleware)
+		users := e.Group("users", middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))), routes.RequireSignInMiddleware)
 		users.GET("/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
 
-		jobs := e.Group("jobs", routes.RequireSignInMiddleware)
+		jobs := e.Group("jobs", middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))), routes.RequireSignInMiddleware)
+		jobs.Match([]string{"GET", "POST"}, "/create", routes.CreateJob)
 		jobs.Match([]string{"GET", "POST"}, "/:id", routes.JobDetail)
 
 		// Util routes - for dev or privileged access

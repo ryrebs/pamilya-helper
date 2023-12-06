@@ -40,11 +40,12 @@ func Profile(c echo.Context) error {
 	user, error := GetUserFromSession(c, cc.Db())
 	var profile_data map[string]interface{}
 	var applications []map[string]interface{}
+	var postedJobs []map[string]interface{}
 
 	if user != nil {
 		// Get what type of info should be returned
 		infoType := struct {
-			Info string `query:"info" validate:"oneof=profile applications"`
+			Info string `query:"info" validate:"oneof=profile applications posted"`
 		}{
 			Info: "profile",
 		}
@@ -82,10 +83,21 @@ func Profile(c echo.Context) error {
 					applications = jobs.([]map[string]interface{})
 				}
 			}
+		case "posted":
+			{
+				// Get jobs
+				jobs, jErr := db.GetOwnedJobs("10", "0", user.AccountId, cc.Db())
+				if jErr != nil {
+					log.Println(jErr)
+				} else {
+					postedJobs = jobs.([]map[string]interface{})
+				}
+			}
 		}
 		data["data"] = map[string]interface{}{
 			"profile":      profile_data,
 			"applications": applications,
+			"postedJobs":   postedJobs,
 			"accounts":     accounts,
 			"infoType":     infoType.Info,
 		}

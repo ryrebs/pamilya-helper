@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>PamilyaHelper - Your Household Help Hub</title>
+    {{ template "header" . }}
+    <!-- custom css -->
+    <link rel="stylesheet" href="/static/css/post-job-forms.css">
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Navbar Start -->
+        {{ template "navbar" . }}
+        <!-- Navbar End -->
+
+        <!-- Header End -->
+        <div class="container-xxl py-5 bg-dark page-header mb-5">
+            <div class="container my-5 pt-5 pb-4">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Job List</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb text-uppercase">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item"><a href="#">Job List</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Post a Job Opening</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- Jobs Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Post a Job Opening</h1>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <section id="about-sc" class="resumeform">
+                        <div class="container">
+                            <div class="about-cnt">
+                                <div class="cv-form-blk">
+                                    <div class="cv-form-row-title">
+                                        <h3>about the employer</h3>
+                                    </div>
+                                    <div class="cv-form-row cv-form-row-about" id="achievements">
+                                        <div class="cols-3">
+                                            <div class="form-elem">
+                                                <label for="" class="form-label ">Full Name</label>
+                                                <input disabled name="firstname" type="text"
+                                                    class="form-control firstname" id=""
+                                                    placeholder="e.g. Juan dela Cruz" value="{{ .name }}">
+
+                                            </div>
+                                            <div class="form-elem">
+                                                <label for="" class="form-label">Email</label>
+                                                <input disabled name="email" type="text" class="form-control email"
+                                                    id="" placeholder="e.g. juandelacruz@gmail.com"
+                                                    value="{{ .email }}">
+
+                                            </div>
+                                            <div class="form-elem">
+                                                <label for="" class="form-label">Contact Number:</label>
+                                                <input disabled name="phoneno" type="text" class="form-control phoneno"
+                                                    id="" placeholder="e.g. 0912 345 6789" value="{{ .email }}">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="cols-3">
+                                            <div class="form-elem">
+                                                <label for="" class="form-label">Employer Detail</label>
+                                                <input disabled name="summary" type="text" class="form-control summary"
+                                                    id="" placeholder="Short Description" value="{{ .detail }}">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form method="post" action="/jobs/create">
+                                    <div class="cv-form-blk" id="experience">
+                                        <div class="cv-form-row-title">
+                                            <h3>About the Job</h3>
+                                        </div>
+
+                                        <div class="row-separator repeater">
+                                            <div class="repeater" data-repeater-list="group-a">
+                                                <div data-repeater-item>
+                                                    <div class="cv-form-row cv-form-row-achievement">
+                                                        <div class="cols-3">
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Title</label>
+                                                                <input required name="title" type="text"
+                                                                    class="form-control address"
+                                                                    placeholder="e.g. Skill Worker Wanted">
+                                                            </div>
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Dateline</label>
+                                                                <input required name="dateline" type="date"
+                                                                    class="form-control address">
+                                                            </div>
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Address</label>
+                                                                <input required name="address" type="text"
+                                                                    class="form-control address"
+                                                                    placeholder="e.g. Tagbilaran City, Bohol">
+                                                            </div>
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Employment Type</label>
+                                                                <select style="height: 40px" name="employment_type"
+                                                                    class="form-control form-select form-select-lg"
+                                                                    aria-label="Select employment_type">
+                                                                    <option value="Full Time">Full Time</option>
+                                                                    <option value="Part Time">Part Time</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Salary Range
+                                                                    From</label>
+                                                                <input required name="salary_range1" type="text"
+                                                                    class="form-control achieve_description"
+                                                                    placeholder="e.g.10,000">
+
+                                                            </div>
+                                                            <div class="form-elem">
+                                                                <label for="" class="form-label">Salary Range To</label>
+                                                                <input required name="salary_range2" type="text"
+                                                                    class="form-control achieve_description"
+                                                                    placeholder="e.g. 15,000">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-elem">
+                                                            <label for="" class="form-label">Job Description</label>
+                                                            <textarea required name="description" class="form-control"
+                                                                placeholder="e.g. We are looking for a skilled and dedicated gardener to take care of a beautiful garden."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="cv-form-blk" id="experience">
+                                        <div class="cv-form-row-title">
+                                            <h3>Responsibilities</h3>
+                                        </div>
+
+                                        <div class="row-separator repeater">
+                                            <div class="repeater" data-repeater-list="group-a">
+                                                <div data-repeater-item>
+                                                    <div class="cv-form-row cv-form-row-achievement">
+                                                        <div class="form-elem">
+                                                            <label for="" class="form-label">Description</label>
+                                                            <input required name="responsibilities" type="text"
+                                                                class="form-control achieve_title" id=""
+                                                                placeholder="e.g. Mow, edge, and maintain the lawn to keep it neat and manicured">
+                                                            <input name="responsibilities" type="text"
+                                                                class="form-control achieve_title" id="">
+                                                            <input name="responsibilities" type="text"
+                                                                class="form-control achieve_title" id="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="cv-form-blk" id="references">
+                                        <div class="cv-form-row-title">
+                                            <h3>Qualifications</h3>
+                                        </div>
+
+                                        <div class="row-separator repeater">
+                                            <div class="repeater" data-repeater-list="group-e">
+                                                <div data-repeater-item>
+                                                    <div class="cv-form-row cv-form-row-skills">
+                                                        <div class="form-elem">
+                                                            <label for="" class="form-label">Skills Needed</label>
+                                                            <input required name="skills" type="text"
+                                                                class="form-control skill"
+                                                                placeholder="e.g. Previous experience in gardening and lawn care is preferred but not mandatory">
+                                                            <input name="skills" type="text" class="form-control skill">
+                                                            <input name="skills" type="text" class="form-control skill">
+                                                            <input name="skills" type="text" class="form-control skill">
+                                                            <input name="skills" type="text" class="form-control skill">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div>
+                            {{ range .errorMsgs }}
+                            <div class="alert alert-danger" role="alert">
+                                {{ . }}
+                            </div>
+                            {{end }}
+                            {{ if .msg }}
+                            <div class="alert alert-info" role="alert">
+                                {{ .msg }}
+                            </div>
+                            {{end }}
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" class="btn btn-primary py-3 px-5">
+                                Submit Job Opening
+                            </button>
+                        </div>
+                    </section>
+                </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Jobs End -->
+        {{ template "footer" . }}
+</body>
+
+</html>

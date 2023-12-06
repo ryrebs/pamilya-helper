@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	_ "github.com/mattn/go-sqlite3"
@@ -110,7 +111,7 @@ func InsertUser(user User, db *sql.DB) error {
 	return errors.New("no database connection found")
 }
 
-func InsertJob(dateline, title, descp, respb, skills, loc, pf, pt, emp_type string, emp_id int, db *sql.DB) error {
+func InsertJob(dateline, title, descp, respb, skills, loc, pf, pt, employer_type string, emp_id int, db *sql.DB) error {
 	fixtureJobStmt := `
 		INSERT INTO job(dateline, title, description, responsibility, skills, location, price_from, price_to, employment_type, employer_id)
 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -124,7 +125,7 @@ func InsertJob(dateline, title, descp, respb, skills, loc, pf, pt, emp_type stri
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(dateline, title, descp, respb, skills, loc, pf, pt, emp_type, emp_id)
+		_, err = stmt.Exec(dateline, title, descp, respb, skills, loc, pf, pt, employer_type, emp_id)
 		if err != nil {
 			log.Printf("%q: %s\n", err, fixtureJobStmt)
 			return err
@@ -450,12 +451,21 @@ func UpdateUserVerification(email string, verify int, conn *sql.DB) error {
 	return errors.New("no db found")
 }
 
-func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, error) {
+// Return jobs that are not posted by the current user and did not submit any application.
+//
+//	Use customJobQuery if you want to modify the default conditions.
+//
+//	Should return all the columns of the job in the table.
+func GetJobsFromDB(customJobQuery, limit, offset string, accountID int, conn *sql.DB) ([]Job, error) {
 	query := `
 		SELECT * FROM job WHERE employer_id != ? AND id NOT IN
 			(SELECT job_id FROM job_application WHERE employee_id == ?)
 		LIMIT ? OFFSET ?
 	`
+	var err error
+	if customJobQuery != "" {
+		query = customJobQuery
+	}
 	stmt, err := conn.Prepare(query)
 	if err != nil {
 		log.Println(err)
@@ -463,7 +473,14 @@ func GetJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Job, er
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(accountID, accountID, limit, offset)
+	var rows *sql.Rows
+	if customJobQuery != "" {
+		rows, err = stmt.Query(accountID, limit, offset)
+
+	} else {
+		rows, err = stmt.Query(accountID, accountID, limit, offset)
+	}
+
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -588,4 +605,25 @@ func GetAppliedJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]
 	}
 
 	return jobs, nil
+}
+
+func IsJobOwned(jobID, accoundID int, conn *sql.DB) (bool, error) {
+	query := `SELECT id FROM job WHERE id = ? AND employer_id = ?`
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+	}
+	defer stmt.Close()
+	var job struct {
+		ID int
+	}
+	err = stmt.QueryRow(jobID, accoundID).Scan(&job.ID)
+	if err != nil {
+		log.Println(err)
+		if strings.Contains(err.Error(), "no rows") {
+			// When no row is found. Job is not owned by the user.
+			return false, nil
+		}
+	}
+	return true, nil
 }
