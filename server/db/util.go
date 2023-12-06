@@ -453,6 +453,50 @@ func GetJobsFromDB(customJobQuery, limit, offset string, accountID int, conn *sq
 	return jobs, nil
 }
 
+// Get jobs in the database regardless of the owner
+func GetJobsAllJobs(limit, offset string, conn *sql.DB) ([]Job, error) {
+	query := `SELECT * FROM job LIMIT ? OFFSET ?`
+	var err error
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var rows *sql.Rows
+	rows, err = stmt.Query(limit, offset)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var jobs []Job
+	for rows.Next() {
+		var job Job
+		err = rows.Scan(&job.ID, &job.EmployerId,
+			&job.Title, &job.Description, &job.Responsibility,
+			&job.Skills, &job.Location, &job.PriceFrom,
+			&job.PriceTo, &job.EmployementType, &job.DateLine)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		jobs = append(jobs, job)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return jobs, nil
+}
+
+// Get job and employer detail
 func GetJobFromDB(jobID int, conn *sql.DB) (interface{}, error) {
 	query := `SELECT jb.id, employer_id,
 					 title, description,
@@ -505,6 +549,7 @@ func InsertJobApplication(jobID, employeeID int, conn *sql.DB) error {
 
 }
 
+// Get jobs where user has an application.
 func GetAppliedJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Application, error) {
 	query := `SELECT * FROM job jb
 		INNER JOIN job_application ja on jb.id = ja.id

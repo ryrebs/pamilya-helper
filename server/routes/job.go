@@ -35,11 +35,13 @@ func JobList(c echo.Context) error {
 
 	// If no user return data
 	if uErr != nil {
+		jobs, _ := db.GetAllJobs("20", "0", cc.Db())
+		data["jobs"] = jobs
 		return c.Render(http.StatusOK, "job-list.html", data)
 	}
 
 	// Get jobs
-	jobs, jErr := db.GetJobs("10", "0", user.AccountId, cc.Db())
+	jobs, jErr := db.GetJobs("20", "0", user.AccountId, cc.Db())
 	if jErr != nil {
 		log.Println(jErr)
 	} else {

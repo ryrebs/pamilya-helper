@@ -177,6 +177,7 @@ func createJobData(jobs []Job) []map[string]interface{} {
 	return respJobs
 }
 
+// Return jobs not posted by the user
 func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
 	jobs, err := GetJobsFromDB("", limit, offset, accountID, conn)
 	if err != nil {
@@ -187,6 +188,7 @@ func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, er
 	return respJobs, nil
 }
 
+// Get user created jobs
 func GetOwnedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
 	query := `SELECT * FROM job WHERE employer_id == ? LIMIT ? OFFSET ?`
 	jobs, err := GetJobsFromDB(query, limit, offset, accountID, conn)
@@ -198,6 +200,19 @@ func GetOwnedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{
 	return respJobs, nil
 }
 
+// Get all jobs regardless the owner. This is for anon users.
+func GetAllJobs(limit, offset string, conn *sql.DB) (interface{}, error) {
+	jobs, err := GetJobsAllJobs(limit, offset, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	respJobs := createJobData(jobs)
+	return respJobs, nil
+
+}
+
+// Get user applied jobs
 func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
 	jobs, err := GetAppliedJobsFromDB(limit, offset, accountID, conn)
 	if err != nil {
@@ -227,6 +242,7 @@ func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interfac
 	return respJobs, nil
 }
 
+// Get job details
 func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 	job, err := GetJobFromDB(jobID, conn)
 	if err != nil {

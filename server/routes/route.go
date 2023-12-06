@@ -25,7 +25,27 @@ func renderWithAuthContext(templateName string, c echo.Context, data map[string]
 }
 
 func Index(c echo.Context) error {
-	return renderWithAuthContext("index.html", c, map[string]interface{}{})
+	cc := c.(*db.CustomDBContext)
+	user, err := GetUserFromSession(c, cc.Db())
+
+	// Anon user
+	if err != nil {
+		jobs, _ := db.GetAllJobs("10", "0", cc.Db())
+		return renderWithAuthContext("index.html", cc, map[string]interface{}{
+			"jobs": jobs,
+		})
+	}
+
+	// Logged user
+	jobs, err := db.GetJobs("10", "0", user.AccountId, cc.Db())
+	if err != nil {
+		log.Println(err)
+		return renderWithAuthContext("index.html", cc, nil)
+	}
+
+	return renderWithAuthContext("index.html", cc, map[string]interface{}{
+		"jobs": jobs,
+	})
 }
 
 func About(c echo.Context) error {
@@ -106,4 +126,8 @@ func Profile(c echo.Context) error {
 
 	log.Println(error)
 	return echo.NewHTTPError(http.StatusInternalServerError)
+}
+
+func Contact(c echo.Context) error {
+	return renderWithAuthContext("contact.html", c, nil)
 }
