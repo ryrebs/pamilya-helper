@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"pamilyahelper/webapp/server/db"
+	"pamilyahelper/webapp/server/utils"
+	"strings"
 
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -46,7 +48,6 @@ func Index(c echo.Context) error {
 	}
 
 	users, _ := db.GetAllAccountAsUser(user.AccountId, 3, 0, cc.Db())
-	log.Println(users)
 	return renderWithAuthContext("index.html", cc, map[string]interface{}{
 		"jobs":        jobs,
 		"helpers":     users,
@@ -69,6 +70,26 @@ func Profile(c echo.Context) error {
 	var postedJobs []map[string]interface{}
 
 	if user != nil {
+		// Handler profile updates
+		if cc.Request().Method == "POST" {
+			var uDt struct {
+				Title  string   `form:"title"`
+				Skills []string `form:"skills"`
+				Detail string   `form:"detail"`
+			}
+			if err := cc.Bind(&uDt); err != nil {
+				log.Println(err)
+				return cc.Redirect(http.StatusSeeOther, "/users/profile")
+			}
+			if err := cc.Validate(uDt); err != nil {
+				log.Println(err)
+				return cc.Redirect(http.StatusSeeOther, "/users/profile")
+			}
+			skills := utils.CreateListString(uDt.Skills, nil)
+			db.UpdateUserProfDetails(user.AccountId, skills, uDt.Detail, uDt.Title, cc.Db())
+			return cc.Redirect(http.StatusSeeOther, "/users/profile")
+		}
+
 		// Get what type of info should be returned
 		infoType := struct {
 			Info string `query:"info" validate:"oneof=profile applications posted"`
@@ -89,15 +110,25 @@ func Profile(c echo.Context) error {
 
 		switch infoType.Info {
 		case "profile":
-			profile_data = map[string]interface{}{
-				"name":          cases.Title(language.English, cases.Compact).String(user.Name),
-				"email":         user.Email,
-				"birthdate":     user.Birthdate,
-				"address":       user.Address,
-				"is_admin":      user.IsAdmin,
-				"is_verified":   user.IsVerified,
-				"gov_id_image":  user.GovIDImage,
-				"profile_image": user.ProfileImage,
+			{
+				// Make sure skills is initialized to length 5
+				skills := strings.Split(user.Skills, "|")
+				if user.Skills == "" {
+					skills = make([]string, 5)
+				}
+				profile_data = map[string]interface{}{
+					"name":          cases.Title(language.English, cases.Compact).String(user.Name),
+					"email":         user.Email,
+					"birthdate":     user.Birthdate,
+					"address":       user.Address,
+					"is_admin":      user.IsAdmin,
+					"is_verified":   user.IsVerified,
+					"gov_id_image":  user.GovIDImage,
+					"profile_image": user.ProfileImage,
+					"detail":        user.Detail,
+					"title":         user.Title,
+					"skills":        skills,
+				}
 			}
 		case "applications":
 			{
@@ -140,6 +171,5 @@ func Contact(c echo.Context) error {
 
 func Helper(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
-	// user, err := GetUserFromSession(c, cc.Db())
 	return renderWithAuthContext("helpers.html", cc, nil)
 }

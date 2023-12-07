@@ -175,8 +175,8 @@ func CreateJob(c echo.Context) error {
 		}
 
 		// Create job
-		resp := utils.CreateListString(newJob.Responsibilities)
-		skills := utils.CreateListString(newJob.Skills)
+		resp := utils.CreateListString(newJob.Responsibilities, utils.FilterEmpty)
+		skills := utils.CreateListString(newJob.Skills, utils.FilterEmpty)
 
 		err = db.InsertJob(newJob.DateLine, newJob.Title,
 			newJob.Description, resp, skills,

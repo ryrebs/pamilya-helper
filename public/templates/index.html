@@ -257,14 +257,14 @@
           <div class="swiper-slide card">
             <div class="card-content">
               <div class="image">
-                <img src="/uploads/{{ .ProfileImage }}" alt="Profile Image" />
+                <img src="/uploads/{{ .profile_image }}" alt="Profile Image" />
               </div>
               <div class="name-profession">
-                <span class="name">{{ .Name }}</span>
-                <span class="name">{{ .Title }}</span>
+                <span class="name">{{ .name }}</span>
+                <span class="name">{{ .title }}</span>
               </div>
               <div class="button">
-                <a class="btn btn-primary" href="/users/view/{{ .AccountId }}">About Me</a>
+                <a class="btn btn-primary" href="#modalboxhelper{{ .user_id }}">About Me</a>
               </div>
             </div>
           </div>
@@ -295,8 +295,9 @@
     </div>
     <!-- Helpers Section End -->
 
-    <!-- Helpers Details Start -->
-    <div id="modalboxhelper1" class="modal">
+    <!-- Helpers Details Start FROM DB -->
+    {{ range .helpers }}
+    <div id="modalboxhelper{{ .user_id }}" class="modal">
       <div class="modalcontent">
         <div class="Helper-1">
           <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
@@ -304,79 +305,39 @@
               <div class="row gy-5 gx-4">
                 <div class="col-lg-8">
                   <div class="d-flex align-items-center mb-5">
-                    <img class="flex-shrink-0 img-fluid border rounded" src="static/img/helper1.jpeg" alt=""
+                    <img class="flex-shrink-0 img-fluid border rounded" src="uploads/{{ .profile_image }}" alt=""
                       style="width: 80px; height: 80px" />
                     <div class="text-start ps-4">
-                      <h3 class="mb-3">Isabel Santos</h3>
-                      <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>House
-                        Cleaner</span>
-                      <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Cebu City,
-                        Cebu</span>
-                      <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>May 15,
-                        1985</span>
+                      <h3 class="mb-3">{{ .name }}</h3>
+                      <span class="text-truncate me-3"><i class="fa fa-briefcase text-primary me-2"></i>
+                        {{ .title }} </span>
+                      <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>{{
+                        .address }}</span>
+                      <span class="text-truncate me-0"><i class="fa fa-birthday-cake text-primary me-2"></i>{{
+                        .birthdate }}</span>
                     </div>
                   </div>
 
                   <div class="mb-5">
                     <h4 class="mb-3">About the Helper</h4>
                     <p>
-                      Isabel Santos is a dedicated and reliable house cleaner
-                      with a warm and friendly personality. She takes pride in
-                      her work and is committed to providing the best service
-                      to her clients. With years of experience in the field,
-                      she understands the importance of a clean and organized
-                      home and is passionate about helping others achieve it.
+                      {{ .detail }}
                     </p>
                     <h4 class="mb-3">What I can offer</h4>
                     <ul class="list-unstyled">
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Reliable and dedicated house cleaner with 5
-                        years of
-                        experience.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Meticulous in cleaning and organizing homes
-                        for a
-                        comfortable living environment.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Skilled in using eco-friendly cleaning
-                        products for a
-                        safe and healthy atmosphere.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Punctual and trustworthy, always respecting
-                        the
-                        privacy and belongings of clients.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Excellent communication skills, able to
-                        understand
-                        and fulfill specific cleaning needs.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Can
-                        assist with laundry, dishwashing, and other household
-                        chores.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Flexible with working hours and available for
-                        both
-                        one-time and recurring cleaning services.
-                      </li>
-                      <li>
-                        <i class="fa fa-angle-right text-primary me-2"></i>Affordable rates for quality cleaning
-                        services.
-                      </li>
+                      {{ range .skills }}
+                        <li>
+                          <i class="fa fa-angle-right text-primary me-2"></i>{{ . }}
+                        </li>
+                      {{ end }}
                     </ul>
                   </div>
                 </div>
-
                 <div class="col-lg-4">
                   <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                     <h4 class="mb-4">Contact Information</h4>
-                    <p class="m-0">Email: isabelcleaning85@gmail.com</p>
-                    <p class="m-0">Contact Number: 09123456789</p>
+                    <p class="m-0">Email: {{ .email }}</p>
+                    <p class="m-0">Contact Number: {{ .contact }}</p>
                   </div>
                 </div>
               </div>
@@ -386,7 +347,9 @@
         <a href="#helpers" class="modalclose">&times;</a>
       </div>
     </div>
+    {{ end }}
 
+    <!-- Helpers Details Start DUMMY -->
     <div id="modalboxhelper2" class="modal">
       <div class="modalcontent">
         <div class="Helper-2">

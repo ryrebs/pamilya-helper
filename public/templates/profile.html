@@ -43,6 +43,16 @@
           <li>
             <a href="#">Manage Received Helper Applications</a>
           </li>
+          <li>
+            <div>
+              {{ if not .data.profile.is_verified }}
+              <div class="btn btn-secondary">
+                <a style="color: aliceblue;" href="/users/profile/verify" class="nav-link active">Account
+                  Verification</a>
+              </div>
+              {{ end }}
+            </div>
+          </li>
           {{ end }}
           <li>
             <form method="post" action="/users/signout">
@@ -61,7 +71,8 @@
       {{ if eq .data.infoType "profile" }}
       <div class="profile-details">
         <div>
-          <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .data.profile.profile_image }}" alt="Profile Image"/>
+          <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .data.profile.profile_image }}"
+            alt="Profile Image" />
           <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
           <div>
             {{ if.data.profile.is_verified }}
@@ -76,24 +87,42 @@
         </div>
         <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
         <div><span>Address: {{ .data.profile.address }}</span></div>
+        {{ if .data.profile.is_verified }}
+        <div><span>Valid Government Id: {{ .data.profile.gov_id_image }}</span></div>
+        {{ end }}
         <div>
           <form method="post" action="/upload/profileimage" enctype="multipart/form-data">
-            <label for="formFile" class="form-label">Profile Picture</label>
-            <div class="input-group mb-3" style="display: flex;">
-              <input name="profile_image" class="form-control" type="file" id="formFile">
-              <button type="submit" class="btn btn-primary">Upload</button>
-            </div>
+            <span class="form-label">Profile Picture</span]>
+              <div class="input-group" style="display: flex;">
+                <input name="profile_image" class="form-control" type="file" id="formFile">
+                <button type="submit" class="btn btn-primary">Upload</button>
+              </div>
           </form>
         </div>
-        <div>
-          {{ if .data.profile.is_verified }}
-          <div><span>Valid Government Id: {{ .data.profile.gov_id_image }}</span></div>
-          {{ else }}
-          <div>
-              <a href="/users/profile/verify" class="nav-link active">Account Verification</a>
+        <form method="post" action="/users/profile">
+          <div><span>Title:</span>
+            <input style="margin: 0.2em;" name="title" class="form-control" type="text"
+              value="{{ .data.profile.title  }}">
           </div>
-          {{ end }}
-        </div>
+          <div><span>Skills:</span>
+            <input style="margin: 0.2em;" name="skills" class="form-control" type="text"
+              value="{{ index .data.profile.skills 0 }}">
+            <input style="margin: 0.2em;" name="skills" class="form-control" type="text"
+              value="{{ index .data.profile.skills 1 }}">
+            <input style="margin: 0.2em;" name="skills" class="form-control" type="text"
+              value="{{ index .data.profile.skills 2 }}">
+            <input style="margin: 0.2em;" name="skills" class="form-control" type="text"
+              value="{{ index .data.profile.skills 3 }}">
+            <input style="margin: 0.2em;" name="skills" class="form-control" type="text"
+              value="{{ index .data.profile.skills 4 }}">
+          </div>
+          <div><span>Details:</span>
+            <textarea cols="30" rows="5" style="text-align: left; overflow:auto;" name="detail" class="form-control">
+              {{ .data.profile.detail }}
+            </textarea>
+          </div>
+          <button type="submit" style="margin:1em 0 1em 0" class="btn btn-primary">Update Profile</button>
+        </form>
       </div>
       {{ end }}
 

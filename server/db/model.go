@@ -279,18 +279,41 @@ func CreateJobApplication(jobID, employeeID int, conn *sql.DB) error {
 	return InsertJobApplication(jobID, employeeID, conn)
 }
 
-func GetAllAccountAsAnon(limit, offset int, conn *sql.DB) ([]UserDetail, error) {
+// User data for frontend consumption.
+func createUserData(users []UserDetail) []map[string]interface{} {
+	var data []map[string]interface{}
+	for _, u := range users {
+		skills := strings.Split(u.Skills, "|")
+		data = append(data, map[string]interface{}{
+			"user_id":       u.AccountId,
+			"name":          u.Name,
+			"title":         u.Title,
+			"birthdate":     u.Birthdate,
+			"email":         u.Email,
+			"address":       u.Address,
+			"contact":       u.Contact,
+			"detail":        u.Detail,
+			"profile_image": u.ProfileImage,
+			"skills":        skills,
+		})
+	}
+	return data
+}
+
+// Get all users
+func GetAllAccountAsAnon(limit, offset int, conn *sql.DB) ([]map[string]interface{}, error) {
 	users, err := GetAccounts(nil, limit, offset, conn)
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	return createUserData(users), nil
 }
 
-func GetAllAccountAsUser(userID interface{}, limit, offset int, conn *sql.DB) ([]UserDetail, error) {
+// Get all users except current user in session
+func GetAllAccountAsUser(userID interface{}, limit, offset int, conn *sql.DB) ([]map[string]interface{}, error) {
 	users, err := GetAccounts(userID, limit, offset, conn)
 	if err != nil {
 		return nil, err
 	}
-	return users, nil
+	return createUserData(users), nil
 }

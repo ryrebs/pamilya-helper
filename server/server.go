@@ -6,9 +6,7 @@ import (
 	"html/template"
 	"io"
 	"log"
-	"net/http"
 	"os"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -90,22 +88,6 @@ func Serve() {
 		// Custom Middlewares
 		e.Use(db.AddDBContextMiddleware(dbConn))
 
-		// Check session before accessing uploads/
-		e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			return func(c echo.Context) error {
-				targetURI := c.Request().RequestURI
-				if strings.Contains(targetURI, "/uploads") {
-					sess, _ := session.Get("auth-pamilyahelper-session", c)
-					cc := c.(*db.CustomDBContext)
-					err := routes.CheckSessionExist(c, sess, cc.Db())
-					if err != nil {
-						return c.Redirect(http.StatusSeeOther, "/signin")
-					}
-				}
-				return next(c)
-			}
-		})
-
 		// Routes
 		e.GET("/", routes.Index)
 		e.GET("/about", routes.About)
@@ -123,7 +105,7 @@ func Serve() {
 
 		// Routes - authenticated users
 		users := e.Group("users", middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(RequestLimit))), routes.RequireSignInMiddleware)
-		users.GET("/profile", routes.Profile)
+		users.Match([]string{"GET", "POST"}, "/profile", routes.Profile)
 		users.POST("/signout", routes.SignOut)
 		users.Match([]string{"GET", "POST"}, "/profile/verify", routes.VerifyAccountView)
 

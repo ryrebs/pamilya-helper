@@ -298,7 +298,10 @@ func FindUserFromDb(email string, db *sql.DB) User {
 								is_admin, id,
 								is_verification_pending,
 								gov_id_image,
-								profile_image
+								profile_image,
+								detail,
+								title,
+								skills
 							FROM account WHERE email=?`)
 	if err != nil {
 		log.Println(err)
@@ -317,7 +320,10 @@ func FindUserFromDb(email string, db *sql.DB) User {
 		&user.AccountId,
 		&user.IsVerificationPending,
 		&user.GovIDImage,
-		&user.ProfileImage)
+		&user.ProfileImage,
+		&user.Detail,
+		&user.Title,
+		&user.Skills)
 	if err != nil {
 		log.Println(err)
 		return User{}
@@ -706,4 +712,39 @@ func GetAccounts(userID interface{}, limit, offset int, conn *sql.DB) ([]UserDet
 	}
 
 	return users, nil
+}
+
+// Updates the user profile details
+//
+// Fields that can be updated regardless if the user is verified or not
+func UpdateUserProfDetails(userID int, skills, detail, title string, conn *sql.DB) error {
+	if conn != nil {
+		updateStmt := `UPDATE account SET
+							skills=?,
+							detail=?,
+							title=?
+				   		WHERE id=?`
+		tx, err := conn.Begin()
+		if err != nil {
+			log.Println(err)
+		}
+		stmt, err := tx.Prepare(updateStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		defer stmt.Close()
+		_, err = stmt.Exec(skills, detail, title, userID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
 }
