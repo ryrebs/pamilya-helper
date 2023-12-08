@@ -58,7 +58,7 @@ func RequireVerifiedUserMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		cc := c.(*db.CustomDBContext)
 
 		if v, _ := CheckUserIsVerified(c, sess, cc.Db()); v {
-			next(c)
+			return next(c)
 		}
 		return c.Redirect(http.StatusSeeOther, "/signin")
 	}

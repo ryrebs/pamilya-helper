@@ -39,9 +39,9 @@
                     everyday chores. Welcome to PamilyaHelper, your go-to
                     platform for all your household help needs.
                   </p>
-                  <a href="job-list.html" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Search A
+                  <a href="/jobs" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Search A
                     Job</a>
-                  <a href="helpers.html" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find A
+                  <a href="/helpers" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find A
                     Helper</a>
                 </div>
               </div>
@@ -261,7 +261,7 @@
               </div>
               <div class="name-profession">
                 <span class="name">{{ .name }}</span>
-                <span class="name">{{ .title }}</span>
+                <span class="profession">{{ .title }}</span>
               </div>
               <div class="button">
                 <a class="btn btn-primary" href="#modalboxhelper{{ .user_id }}">About Me</a>
@@ -326,9 +326,9 @@
                     <h4 class="mb-3">What I can offer</h4>
                     <ul class="list-unstyled">
                       {{ range .skills }}
-                        <li>
-                          <i class="fa fa-angle-right text-primary me-2"></i>{{ . }}
-                        </li>
+                      <li>
+                        <i class="fa fa-angle-right text-primary me-2"></i>{{ . }}
+                      </li>
                       {{ end }}
                     </ul>
                   </div>

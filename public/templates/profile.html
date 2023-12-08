@@ -88,13 +88,22 @@
         <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
         <div><span>Address: {{ .data.profile.address }}</span></div>
         {{ if .data.profile.is_verified }}
-        <div><span>Valid Government Id: {{ .data.profile.gov_id_image }}</span></div>
+        <div><span>Valid Government ID: {{ .data.profile.gov_id_image }}</span></div>
         {{ end }}
         <div>
           <form method="post" action="/upload/profileimage" enctype="multipart/form-data">
-            <span class="form-label">Profile Picture</span]>
+            <span class="form-label">Profile Picture: {{ .data.profile.profile_image }}</span]>
               <div class="input-group" style="display: flex;">
                 <input name="profile_image" class="form-control" type="file" id="formFile">
+                <button type="submit" class="btn btn-primary">Upload</button>
+              </div>
+          </form>
+        </div>
+        <div>
+          <form method="post" action="/upload/itr" enctype="multipart/form-data">
+            <span class="form-label">Income Tax Return: {{ .data.profile.income_tax_return }}</span]>
+              <div class="input-group" style="display: flex;">
+                <input name="income_tax_return" class="form-control" type="file" id="formFile">
                 <button type="submit" class="btn btn-primary">Upload</button>
               </div>
           </form>

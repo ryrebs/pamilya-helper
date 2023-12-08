@@ -142,3 +142,27 @@ func UploadProfileImage(c echo.Context) error {
 	}
 	return cc.Redirect(http.StatusSeeOther, "/users/profile")
 }
+
+func UploadITRFile(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	user, err := GetUserFromSession(cc, cc.Db())
+
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusOK, "/users/profile")
+	}
+
+	file, err := cc.FormFile("income_tax_return")
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile")
+	}
+
+	// Update user details
+	err = db.UpdateUserDetailITRFile(user.AccountId, file, cc.Db())
+	if err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile")
+	}
+	return cc.Redirect(http.StatusSeeOther, "/users/profile")
+}

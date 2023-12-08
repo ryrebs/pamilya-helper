@@ -72,7 +72,7 @@ func Serve() {
 		// Init echo app
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
-		// e.Use(middleware.Logger())
+		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 
@@ -97,6 +97,7 @@ func Serve() {
 		e.POST("/signup", routes.SignUp)
 		e.GET("/contact", routes.Contact)
 		e.POST("/upload/profileimage", routes.UploadProfileImage, routes.RequireSignInMiddleware)
+		e.POST("/upload/itr", routes.UploadITRFile, routes.RequireSignInMiddleware)
 		e.Match([]string{"GET", "POST"}, "/signin", routes.SignIn, routes.RedirectToProfileMiddleware)
 
 		// Routes - for authenticated admin
@@ -114,6 +115,7 @@ func Serve() {
 			routes.RequireSignInMiddleware,
 			routes.RequireVerifiedUserMiddleware)
 		jobs.Match([]string{"GET", "POST"}, "/create", routes.CreateJob)
+		jobs.Match([]string{"GET", "POST"}, "/proposal", routes.CreateJobProposal)
 		jobs.POST("/delete", routes.DeleteJob)
 		jobs.POST("/view/:id", routes.JobDetail)
 

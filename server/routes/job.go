@@ -53,8 +53,9 @@ func JobList(c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 	} else {
-		for _, v := range sess.Flashes("post_apply") {
-			flashMsg = v.(string)
+		v := sess.Flashes("post_apply")
+		if len(v) >= 1 {
+			flashMsg = v[0].(string)
 		}
 	}
 
@@ -77,13 +78,13 @@ func JobDetail(c echo.Context) error {
 
 	if err != nil {
 		log.Println(err)
-		return cc.Redirect(http.StatusSeeOther, "/job-list")
+		return cc.Redirect(http.StatusSeeOther, "/jobs")
 	}
 
 	job, err := db.GetJob(jDetail.ID, cc.Db())
 	if err != nil {
 		log.Println(err)
-		return cc.Redirect(http.StatusSeeOther, "/job-list")
+		return cc.Redirect(http.StatusSeeOther, "/jobs")
 	}
 
 	user, userErr := GetUserFromSession(cc, cc.Db())
@@ -102,7 +103,7 @@ func JobDetail(c echo.Context) error {
 		} else {
 			sess.Options = &sessions.Options{
 				MaxAge:   10,
-				Path:     "/job-list",
+				Path:     "/jobs",
 				HttpOnly: true,
 			}
 		}
@@ -123,7 +124,7 @@ func JobDetail(c echo.Context) error {
 			}
 			sess.Save(cc.Request(), cc.Response())
 		}
-		return cc.Redirect(http.StatusSeeOther, "/job-list")
+		return cc.Redirect(http.StatusSeeOther, "/jobs")
 	}
 
 	return renderWithAuthContext(
@@ -146,7 +147,7 @@ func CreateJob(c echo.Context) error {
 		Description      string   `form:"description" validate:"required"`
 		SalaryRangeFrom  string   `form:"salary_range1" validate:"required"`
 		SalaryRangeTo    string   `form:"salary_range2" validate:"required"`
-		Address          string   `form:"address" validate:"required"`
+		Location         string   `form:"address" validate:"required"`
 		EmployementType  string   `form:"employment_type" validate:"required,oneof='Part Time' 'Full Time'"`
 	}{
 		Skills: make([]string, 0),
@@ -167,6 +168,8 @@ func CreateJob(c echo.Context) error {
 		err := cc.Bind(&newJob)
 		if err != nil {
 			log.Println(err)
+			data["errorMsgs"] = []string{"Something went wrong. Please try again."}
+			return renderWithAuthContext("create-job.html", c, data)
 		}
 		err = cc.Validate(newJob)
 		if err != nil {
@@ -180,7 +183,7 @@ func CreateJob(c echo.Context) error {
 
 		err = db.InsertJob(newJob.DateLine, newJob.Title,
 			newJob.Description, resp, skills,
-			newJob.Address, newJob.SalaryRangeFrom,
+			newJob.Location, newJob.SalaryRangeFrom,
 			newJob.SalaryRangeTo, newJob.EmployementType, user.AccountId, cc.Db())
 		if err != nil {
 			data["errorMsgs"] = []string{"Something went wrong. Please try again."}
@@ -228,4 +231,88 @@ func DeleteJob(c echo.Context) error {
 	}
 
 	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=posted")
+}
+
+func CreateJobProposal(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	var flashMsg string
+	// Check user session
+	user, err := GetUserFromSession(c, cc.Db())
+	if err != nil {
+		log.Println(err)
+		return echo.NewHTTPError(http.StatusForbidden)
+	}
+
+	// Make sure employee_id is present on GET request.
+	// We need this on a hidden input.
+	var emp_id struct {
+		EmployeeID int `query:"employee_id" validate:"required"`
+	}
+	if cc.Request().Method == "GET" {
+		if err := cc.Bind(&emp_id); err != nil {
+			log.Println(err)
+			return cc.Redirect(http.StatusSeeOther, "/helpers")
+		}
+
+		if err := cc.Validate(emp_id); err != nil {
+			log.Println(err)
+			return cc.Redirect(http.StatusSeeOther, "/helpers")
+		}
+
+	}
+
+	// Prepopulate data
+	data := map[string]interface{}{
+		"name":              user.Name,
+		"email":             user.Email,
+		"contact":           user.Contact,
+		"detail":            user.Detail,
+		"income_tax_return": user.IncomeTaxReturnFile,
+		"employee_id":       emp_id.EmployeeID,
+		"errorMsgs":         []string{},
+		"flashMsg":          flashMsg,
+	}
+
+	if cc.Request().Method == "POST" {
+
+		/// Process ITR Uploads silently
+		file, err := cc.FormFile("income_tax_return")
+		if err != nil {
+			log.Println(err)
+		} else {
+			db.UpdateUserDetailITRFile(user.AccountId, file, cc.Db())
+		}
+
+		// Create a new job
+		var newJob db.NewJobProposal
+		err = cc.Bind(&newJob)
+		if err != nil {
+			log.Println(err)
+			return renderWithAuthContext("propose-job.html", c, data)
+		}
+
+		err = cc.Validate(newJob)
+		if err != nil {
+			data["errorMsgs"] = strings.Split(err.Error(), "\n")
+			return renderWithAuthContext("propose-job.html", c, data)
+		}
+
+		resp := utils.CreateListString(newJob.Responsibilities, utils.FilterEmpty)
+		skills := utils.CreateListString(newJob.Skills, utils.FilterEmpty)
+
+		newJob.ResponsibilitiesToDB = resp
+		newJob.SkillsToDB = skills
+
+		err = db.CreateAJobProposal(newJob.EmployeeID, user.AccountId, newJob, cc.Db())
+		if err != nil {
+			data["errorMsgs"] = []string{"Something went wrong. Please try again."}
+			return renderWithAuthContext("propose-job.html", c, data)
+		}
+		sess := utils.CreateFlashMessage(cc, "post-proposal", 10, "/helpers", "Job proposal submitted", "proposal_msg")
+		if sess != nil {
+			sess.Save(cc.Request(), cc.Response())
+		}
+		return cc.Redirect(http.StatusSeeOther, "/helpers")
+	}
+	return renderWithAuthContext("propose-job.html", c, data)
 }

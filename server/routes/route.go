@@ -70,7 +70,7 @@ func Profile(c echo.Context) error {
 	var postedJobs []map[string]interface{}
 
 	if user != nil {
-		// Handler profile updates
+		// Handle profile updates
 		if cc.Request().Method == "POST" {
 			var uDt struct {
 				Title  string   `form:"title"`
@@ -117,17 +117,18 @@ func Profile(c echo.Context) error {
 					skills = make([]string, 5)
 				}
 				profile_data = map[string]interface{}{
-					"name":          cases.Title(language.English, cases.Compact).String(user.Name),
-					"email":         user.Email,
-					"birthdate":     user.Birthdate,
-					"address":       user.Address,
-					"is_admin":      user.IsAdmin,
-					"is_verified":   user.IsVerified,
-					"gov_id_image":  user.GovIDImage,
-					"profile_image": user.ProfileImage,
-					"detail":        user.Detail,
-					"title":         user.Title,
-					"skills":        skills,
+					"name":              cases.Title(language.English, cases.Compact).String(user.Name),
+					"email":             user.Email,
+					"birthdate":         user.Birthdate,
+					"address":           user.Address,
+					"is_admin":          user.IsAdmin,
+					"is_verified":       user.IsVerified,
+					"gov_id_image":      user.GovIDImage,
+					"profile_image":     user.ProfileImage,
+					"detail":            user.Detail,
+					"title":             user.Title,
+					"skills":            skills,
+					"income_tax_return": user.IncomeTaxReturnFile,
 				}
 			}
 		case "applications":
@@ -171,5 +172,31 @@ func Contact(c echo.Context) error {
 
 func Helper(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
-	return renderWithAuthContext("helpers.html", cc, nil)
+	var flashMsg string
+
+	// Check for flash messages
+	sess, err := session.Get("post-proposal", cc)
+	if err != nil {
+		log.Println(err)
+	} else {
+		v := sess.Flashes("proposal_msg")
+		if len(v) >= 1 {
+			flashMsg = v[0].(string)
+		}
+	}
+
+	user, err := GetUserFromSession(c, cc.Db())
+	if err != nil {
+		users, _ := db.GetAllAccountAsAnon(10, 0, cc.Db())
+		return renderWithAuthContext("helpers.html", cc, map[string]interface{}{
+			"helpers":  users,
+			"flashMsg": flashMsg,
+		})
+	}
+
+	users, _ := db.GetAllAccountAsUser(user.AccountId, 10, 0, cc.Db())
+	return renderWithAuthContext("helpers.html", cc, map[string]interface{}{
+		"helpers":  users,
+		"flashMsg": flashMsg,
+	})
 }

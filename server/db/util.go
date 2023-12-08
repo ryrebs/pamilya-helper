@@ -112,22 +112,22 @@ func InsertUser(user User, db *sql.DB) error {
 }
 
 func InsertJob(dateline, title, descp, respb, skills, loc, pf, pt, employer_type string, emp_id int, db *sql.DB) error {
-	fixtureJobStmt := `
+	insertJobStmt := `
 		INSERT INTO job(dateline, title, description, responsibility, skills, location, price_from, price_to, employment_type, employer_id)
 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	if db != nil {
-		stmt, err := db.Prepare(fixtureJobStmt)
+		stmt, err := db.Prepare(insertJobStmt)
 
 		if err != nil {
-			log.Printf("%q: %s\n", err, fixtureJobStmt)
+			log.Printf("%q: %s\n", err, insertJobStmt)
 			return err
 		}
 		defer stmt.Close()
 
 		_, err = stmt.Exec(dateline, title, descp, respb, skills, loc, pf, pt, employer_type, emp_id)
 		if err != nil {
-			log.Printf("%q: %s\n", err, fixtureJobStmt)
+			log.Printf("%q: %s\n", err, insertJobStmt)
 			return err
 		}
 		return nil
@@ -290,6 +290,25 @@ func UpdateProfileImage(userID int, fileName string, db *sql.DB) error {
 	return errors.New("no db found")
 }
 
+// Update user ITR
+func UpdateProfileITR(userID int, fileName string, db *sql.DB) error {
+	if db != nil {
+		stmt, err := db.Prepare(`UPDATE account SET income_tax_return_file = ? WHERE id=?`)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		_, err = stmt.Exec(fileName, userID)
+		defer stmt.Close()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
+}
+
 func FindUserFromDb(email string, db *sql.DB) User {
 	stmt, err := db.Prepare(`SELECT
 								name, email,
@@ -297,11 +316,9 @@ func FindUserFromDb(email string, db *sql.DB) User {
 								address, is_verified,
 								is_admin, id,
 								is_verification_pending,
-								gov_id_image,
-								profile_image,
-								detail,
-								title,
-								skills
+								gov_id_image, profile_image,
+								detail, title,
+								skills,	income_tax_return_file
 							FROM account WHERE email=?`)
 	if err != nil {
 		log.Println(err)
@@ -323,7 +340,8 @@ func FindUserFromDb(email string, db *sql.DB) User {
 		&user.ProfileImage,
 		&user.Detail,
 		&user.Title,
-		&user.Skills)
+		&user.Skills,
+		&user.IncomeTaxReturnFile)
 	if err != nil {
 		log.Println(err)
 		return User{}
@@ -506,8 +524,8 @@ func GetJobsAllJobs(limit, offset string, conn *sql.DB) ([]Job, error) {
 // Get job and employer detail
 func GetJobFromDB(jobID int, conn *sql.DB) (interface{}, error) {
 	query := `SELECT jb.id, employer_id,
-					 title, description,
-					responsibility, skills,
+					jb.title, description,
+					responsibility, jb.skills,
 					location, price_from, price_to,
 					employment_type, dateline,
 					emp.name, emp.email, emp.contact, emp.detail
@@ -695,6 +713,7 @@ func GetAccounts(userID interface{}, limit, offset int, conn *sql.DB) ([]UserDet
 			&user.Contact,
 			&user.ProfileImage,
 			&user.GovIDImage,
+			&user.IncomeTaxReturnFile,
 			&user.Title,
 			&user.Skills,
 		)
@@ -739,6 +758,68 @@ func UpdateUserProfDetails(userID int, skills, detail, title string, conn *sql.D
 			log.Println(err)
 			return err
 		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
+}
+
+// Creates a new job record and a proposal record
+func CreateAJobProposal(employeeID, employerID int, nj NewJobProposal, conn *sql.DB) error {
+	if conn != nil {
+		insertJobStmt := `
+			INSERT INTO job(dateline, title, description,
+					responsibility, skills, location,
+					price_from, price_to, employment_type, employer_id)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+		insertPrpStmt := `
+				INSERT INTO job_proposal(employee_id, employer_id, job_id)
+				VALUES(?, ?, ?)
+		`
+		tx, err := conn.Begin()
+		if err != nil {
+			log.Println(err)
+		}
+		stmtJob, err := tx.Prepare(insertJobStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		stmtPrp, err := tx.Prepare(insertPrpStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		defer stmtJob.Close()
+		defer stmtPrp.Close()
+
+		row, err := stmtJob.Exec(nj.DateLine, nj.Title,
+			nj.Description, nj.ResponsibilitiesToDB,
+			nj.SkillsToDB, nj.Location, nj.SalaryRangeFrom,
+			nj.SalaryRangeTo, nj.EmploymentType, employerID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		jobID, err := row.LastInsertId()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		_, err = stmtPrp.Exec(employeeID, employerID, jobID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
 		err = tx.Commit()
 		if err != nil {
 			log.Println(err)

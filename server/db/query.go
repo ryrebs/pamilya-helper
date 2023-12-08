@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS account (
 	contact TEXT NOT NULL DEFAULT '',
 	profile_image TEXT DEFAULT '',
 	gov_id_image TEXT DEFAULT '',
+	income_tax_return_file TEXT DEFAULT '',
 	title TEXT DEFAULT '',
 	skills TEXT DEFAULT ''
 );
@@ -42,5 +43,17 @@ CREATE TABLE IF NOT EXISTS job_application (
 	FOREIGN KEY(employee_id) REFERENCES account(id),
 	FOREIGN KEY(job_id) REFERENCES job(id),
 	UNIQUE(employee_id, job_id) ON CONFLICT ROLLBACK
-)
+);
+CREATE TABLE IF NOT EXISTS job_proposal (
+	id INTEGER NOT NULL PRIMARY KEY,
+	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+	employee_id INTEGER NOT NULL,
+	employer_id INTEGER NOT NULL,
+	job_id INTEGER NOT NULL,
+	status TEXT DEFAULT 'PENDING',
+	FOREIGN KEY(employee_id) REFERENCES account(id),
+	FOREIGN KEY(employer_id) REFERENCES account(id),
+	FOREIGN KEY(job_id) REFERENCES job(id),
+	UNIQUE(employee_id, employer_id, job_id) ON CONFLICT ROLLBACK
+);
 `

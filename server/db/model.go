@@ -32,6 +32,21 @@ type Job struct {
 	EmployerDetail  string
 }
 
+type NewJobProposal struct {
+	DateLine             string   `form:"dateline" validate:"required"`
+	Title                string   `form:"title" validate:"required"`
+	Skills               []string `form:"skills" validate:"required"`
+	Responsibilities     []string `form:"responsibilities" validate:"required"`
+	Description          string   `form:"description" validate:"required"`
+	SalaryRangeFrom      string   `form:"salary_range1" validate:"required"`
+	SalaryRangeTo        string   `form:"salary_range2" validate:"required"`
+	Location             string   `form:"address" validate:"required"`
+	EmploymentType       string   `form:"employment_type" validate:"required,oneof='Part Time' 'Full Time'"`
+	EmployeeID           int      `form:"employee_id" validate:"required"`
+	ResponsibilitiesToDB string
+	SkillsToDB           string
+}
+
 type Application struct {
 	Job
 	Status        string
@@ -52,10 +67,11 @@ type UserDetail struct {
 	AccountId             int
 	Detail                string `json:"detail"`
 	Contact               string `json:"contact"`
-	GovIDImage            string
-	ProfileImage          string
-	Title                 string
-	Skills                string
+	GovIDImage            string `json:"gov_id_image"`
+	ProfileImage          string `json:"profile_image"`
+	Title                 string `json:"title"`
+	Skills                string `json:"skills"`
+	IncomeTaxReturnFile   string `json:"income_tax_return"`
 }
 
 type User struct {
@@ -135,6 +151,7 @@ func UpdateUserDetail(user UserDetail, details EditableUserFields, file *multipa
 	return nil
 }
 
+// Creates the file and updates the user's profile image column
 func UpdateUserDetailProfileImage(userID int, file *multipart.FileHeader, db *sql.DB) error {
 	newFileName := fmt.Sprint(userID) + "_" + "profile_" + file.Filename
 	pathFname := fmt.Sprintf(UploadDst + "/" + newFileName)
@@ -147,6 +164,26 @@ func UpdateUserDetailProfileImage(userID int, file *multipart.FileHeader, db *sq
 
 	// Remove created file if any error occurs.
 	err = UpdateProfileImage(userID, newFileName, db)
+	if err != nil {
+		utils.RemoveFile(pathFname)
+		return err
+	}
+	return nil
+}
+
+// Creates the file and updates the user's  itr file column.
+func UpdateUserDetailITRFile(userID int, file *multipart.FileHeader, db *sql.DB) error {
+	newFileName := fmt.Sprint(userID) + "_" + "itr_" + file.Filename
+	pathFname := fmt.Sprintf(UploadDst + "/" + newFileName)
+
+	err := utils.CreateFile(file, pathFname)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Remove created file if any error occurs.
+	err = UpdateProfileITR(userID, newFileName, db)
 	if err != nil {
 		utils.RemoveFile(pathFname)
 		return err
@@ -285,16 +322,17 @@ func createUserData(users []UserDetail) []map[string]interface{} {
 	for _, u := range users {
 		skills := strings.Split(u.Skills, "|")
 		data = append(data, map[string]interface{}{
-			"user_id":       u.AccountId,
-			"name":          u.Name,
-			"title":         u.Title,
-			"birthdate":     u.Birthdate,
-			"email":         u.Email,
-			"address":       u.Address,
-			"contact":       u.Contact,
-			"detail":        u.Detail,
-			"profile_image": u.ProfileImage,
-			"skills":        skills,
+			"user_id":           u.AccountId,
+			"name":              u.Name,
+			"title":             u.Title,
+			"birthdate":         u.Birthdate,
+			"email":             u.Email,
+			"address":           u.Address,
+			"contact":           u.Contact,
+			"detail":            u.Detail,
+			"profile_image":     u.ProfileImage,
+			"income_tax_return": u.IncomeTaxReturnFile,
+			"skills":            skills,
 		})
 	}
 	return data

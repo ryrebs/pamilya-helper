@@ -6,6 +6,10 @@ import (
 	"mime/multipart"
 	"os"
 	"strings"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
 )
 
 // Check if msg is an error Message
@@ -74,4 +78,21 @@ func CreateFile(file *multipart.FileHeader, newFilename string) error {
 		return err
 	}
 	return nil
+}
+
+// Create session for flash message
+func CreateFlashMessage(cc echo.Context, sessName string, maxAge int, path, msg, key string) *sessions.Session {
+	sess, err := session.Get(sessName, cc)
+	if err != nil {
+		log.Println(err)
+		return nil
+	} else {
+		sess.Options = &sessions.Options{
+			MaxAge:   10,
+			Path:     path,
+			HttpOnly: true,
+		}
+		sess.AddFlash(msg, key)
+		return sess
+	}
 }
