@@ -132,19 +132,9 @@ func Profile(c echo.Context) error {
 					"income_tax_return": user.IncomeTaxReturnFile,
 				}
 			}
-		case "applications":
-			{
-				// Get jobs
-				jobs, jErr := db.GetAppliedJobs("10", "0", user.AccountId, cc.Db())
-				if jErr != nil {
-					log.Println(jErr)
-				} else {
-					applications = jobs.([]map[string]interface{})
-				}
-			}
 		case "posted":
 			{
-				// Get jobs
+				// Get jobs you created
 				jobs, jErr := db.GetOwnedJobs("10", "0", user.AccountId, cc.Db())
 				if jErr != nil {
 					log.Println(jErr)
@@ -152,9 +142,24 @@ func Profile(c echo.Context) error {
 					postedJobs = jobs.([]map[string]interface{})
 				}
 			}
+		case "applications":
+			{
+				// Get jobs where you sent applications
+				jobs, jErr := db.GetAppliedJobs("10", "0", user.AccountId, cc.Db())
+				if jErr != nil {
+					log.Println(jErr)
+				} else {
+					applications = jobs.([]map[string]interface{})
+				}
+			}
+		case "rcv_applications":
+			{
+				// Get received applications on jobs you've created
+				log.Println("get received applications on job")
+			}
 		case "proposals":
 			{
-				// Get proposals
+				// Get proposals you sent to employees
 				p, err := db.GetProposals("10", "0", user.AccountId, cc.Db())
 				if err != nil {
 					log.Println(err)
@@ -162,6 +167,12 @@ func Profile(c echo.Context) error {
 					sentProposals = p
 				}
 			}
+		case "rcv_proposals":
+			{
+				// Get received proposals from employers
+				log.Println("get received proposals on job")
+			}
+
 		}
 
 		data["data"] = map[string]interface{}{
