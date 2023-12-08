@@ -309,6 +309,46 @@ func UpdateProfileITR(userID int, fileName string, db *sql.DB) error {
 	return errors.New("no db found")
 }
 
+// Returns user detail with type UserDetail if found
+func FindUserByIDFromDB(ID int, conn *sql.DB) *UserDetail {
+	stmt, err := conn.Prepare(`SELECT
+								name, email,
+								birthdate, address,
+								is_verified,
+								is_admin, id,
+								is_verification_pending,
+								gov_id_image, profile_image,
+								detail, title,
+								skills,	income_tax_return_file
+							FROM account WHERE id=?`)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	defer stmt.Close()
+	var user UserDetail
+	err = stmt.QueryRow(ID).Scan(
+		&user.Name,
+		&user.Email,
+		&user.Birthdate,
+		&user.Address,
+		&user.IsVerified,
+		&user.IsAdmin,
+		&user.AccountId,
+		&user.IsVerificationPending,
+		&user.GovIDImage,
+		&user.ProfileImage,
+		&user.Detail,
+		&user.Title,
+		&user.Skills,
+		&user.IncomeTaxReturnFile)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return &user
+}
+
 func FindUserFromDb(email string, db *sql.DB) User {
 	stmt, err := db.Prepare(`SELECT
 								name, email,
@@ -828,4 +868,51 @@ func CreateAJobProposal(employeeID, employerID int, nj NewJobProposal, conn *sql
 		return nil
 	}
 	return errors.New("no db found")
+}
+
+// Get proposals
+func GetProposalsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Proposal, error) {
+	if conn != nil {
+		query := `SELECT id, employee_id, employer_id,
+						 job_id, status
+					FROM job_proposal WHERE employer_id = ? 
+					LIMIT ? OFFSET ?
+				`
+		stmt, err := conn.Prepare(query)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		defer stmt.Close()
+
+		rows, err := stmt.Query(accountID, limit, offset)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		defer rows.Close()
+
+		var proposals []Proposal
+		for rows.Next() {
+			var proposal Proposal
+			err = rows.Scan(&proposal.ID,
+				&proposal.EmployeeID,
+				&proposal.EmployerID,
+				&proposal.JobID, &proposal.Status)
+			if err != nil {
+				log.Println(err)
+				return nil, err
+			}
+			proposals = append(proposals, proposal)
+		}
+
+		err = rows.Err()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		return proposals, nil
+	}
+	return nil, errors.New("no db found")
 }

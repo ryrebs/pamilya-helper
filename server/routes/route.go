@@ -61,15 +61,17 @@ func About(c echo.Context) error {
 
 func Profile(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
-	data := map[string]interface{}{
-		"is_log_in": true,
-	}
 	user, error := GetUserFromSession(c, cc.Db())
 	var profile_data map[string]interface{}
 	var applications []map[string]interface{}
 	var postedJobs []map[string]interface{}
+	var sentProposals []map[string]interface{}
 
 	if user != nil {
+		data := map[string]interface{}{
+			"is_verified": user.IsVerified,
+		}
+
 		// Handle profile updates
 		if cc.Request().Method == "POST" {
 			var uDt struct {
@@ -122,7 +124,6 @@ func Profile(c echo.Context) error {
 					"birthdate":         user.Birthdate,
 					"address":           user.Address,
 					"is_admin":          user.IsAdmin,
-					"is_verified":       user.IsVerified,
 					"gov_id_image":      user.GovIDImage,
 					"profile_image":     user.ProfileImage,
 					"detail":            user.Detail,
@@ -151,11 +152,23 @@ func Profile(c echo.Context) error {
 					postedJobs = jobs.([]map[string]interface{})
 				}
 			}
+		case "proposals":
+			{
+				// Get proposals
+				p, err := db.GetProposals("10", "0", user.AccountId, cc.Db())
+				if err != nil {
+					log.Println(err)
+				} else {
+					sentProposals = p
+				}
+			}
 		}
+
 		data["data"] = map[string]interface{}{
 			"profile":      profile_data,
 			"applications": applications,
 			"postedJobs":   postedJobs,
+			"proposals":    sentProposals,
 			"accounts":     accounts,
 			"infoType":     infoType.Info,
 		}

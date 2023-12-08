@@ -47,6 +47,14 @@ type NewJobProposal struct {
 	SkillsToDB           string
 }
 
+type Proposal struct {
+	ID         int
+	EmployeeID int
+	EmployerID int
+	JobID      int
+	Status     string
+}
+
 type Application struct {
 	Job
 	Status        string
@@ -354,4 +362,49 @@ func GetAllAccountAsUser(userID interface{}, limit, offset int, conn *sql.DB) ([
 		return nil, err
 	}
 	return createUserData(users), nil
+}
+
+func GetProposals(limit, offset string, accountID int, conn *sql.DB) ([]map[string]interface{}, error) {
+	p, err := GetProposalsFromDB("10", "0", accountID, conn)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []map[string]interface{}
+	for _, u := range p {
+		var employee_profile string
+		var employee_name string
+		var employee_title string
+		var status string
+
+		user := FindUserByIDFromDB(u.EmployeeID, conn)
+		if user != nil {
+			employee_profile = user.ProfileImage
+			employee_name = user.Name
+			employee_title = user.Title
+		}
+
+		switch u.Status {
+		case "PENDING":
+			status = "WAITING FOR APPROVAL"
+		case "ACCEPTED":
+			status = "ACCEPTED"
+		case "REJECTED":
+			status = "REJECTED"
+		default:
+			status = "UNKNOWN"
+		}
+
+		data = append(data, map[string]interface{}{
+			"id":                     u.ID,
+			"employer_id":            u.EmployerID,
+			"employee_id":            u.EmployeeID,
+			"employee_profile_image": employee_profile,
+			"job_id":                 u.JobID,
+			"status":                 status,
+			"employee_name":          employee_name,
+			"employee_title":         employee_title,
+		})
+	}
+	return data, nil
 }

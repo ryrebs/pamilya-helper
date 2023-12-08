@@ -32,7 +32,7 @@
             <a href="/users/profile?info=posted">Manage Job Postings</a>
           </li>
           <li>
-            <a href="#">Manage Sent Job Proposals</a>
+            <a href="/users/profile?info=proposals">Manage Sent Job Proposals</a>
           </li>
           <li>
             <a href="#">Manage Received Job Proposals</a>
@@ -45,7 +45,7 @@
           </li>
           <li>
             <div>
-              {{ if not .data.profile.is_verified }}
+              {{ if not .is_verified }}
               <div class="btn btn-secondary">
                 <a style="color: aliceblue;" href="/users/profile/verify" class="nav-link active">Account
                   Verification</a>
@@ -190,6 +190,38 @@
             <form action="/jobs/delete" method="post">
               <button name="job_id" value="{{ .id }}" type="submit">Delete</button>
             </form>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Proposals -->
+      {{ if eq .data.infoType "proposals" }}
+      <div>
+        <span>Sent Job Proposals</span>
+        {{ range .data.proposals }}
+        <div
+          style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+          <div>
+            {{ if .employee_profile_image }}
+            <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .employee_profile_image }}"
+              alt="Profile Image" />
+            {{ end }}
+          </div>
+          <div>
+            <div>
+              <span style="display: inline;">{{ .employee_name }}</span>
+            </div>
+            <div>
+              <span style="display: inline;">{{ .employee_title }}</span>
+            </div>
+          </div>
+          <div>
+              <a class="btn btn-primary" href="/jobs/view/{{ .job_id }}?view=1">View</a>
+            <button class="btn btn-secondary">
+              {{ .status }}
+            </button>
           </div>
         </div>
         {{ end }}
