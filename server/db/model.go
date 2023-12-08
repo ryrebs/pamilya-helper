@@ -269,7 +269,14 @@ func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interfac
 	}
 
 	respJobs := []map[string]interface{}{}
+	var employee_profile string
+
 	for _, job := range jobs {
+		user := FindUserByIDFromDB(job.EmployerId, conn)
+		if user != nil {
+			employee_profile = user.ProfileImage
+
+		}
 		resp := strings.Split(job.Responsibility, "|")
 		skills := strings.Split(job.Skills, "|")
 		respJobs = append(respJobs, map[string]interface{}{
@@ -285,6 +292,7 @@ func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interfac
 			"price_to":         job.PriceTo,
 			"dateline":         job.DateLine,
 			"status":           job.Status,
+			"employer_profile": employee_profile,
 		})
 	}
 	return respJobs, nil
@@ -364,8 +372,9 @@ func GetAllAccountAsUser(userID interface{}, limit, offset int, conn *sql.DB) ([
 	return createUserData(users), nil
 }
 
-func GetProposals(limit, offset string, accountID int, conn *sql.DB) ([]map[string]interface{}, error) {
-	p, err := GetProposalsFromDB("10", "0", accountID, conn)
+// Get proposals sent.
+func GetProposals(limit, offset string, employerID int, conn *sql.DB) ([]map[string]interface{}, error) {
+	p, err := GetProposalsFromDB("10", "0", employerID, conn)
 	if err != nil {
 		return nil, err
 	}
@@ -404,6 +413,44 @@ func GetProposals(limit, offset string, accountID int, conn *sql.DB) ([]map[stri
 			"status":                 status,
 			"employee_name":          employee_name,
 			"employee_title":         employee_title,
+		})
+	}
+	return data, nil
+}
+
+// Get proposals received
+func GetReceviedProposals(limit, offset string, employeeID int, conn *sql.DB) ([]map[string]interface{}, error) {
+	p, err := GetReceivedProposalsFromDB("10", "0", employeeID, conn)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []map[string]interface{}
+	for _, prp := range p {
+		var employer_profile string
+		var job Job
+
+		user := FindUserByIDFromDB(prp.EmployerID, conn)
+		if user != nil {
+			employer_profile = user.ProfileImage
+		}
+
+		j, _ := GetJobDetailFromDB(prp.JobID, conn)
+		if j != nil {
+			job = *j
+		}
+		data = append(data, map[string]interface{}{
+			"id":                     prp.ID,
+			"employer_id":            prp.EmployerID,
+			"employee_id":            prp.EmployeeID,
+			"employer_profile_image": employer_profile,
+			"job_id":                 prp.JobID,
+			"job_title":              job.Title,
+			"job_location":           job.Location,
+			"job_employment_type":    job.EmployementType,
+			"job_price_from":         job.PriceFrom,
+			"job_price_to":           job.PriceTo,
+			"job_description":        job.Description,
 		})
 	}
 	return data, nil

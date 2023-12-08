@@ -316,3 +316,46 @@ func CreateJobProposal(c echo.Context) error {
 	}
 	return renderWithAuthContext("propose-job.html", c, data)
 }
+
+// Accept or Reject a proposa
+func AcceptRejectProposal(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	var action struct {
+		PrpAction  string `form:"prpAction" validate:"required,oneof=reject accept"`
+		ProposalID int    `form:"proposal_id" validate:"required"`
+	}
+
+	if err := cc.Bind(&action); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+	}
+
+	if err := cc.Validate(action); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+	}
+
+	db.UpdateJobProposalStatus(action.PrpAction, action.ProposalID, cc.Db())
+	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+
+}
+
+func AcceptRejectApplication(c echo.Context) error {
+	cc := c.(*db.CustomDBContext)
+	var action struct {
+		prpAction string `forn:"prpAction" validate:"required,oneof=reject accept"`
+	}
+
+	if err := cc.Bind(&action); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+	}
+
+	if err := cc.Validate(action); err != nil {
+		log.Println(err)
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+	}
+
+	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+
+}

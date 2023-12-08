@@ -79,11 +79,11 @@
                                                     <label for="" class="form-label">Employer ITR:
                                                     </label>
                                                     {{ if .income_tax_return }}
-                                                    <input disabled name="summary" type="text"
+                                                    <input disabled name="income_tax_return" type="text"
                                                         class="form-control summary" placeholder="ITR file"
                                                         value="{{ .income_tax_return }}">
                                                     {{ else }}
-                                                    <input name="summary" type="file" class="form-control summary"
+                                                    <input name="income_tax_return" type="file" class="form-control summary"
                                                         placeholder="ITR file">
                                                     {{ end }}
 

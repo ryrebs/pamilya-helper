@@ -592,6 +592,32 @@ func GetJobFromDB(jobID int, conn *sql.DB) (interface{}, error) {
 	return job, nil
 }
 
+// Get job detail
+func GetJobDetailFromDB(jobID int, conn *sql.DB) (*Job, error) {
+	query := `SELECT title, description,
+	 			location, employment_type,
+				price_from, price_to
+			FROM job
+			WHERE id = ?`
+	stmt, err := conn.Prepare(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var job Job
+	err = stmt.QueryRow(jobID).Scan(
+		&job.Title, &job.Description,
+		&job.Location, &job.EmployementType,
+		&job.PriceFrom, &job.PriceTo)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return &job, nil
+}
+
 func InsertJobApplication(jobID, employeeID int, conn *sql.DB) error {
 	fixtureJobAppStmt := `INSERT INTO job_application(job_id, employee_id) VALUES(?, ?)`
 	if conn != nil {
@@ -870,8 +896,8 @@ func CreateAJobProposal(employeeID, employerID int, nj NewJobProposal, conn *sql
 	return errors.New("no db found")
 }
 
-// Get proposals
-func GetProposalsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Proposal, error) {
+// Get proposals sent
+func GetProposalsFromDB(limit, offset string, employerID int, conn *sql.DB) ([]Proposal, error) {
 	if conn != nil {
 		query := `SELECT id, employee_id, employer_id,
 						 job_id, status
@@ -885,7 +911,7 @@ func GetProposalsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Pr
 		}
 		defer stmt.Close()
 
-		rows, err := stmt.Query(accountID, limit, offset)
+		rows, err := stmt.Query(employerID, limit, offset)
 		if err != nil {
 			log.Println(err)
 			return nil, err
@@ -915,4 +941,86 @@ func GetProposalsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Pr
 		return proposals, nil
 	}
 	return nil, errors.New("no db found")
+}
+
+// Get proposals received
+func GetReceivedProposalsFromDB(limit, offset string, employeeID int, conn *sql.DB) ([]Proposal, error) {
+	if conn != nil {
+		query := `SELECT id, employee_id, employer_id, job_id, status
+					FROM job_proposal WHERE employee_id = ? AND status = 'PENDING'
+					LIMIT ? OFFSET ?
+				`
+		stmt, err := conn.Prepare(query)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		defer stmt.Close()
+
+		rows, err := stmt.Query(employeeID, limit, offset)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		defer rows.Close()
+
+		var proposals []Proposal
+		for rows.Next() {
+			var proposal Proposal
+			err = rows.Scan(&proposal.ID,
+				&proposal.EmployeeID,
+				&proposal.EmployerID,
+				&proposal.JobID, &proposal.Status)
+			if err != nil {
+				log.Println(err)
+				return nil, err
+			}
+			proposals = append(proposals, proposal)
+		}
+
+		err = rows.Err()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		return proposals, nil
+	}
+	return nil, errors.New("no db found")
+}
+
+func UpdateJobProposalStatus(action string, proposalID int, conn *sql.DB) error {
+	if conn != nil {
+		updateStmt := `UPDATE job_proposal SET status = ? WHERE id = ?`
+		tx, err := conn.Begin()
+		if err != nil {
+			log.Println(err)
+		}
+		stmt, err := tx.Prepare(updateStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		defer stmt.Close()
+
+		var status string
+		if action == "accept" {
+			status = "ACCEPTED"
+		} else {
+			status = "REJECTED"
+		}
+
+		_, err = stmt.Exec(status, proposalID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
 }

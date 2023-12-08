@@ -65,17 +65,17 @@
       </div>
 
       <!-- START Data is not for ADMIN -->
-      <!-- Details  -->
-      {{ if not .data.profile.is_admin }}
+
       <!-- Profile data -->
+      {{ if not .data.profile.is_admin }}
       {{ if eq .data.infoType "profile" }}
       <div class="profile-details">
         <div>
-          <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .data.profile.profile_image }}"
+          <img style="border-radius: 50%;height: 100px;" src="/uploads/{{ .data.profile.profile_image }}"
             alt="Profile Image" />
           <span style="font-weight: bold; font-size: larger;">{{ .data.profile.name }}</span>
           <div>
-            {{ if.data.profile.is_verified }}
+            {{ if .is_verified }}
             <span style="color: green;font-size: smaller;">Verified Account</span>
             {{ else }}
             <span>Unverified</span>
@@ -87,7 +87,7 @@
         </div>
         <div><span>Birthdate: {{ .data.profile.birthdate }}</span></div>
         <div><span>Address: {{ .data.profile.address }}</span></div>
-        {{ if .data.profile.is_verified }}
+        {{ if .is_verified }}
         <div><span>Valid Government ID: {{ .data.profile.gov_id_image }}</span></div>
         {{ end }}
         <div>
@@ -141,9 +141,10 @@
         <span>Sent Helper Applications</span>
         {{ range .data.applications }}
         <div
-          style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+          style="height: 150px; border: 1px solid gray; min-width: 600px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
           <div>
             <span>Profile pic</span>
+            <img style="height: 100px;" src="/uploads/{{ .employer_profile }}" alt="Employer Image" />
           </div>
           <div>
             <div>
@@ -158,7 +159,7 @@
           </div>
           <div>
             <button>
-              <a href="/jobs/{{ .id }}?view=1">View</a>
+              <a href="/jobs/view/{{ .id }}?view=1">View</a>
             </button>
           </div>
         </div>
@@ -206,7 +207,7 @@
           <div>
             {{ if .employee_profile_image }}
             <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .employee_profile_image }}"
-              alt="Profile Image" />
+              alt="Employee Image" />
             {{ end }}
           </div>
           <div>
@@ -218,10 +219,47 @@
             </div>
           </div>
           <div>
-              <a class="btn btn-primary" href="/jobs/view/{{ .job_id }}?view=1">View</a>
-            <button class="btn btn-secondary">
+            <a class="btn btn-primary" href="/jobs/view/{{ .job_id }}?view=1">View</a>
+            <button {{ if eq .status "REJECTED" }} class="btn btn-danger" {{ else }} class="btn btn-secondary" {{ end
+              }}>
               {{ .status }}
             </button>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Proposals -->
+      {{ if eq .data.infoType "rcv_proposals" }}
+      <div>
+        <span>Received Job Proposals</span>
+        {{ range .data.rcv_proposals }}
+        <div
+          style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+          <div>
+            <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .employer_profile_image }}"
+              alt="Employer Image" />
+          </div>
+          <div>
+            <div>
+              <span style="display: inline;">{{ .job_title }}</span>
+            </div>
+            <div>
+              <span style="display: inline;">{{ .job_description }}</span>
+            </div>
+            <div>
+              <span style="display: inline;">{{ .job_location }}</span>
+              <span style="display: inline;">{{ .job_employment_type }}</span>
+              <span style="display: inline;">{{ .job_price_from }} - {{ .job_price_to }}</span>
+            </div>
+          </div>
+          <div>
+            <form method="post" action="/jobs/proposal/update">
+              <button name="prpAction" value="accept" type="submit" class="btn btn-primary">Accept</button>
+              <button name="prpAction" value="reject" type="submit" class="btn btn-danger">Reject</button>
+              <input hidden name="proposal_id" value="{{ .id }}" />
+            </form>
           </div>
         </div>
         {{ end }}

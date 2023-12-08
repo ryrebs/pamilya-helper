@@ -118,6 +118,8 @@ func Serve() {
 		jobs.Match([]string{"GET", "POST"}, "/proposal", routes.CreateJobProposal)
 		jobs.POST("/delete", routes.DeleteJob)
 		jobs.POST("/view/:id", routes.JobDetail)
+		jobs.POST("/proposal/update", routes.AcceptRejectProposal)
+		jobs.POST("/application/update", routes.AcceptRejectApplication)
 
 		// Util routes - for dev or privileged access
 		// NOTE: Don't expose or serve on prod.
