@@ -262,7 +262,12 @@ func GetAllJobs(limit, offset string, conn *sql.DB) (interface{}, error) {
 
 // Get user applied jobs
 func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
-	jobs, err := GetAppliedJobsFromDB(limit, offset, accountID, conn)
+	query := `SELECT * FROM job jb
+		INNER JOIN job_application ja on jb.id = ja.id
+		WHERE jb.employer_id != ? AND ja.employee_id == ?
+		LIMIT ? OFFSET ?
+	`
+	jobs, err := GetAppliedOrReceivedJobsFromDB(query, limit, offset, accountID, conn)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -293,6 +298,43 @@ func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interfac
 			"dateline":         job.DateLine,
 			"status":           job.Status,
 			"employer_profile": employee_profile,
+		})
+	}
+	return respJobs, nil
+}
+
+// Get recevied applications
+func GetReceivedApplications(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
+	query := `SELECT * FROM job jb
+		INNER JOIN job_application ja on jb.id = ja.id
+		WHERE jb.employer_id == ? 
+			AND ja.employee_id != ?
+			AND ja.status == "PENDING"
+		LIMIT ? OFFSET ?
+	`
+	jobs, err := GetAppliedOrReceivedJobsFromDB(query, limit, offset, accountID, conn)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	respJobs := []map[string]interface{}{}
+	var employee_profile string
+	var employee_name string
+	var employee_title string
+
+	for _, job := range jobs {
+		user := FindUserByIDFromDB(job.EmployeeId, conn)
+		if user != nil {
+			employee_profile = user.ProfileImage
+			employee_name = user.Name
+			employee_title = user.Title
+		}
+		respJobs = append(respJobs, map[string]interface{}{
+			"application_id":         job.ApplicationId,
+			"employee_name":          employee_name,
+			"employee_title":         employee_title,
+			"employee_profile_image": employee_profile,
 		})
 	}
 	return respJobs, nil

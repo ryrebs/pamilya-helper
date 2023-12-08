@@ -67,6 +67,7 @@ func Profile(c echo.Context) error {
 	var postedJobs []map[string]interface{}
 	var sentProposals []map[string]interface{}
 	var receivedProposals []map[string]interface{}
+	var receivedApplications []map[string]interface{}
 
 	if user != nil {
 		data := map[string]interface{}{
@@ -155,8 +156,13 @@ func Profile(c echo.Context) error {
 			}
 		case "rcv_applications":
 			{
-				// Get received applications on jobs you've created
-				log.Println("get received applications on job")
+				// Get received applications
+				jobs, jErr := db.GetReceivedApplications("10", "0", user.AccountId, cc.Db())
+				if jErr != nil {
+					log.Println(jErr)
+				} else {
+					receivedApplications = jobs.([]map[string]interface{})
+				}
 			}
 		case "proposals":
 			{
@@ -181,13 +187,14 @@ func Profile(c echo.Context) error {
 		}
 
 		data["data"] = map[string]interface{}{
-			"profile":       profile_data,
-			"applications":  applications,
-			"postedJobs":    postedJobs,
-			"proposals":     sentProposals,
-			"rcv_proposals": receivedProposals,
-			"accounts":      accounts,
-			"infoType":      infoType.Info,
+			"profile":          profile_data,
+			"applications":     applications,
+			"postedJobs":       postedJobs,
+			"proposals":        sentProposals,
+			"rcv_proposals":    receivedProposals,
+			"rcv_applications": receivedApplications,
+			"accounts":         accounts,
+			"infoType":         infoType.Info,
 		}
 
 		return renderWithAuthContext("profile.html", c, data)

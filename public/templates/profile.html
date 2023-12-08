@@ -266,6 +266,37 @@
       </div>
       {{ end }}
 
+       <!-- Received application -->
+       {{ if eq .data.infoType "rcv_applications" }}
+       <div>
+         <span>Received Job Proposals</span>
+         {{ range .data.rcv_applications }}
+         <div
+           style="height: 100px; border: 1px solid gray; min-width: 500px; max-width: 700px; display: flex; align-items: center;justify-content: space-around;">
+           <div>
+             <img style="  border-radius: 50%;height: 100px;" src="/uploads/{{ .employee_profile_image }}"
+               alt="Employee Image" />
+           </div>
+           <div>
+             <div>
+               <span style="display: inline;">{{ .employee_name }}</span>
+             </div>
+             <div>
+               <span style="display: inline;">{{ .employee_title }}</span>
+             </div>
+           </div>
+           <div>
+             <form method="post" action="/jobs/application/update">
+               <button name="app_action" value="accept" type="submit" class="btn btn-primary">Accept</button>
+               <button name="app_action" value="reject" type="submit" class="btn btn-danger">Reject</button>
+               <input hidden name="application_id" value="{{ .application_id }}" />
+             </form>
+           </div>
+         </div>
+         {{ end }}
+       </div>
+       {{ end }}
+
       <!-- END Data is not for ADMIN -->
       {{ end }}
 

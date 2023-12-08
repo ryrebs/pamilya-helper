@@ -640,14 +640,11 @@ func InsertJobApplication(jobID, employeeID int, conn *sql.DB) error {
 
 }
 
-// Get jobs where user has an application.
-func GetAppliedJobsFromDB(limit, offset string, accountID int, conn *sql.DB) ([]Application, error) {
-	query := `SELECT * FROM job jb
-		INNER JOIN job_application ja on jb.id = ja.id
-		WHERE jb.employer_id != ? AND ja.employee_id == ?
-		LIMIT ? OFFSET ?
-	`
-	stmt, err := conn.Prepare(query)
+// Get jobs where user has an application or user received an application from one of its posted jobs.
+//
+// Result depends on `querySentOrReceived` to get either received or sent jobs
+func GetAppliedOrReceivedJobsFromDB(querySentOrReceived, limit, offset string, accountID int, conn *sql.DB) ([]Application, error) {
+	stmt, err := conn.Prepare(querySentOrReceived)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -989,6 +986,7 @@ func GetReceivedProposalsFromDB(limit, offset string, employeeID int, conn *sql.
 	return nil, errors.New("no db found")
 }
 
+// Update job proposal status
 func UpdateJobProposalStatus(action string, proposalID int, conn *sql.DB) error {
 	if conn != nil {
 		updateStmt := `UPDATE job_proposal SET status = ? WHERE id = ?`
@@ -1011,6 +1009,43 @@ func UpdateJobProposalStatus(action string, proposalID int, conn *sql.DB) error 
 		}
 
 		_, err = stmt.Exec(status, proposalID)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return nil
+	}
+	return errors.New("no db found")
+}
+
+// Update application status
+func UpdateJobApplicationStatus(action string, applicationID int, conn *sql.DB) error {
+	if conn != nil {
+		updateStmt := `UPDATE job_application SET status = ? WHERE id = ?`
+		tx, err := conn.Begin()
+		if err != nil {
+			log.Println(err)
+		}
+		stmt, err := tx.Prepare(updateStmt)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		defer stmt.Close()
+
+		var status string
+		if action == "accept" {
+			status = "ACCEPTED"
+		} else {
+			status = "REJECTED"
+		}
+
+		_, err = stmt.Exec(status, applicationID)
 		if err != nil {
 			log.Println(err)
 			return err

@@ -337,25 +337,26 @@ func AcceptRejectProposal(c echo.Context) error {
 
 	db.UpdateJobProposalStatus(action.PrpAction, action.ProposalID, cc.Db())
 	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
-
 }
 
 func AcceptRejectApplication(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
 	var action struct {
-		prpAction string `forn:"prpAction" validate:"required,oneof=reject accept"`
+		AppAction     string `form:"app_action" validate:"required,oneof=reject accept"`
+		ApplicationID int    `form:"application_id" validate:"required"`
 	}
 
 	if err := cc.Bind(&action); err != nil {
 		log.Println(err)
-		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_applications")
 	}
 
 	if err := cc.Validate(action); err != nil {
 		log.Println(err)
-		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+		return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_applications")
 	}
 
-	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_proposals")
+	db.UpdateJobApplicationStatus(action.AppAction, action.ApplicationID, cc.Db())
+	return cc.Redirect(http.StatusSeeOther, "/users/profile?info=rcv_applications")
 
 }
