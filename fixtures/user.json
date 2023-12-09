@@ -1,7 +1,9 @@
 {
   "users": [
     {
-      "name": "Mr Admin ",
+      "name": "Mr Admin",
+      "profile_image": "1_admin.png",
+      "title": "Admin Oppa",
       "email": "admin@pmh.com",
       "password": "admin1234",
       "birthdate": "2020-01-01",
@@ -14,6 +16,8 @@
     },
     {
       "name": "Van Aubrey",
+      "title": "Hardworking Gopher",
+      "profile_image": "2_aubrey.png",
       "email": "aubrey@pmh.com",
       "password": "aubrey1234",
       "birthdate": "2020-01-01",
@@ -22,10 +26,13 @@
       "is_admin": false,
       "is_verification_pending": false,
       "detail": "I am a homeowner who takes great pride in my garden's beauty and serenity.",
-      "contact": "123456789011"
+      "contact": "123456789011",
+      "skills": "Skill A|Skil B|Skill C"
     },
     {
       "name": "Mr Darren",
+      "title": "Hardworking Gopher",
+      "profile_image": "2_darren.png",
       "email": "darren@pmh.com",
       "password": "darren1234",
       "birthdate": "2020-01-01",
@@ -34,7 +41,8 @@
       "is_admin": false,
       "is_verification_pending": false,
       "detail": "I am a homeowner who takes great pride in my garden's beauty and serenity.",
-      "contact": "123456789011"
+      "contact": "123456789011",
+      "skills": "Skill A|Skil B|Skill C"
     }
   ]
 }

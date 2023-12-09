@@ -39,7 +39,7 @@ func initDBiFNotExists() *sql.DB {
 }
 
 func createUploadFolder() error {
-	uploadDir := "uploads"
+	uploadDir := "public/uploads"
 	if _, err := os.Stat(uploadDir); err != nil {
 		log.Printf("Creating uploads folder...")
 		err := os.Mkdir(uploadDir, 0755)
@@ -72,7 +72,7 @@ func Serve() {
 		// Init echo app
 		e := echo.New()
 		e.Validator = &CustomValidator{validator: validator.New()}
-		e.Use(middleware.Logger())
+		// e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 		e.Use(session.Middleware(sessions.NewCookieStore([]byte("session-key-replace-me-in-prod"))))
 

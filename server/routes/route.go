@@ -116,10 +116,9 @@ func Profile(c echo.Context) error {
 		case "profile":
 			{
 				// Make sure skills is initialized to length 5
+				skills_len5 := make([]string, 5)
 				skills := strings.Split(user.Skills, "|")
-				if user.Skills == "" {
-					skills = make([]string, 5)
-				}
+				copy(skills_len5, skills)
 				profile_data = map[string]interface{}{
 					"name":              cases.Title(language.English, cases.Compact).String(user.Name),
 					"email":             user.Email,
@@ -130,7 +129,7 @@ func Profile(c echo.Context) error {
 					"profile_image":     user.ProfileImage,
 					"detail":            user.Detail,
 					"title":             user.Title,
-					"skills":            skills,
+					"skills":            skills_len5,
 					"income_tax_return": user.IncomeTaxReturnFile,
 				}
 			}

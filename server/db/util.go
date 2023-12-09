@@ -86,8 +86,8 @@ func InsertUser(user User, db *sql.DB) error {
 		INSERT INTO account(
 			name, email, password,
 			is_verified, is_admin, is_verification_pending,
-			detail, contact, birthdate, address)
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			detail, contact, birthdate, address, title, profile_image, skills)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	if db != nil {
 		stmt, err := db.Prepare(fixtureAdminStmt)
@@ -101,7 +101,8 @@ func InsertUser(user User, db *sql.DB) error {
 		_, err = stmt.Exec(user.Name, user.Email,
 			CreateUserPassword(user.Password), user.IsVerified,
 			user.IsAdmin, user.IsVerificationPending,
-			user.Detail, user.Contact, user.Birthdate, user.Address)
+			user.Detail, user.Contact, user.Birthdate,
+			user.Address, user.Title, user.ProfileImage, user.Skills)
 		if err != nil {
 			log.Printf("%q: %s\n", err, fixtureAdminStmt)
 			return err
@@ -202,6 +203,9 @@ func loadUserFixture(conn *sql.DB) error {
 					IsVerificationPending: user.IsVerificationPending,
 					Detail:                user.Detail,
 					Contact:               user.Contact,
+					ProfileImage:          user.ProfileImage,
+					Title:                 user.Title,
+					Skills:                user.Skills,
 				},
 				Password: user.Password,
 			},
