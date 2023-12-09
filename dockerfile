@@ -10,6 +10,8 @@ COPY public /pamilyahelper/public
 
 COPY dist/webapp /pamilyahelper/
 
+COPY fixtures /pamilyahelper/fixtures
+
 RUN ./webapp initdb
 
 RUN ./webapp loadfixtures
