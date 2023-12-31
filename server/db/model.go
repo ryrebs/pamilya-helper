@@ -263,7 +263,7 @@ func GetAllJobs(limit, offset string, conn *sql.DB) (interface{}, error) {
 // Get user applied jobs
 func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
 	query := `SELECT * FROM job jb
-		INNER JOIN job_application ja on jb.id = ja.id
+		INNER JOIN job_application ja on jb.id = ja.job_id
 		WHERE jb.employer_id != ? AND ja.employee_id == ?
 		LIMIT ? OFFSET ?
 	`
@@ -306,7 +306,7 @@ func GetAppliedJobs(limit, offset string, accountID int, conn *sql.DB) (interfac
 // Get recevied applications
 func GetReceivedApplications(limit, offset string, accountID int, conn *sql.DB) (interface{}, error) {
 	query := `SELECT * FROM job jb
-		INNER JOIN job_application ja on jb.id = ja.id
+		INNER JOIN job_application ja on jb.id = ja.job_id
 		WHERE jb.employer_id == ? 
 			AND ja.employee_id != ?
 			AND ja.status == "PENDING"
