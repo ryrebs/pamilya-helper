@@ -15,7 +15,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const DefaultPamilyaHelperDBName = "pamilyahelper.db"
+const DefaultPamilyaHelperDBName = "storage/pamilyahelper.db"
 
 type CustomDBContext struct {
 	echo.Context

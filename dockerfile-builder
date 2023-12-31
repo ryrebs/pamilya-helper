@@ -8,6 +8,8 @@ ENV CGO_ENABLED=1
 
 WORKDIR /pamilyahelper
 
+COPY build.sh /pamilyahelper
+
 RUN apk update
 
 RUN apk add gcc 
@@ -16,4 +18,4 @@ RUN apk add libc-dev
 
 RUN chmod +x build.sh
 
-ENTRYPOINT ["build.sh"]
+ENTRYPOINT ["./build.sh"]
