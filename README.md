@@ -70,7 +70,9 @@ Note: `--rm` will DELETE the container once the container exits. Remove argument
 
 3. View `localhost:5000` in browser.
 
-### Fixtures loaded:
+### Load fixtures:
+
+- docker exec -it <container-name> ./webapp loadfixtures
 
 Default users:pass:
 
