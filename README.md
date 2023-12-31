@@ -76,7 +76,7 @@ Note: `--rm` will DELETE the container once the container exits. Remove argument
 
 Default users:pass:
 
-- `admin@admin.com:admin1234`
+- `admin@pmh.com:admin1234`
 
 - `aubrey@pmh.com:aubrey1234`
 
