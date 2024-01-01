@@ -203,9 +203,18 @@ func GetAccountsForVerification(limit, offset string, db *sql.DB) ([]UserVerific
 	return GetAccountsForVerificationFromDb(limit, offset, db)
 }
 
-func createJobData(jobs []Job) []map[string]interface{} {
+func createJobData(jobs []Job, conn *sql.DB) []map[string]interface{} {
 	respJobs := []map[string]interface{}{}
+	var employerProfile string
+
 	for _, job := range jobs {
+		if conn != nil {
+			user := FindUserByIDFromDB(job.EmployerId, conn)
+			if user != nil {
+				employerProfile = user.ProfileImage
+
+			}
+		}
 		resp := strings.Split(job.Responsibility, "|")
 		skills := strings.Split(job.Skills, "|")
 		respJobs = append(respJobs, map[string]interface{}{
@@ -220,6 +229,7 @@ func createJobData(jobs []Job) []map[string]interface{} {
 			"price_from":       job.PriceFrom,
 			"price_to":         job.PriceTo,
 			"dateline":         job.DateLine,
+			"employer_profile": employerProfile,
 		})
 	}
 	return respJobs
@@ -232,7 +242,7 @@ func GetJobs(limit, offset string, accountID int, conn *sql.DB) (interface{}, er
 		log.Println(err)
 		return nil, err
 	}
-	respJobs := createJobData(jobs)
+	respJobs := createJobData(jobs, conn)
 	return respJobs, nil
 }
 
@@ -244,7 +254,7 @@ func GetOwnedJobs(limit, offset string, accountID int, conn *sql.DB) (interface{
 		log.Println(err)
 		return nil, err
 	}
-	respJobs := createJobData(jobs)
+	respJobs := createJobData(jobs, nil)
 	return respJobs, nil
 }
 
@@ -255,7 +265,7 @@ func GetAllJobs(limit, offset string, conn *sql.DB) (interface{}, error) {
 		log.Println(err)
 		return nil, err
 	}
-	respJobs := createJobData(jobs)
+	respJobs := createJobData(jobs, conn)
 	return respJobs, nil
 
 }
@@ -347,13 +357,20 @@ func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 		log.Println(err)
 		return nil, err
 	}
+	employerID := job.(Job).EmployerId
+	var employerProfile string
+	user := FindUserByIDFromDB(employerID, conn)
+	if user != nil {
+		employerProfile = user.ProfileImage
+
+	}
 
 	resp := strings.Split(job.(Job).Responsibility, "|")
 	skills := strings.Split(job.(Job).Skills, "|")
 	data := map[string]interface{}{
 		"responsibilities": resp,
 		"skills":           skills,
-		"employer_id":      job.(Job).EmployerId,
+		"employer_id":      employerID,
 		"id":               job.(Job).ID,
 		"title":            job.(Job).Title,
 		"employment_type":  job.(Job).EmployementType,
@@ -366,6 +383,7 @@ func GetJob(jobID int, conn *sql.DB) (interface{}, error) {
 		"emp_email":        job.(Job).EmployerEmail,
 		"emp_contact":      job.(Job).EmployerContact,
 		"emp_detail":       job.(Job).EmployerDetail,
+		"employer_profile": employerProfile,
 	}
 	return data, nil
 }
