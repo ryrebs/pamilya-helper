@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"pamilyahelper/webapp/server/db"
 	"pamilyahelper/webapp/server/utils"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo-contrib/session"
@@ -211,6 +212,23 @@ func Helper(c echo.Context) error {
 	cc := c.(*db.CustomDBContext)
 	var flashMsg string
 
+	defLimit := 10
+	defOffset := 0
+
+	limit, err := strconv.Atoi(c.QueryParam("limit"))
+	if err != nil {
+		log.Println(err)
+	} else {
+		defLimit = limit
+	}
+
+	offset, err := strconv.Atoi(c.QueryParam("offset"))
+	if err != nil {
+		log.Println(err)
+	} else {
+		defOffset = offset
+	}
+
 	// Check for flash messages
 	sess, err := session.Get("post-proposal", cc)
 	if err != nil {
@@ -224,7 +242,7 @@ func Helper(c echo.Context) error {
 
 	user, err := GetUserFromSession(c, cc.Db())
 	if err != nil {
-		users, _ := db.GetAllAccountAsAnon(10, 0, cc.Db())
+		users, _ := db.GetAllAccountAsAnon(defLimit, defOffset, cc.Db())
 		return renderWithAuthContext("helpers.html", cc, map[string]interface{}{
 			"helpers":  users,
 			"flashMsg": flashMsg,
